@@ -1,0 +1,12 @@
+# Set default behavior to handle line endings automatically.
+* text=auto
+
+# Force LF for all source files to avoid Mac/Windows conflicts
+*.js text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.jsx text eol=lf
+*.css text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.html text eol=lf
