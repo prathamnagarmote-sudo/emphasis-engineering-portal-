@@ -93,7 +93,7 @@ export default function DevPanel({ token, onLogout }: { token: string; onLogout:
         {activeTab === "blogs" && <BlogsManager headers={headers} uploadFile={uploadFile} />}
         {activeTab === "courses" && <CoursesManager headers={headers} uploadFile={uploadFile} />}
         {activeTab === "services" && <ServicesManager headers={headers} />}
-        {activeTab === "tests" && <PracticeTestsManager headers={headers} />}
+        {activeTab === "tests" && <PracticeTestsManager headers={headers} uploadFile={uploadFile} />}
         {activeTab === "testimonials" && <TestimonialsManager headers={headers} uploadFile={uploadFile} />}
         {activeTab === "achievements" && <AchievementsManager headers={headers} uploadFile={uploadFile} />}
       </main>

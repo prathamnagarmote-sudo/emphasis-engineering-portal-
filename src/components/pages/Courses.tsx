@@ -72,7 +72,7 @@ const HOW_IT_WORKS = [
 const ROADMAPS = [
   {
     title: "UK CEng (IMechE / IET)",
-    flag: "https://flagcdn.com/w40/gb.png",
+    flag: "https://flagcdn.com/gb.svg",
     timeline: "6–18 months",
     steps: [
       { label: "Academic qualification check", covered: true },
@@ -96,7 +96,7 @@ const ROADMAPS = [
   },
   {
     title: "Canadian P.Eng",
-    flag: "https://flagcdn.com/w40/ca.png",
+    flag: "https://flagcdn.com/ca.svg",
     timeline: "12–24 months",
     steps: [
       { label: "Academic credential assessment", covered: true },
@@ -279,13 +279,20 @@ const CourseCard: FC<{ course: Course; index: number; onPreview: (c: Course) => 
                     addToCart({ id: course.id, title: course.title, price: course.price, type: 'course', thumbnail: course.thumbnail });
                   }
                 }}
-                className={`w-11 h-11 rounded-xl border-2 flex items-center justify-center flex-shrink-0 transition-all ${inCart
-                  ? 'border-red-500 bg-red-50 text-red-500 hover:bg-red-100'
-                  : 'border-gray-200 text-gray-500 hover:border-primary hover:text-primary hover:bg-primary/5'
+                className={`h-11 rounded-xl border-2 flex items-center justify-center gap-2 transition-all ${inCart
+                  ? 'px-4 border-red-100 bg-red-50 text-red-600 hover:bg-red-100'
+                  : 'w-11 border-gray-200 text-gray-500 hover:border-primary hover:text-primary hover:bg-primary/5'
                   }`}
                 title={inCart ? 'Remove from cart' : 'Add to cart'}
               >
-                {inCart ? <Trash2 className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
+                {inCart ? (
+                  <>
+                    <Trash2 className="w-4 h-4" />
+                    <span className="text-xs font-bold">Remove</span>
+                  </>
+                ) : (
+                  <ShoppingCart className="w-4 h-4" />
+                )}
               </motion.button>
             </>
           )}

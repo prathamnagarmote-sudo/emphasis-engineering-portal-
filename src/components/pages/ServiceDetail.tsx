@@ -356,19 +356,20 @@ const ServiceDetail: FC = () => {
               </div>
             </div>
 
-            {service.image && (
-              <div className="hidden md:flex justify-center">
-                <motion.img
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2 }}
-                  src={service.image}
-                  alt={service.title}
-                  className="w-full max-w-md rounded-2xl object-cover"
-                  style={{ boxShadow: '0 24px 64px rgba(0,0,0,0.3)' }}
-                />
-              </div>
-            )}
+            <div className="hidden md:flex justify-center">
+              <motion.img
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 }}
+                src={service.image || "https://images.unsplash.com/photo-1454165833767-02a522111d67?w=800&q=80"}
+                alt={service.title}
+                className="w-full max-w-md rounded-2xl object-cover aspect-[4/3] shadow-2xl"
+                style={{ 
+                  boxShadow: '0 32px 80px rgba(0,0,0,0.5)',
+                  border: '1px solid rgba(255,255,255,0.1)'
+                }}
+              />
+            </div>
           </motion.div>
         </div>
       </section>

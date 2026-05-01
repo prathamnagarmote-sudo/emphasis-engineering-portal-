@@ -13,17 +13,19 @@ interface PracticeTest {
 const EMPTY: PracticeTest = { testId: "", title: "", description: "", category: "Ethics", duration: 30, questionsCount: 0, level: "Intermediate", price: 0, isFree: false, questions: [] };
 const inputClass = "w-full px-4 py-2.5 bg-[#0a0f1a] border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-[#3F9FA3]";
 
-export default function PracticeTestsManager({ headers }: { headers: any }) {
+export default function PracticeTestsManager({ headers, uploadFile }: { headers: any; uploadFile?: (file: File) => Promise<string | null> }) {
   const [tests, setTests] = useState<PracticeTest[]>([]);
   const [editing, setEditing] = useState<PracticeTest | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [tab, setTab] = useState<"info" | "questions">("info");
   const [csvText, setCsvText] = useState("");
   const [importing, setImporting] = useState(false);
   const [expandedQ, setExpandedQ] = useState<number | null>(null);
   const csvRef = useRef<HTMLInputElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const fetchTests = async () => { setLoading(true); const res = await fetch("/api/dev/practice-tests", { headers }); setTests(await res.json()); setLoading(false); };
   useEffect(() => { fetchTests(); }, []);
@@ -125,6 +127,45 @@ export default function PracticeTestsManager({ headers }: { headers: any }) {
             <div><label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Level</label><input value={editing.level} onChange={e => setEditing({ ...editing, level: e.target.value })} className={inputClass} /></div>
             <div><label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Price (£)</label><input type="number" value={editing.price} onChange={e => setEditing({ ...editing, price: Number(e.target.value) })} className={inputClass} /></div>
             <div className="flex items-end"><label className="flex items-center gap-3"><input type="checkbox" checked={editing.isFree} onChange={e => setEditing({ ...editing, isFree: e.target.checked })} className="w-4 h-4 accent-[#3F9FA3]" /><span className="text-sm text-gray-400">Free Test</span></label></div>
+
+            <div className="col-span-2">
+              <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Cover Image</label>
+              <div className="flex items-start gap-4">
+                {editing.image && (
+                  <img src={editing.image} className="w-24 h-24 rounded-xl object-cover border border-white/10" alt="Preview" />
+                )}
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    value={editing.image || ""}
+                    onChange={e => setEditing({ ...editing, image: e.target.value })}
+                    className={inputClass + " mb-2"}
+                    placeholder="Image URL"
+                  />
+                  <input
+                    type="file"
+                    ref={fileRef}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file && uploadFile) {
+                        setUploading(true);
+                        const url = await uploadFile(file);
+                        if (url) setEditing({ ...editing, image: url });
+                        setUploading(false);
+                      }
+                    }}
+                    className="hidden"
+                  />
+                  <button
+                    onClick={() => fileRef.current?.click()}
+                    disabled={uploading || !uploadFile}
+                    className="px-4 py-2 bg-white/5 text-gray-400 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-white/10 disabled:opacity-50"
+                  >
+                    <Upload className="w-3 h-3" /> {uploading ? "Uploading..." : "Upload New Photo"}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

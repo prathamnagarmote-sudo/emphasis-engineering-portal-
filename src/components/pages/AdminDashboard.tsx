@@ -97,15 +97,15 @@ export default function AdminDashboard() {
       "United Kingdom": { total: 0, courses: {} },
       "Canada": { total: 0, courses: {} },
       "United States": { total: 0, courses: {} },
-      "UAE": { total: 0, courses: {} },
+      "Other": { total: 0, courses: {} },
     };
 
     if (!users || !Array.isArray(users)) return stats;
 
     users.forEach(user => {
       if (!user) return;
-      // Don't include India
-      if (user.country === "India") return;
+      // Don't include India or UAE/Dubai
+      if (user.country === "India" || user.country === "UAE" || user.country === "Dubai" || user.country === "United Arab Emirates") return;
 
       if (user.purchasedContent && Array.isArray(user.purchasedContent)) {
         user.purchasedContent.forEach((id: string) => {
@@ -119,7 +119,7 @@ export default function AdminDashboard() {
               if (lowerId.includes('imech') || lowerId.includes('iet') || lowerId.includes('ice')) country = "United Kingdom";
               else if (lowerId.includes('peng')) country = "Canada";
               else if (lowerId.includes('pe') || lowerId.includes('ncees')) country = "United States";
-              else country = "UAE";
+              else country = "Other";
             }
 
             if (country && stats[country]) {

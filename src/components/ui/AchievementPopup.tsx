@@ -182,7 +182,7 @@ export default function AchievementPopup() {
                           <img
                             src={ach.photo}
                             alt={ach.name}
-                            className="w-full h-full object-cover object-top hover:scale-110 transition-transform duration-700"
+                            className="w-full h-full object-cover object-center hover:scale-110 transition-transform duration-700"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(ach.name)}&background=3F9FA3&color=fff&size=200`;
                             }}

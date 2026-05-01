@@ -321,6 +321,7 @@ competence on both sides of the Atlantic`
     description: "Chartered Engineer (CEng) – IMechE Professional Registration Support. Structured guidance and coaching for mechanical engineers pursuing Chartered status under UK-SPEC.",
     icon: "Briefcase",
     calendlyLink: "https://calendly.com/sayeependke/available-slots",
+    image: "https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?w=800&q=80",
 
     features: [
       "CEng application and competency guidance",
@@ -436,6 +437,7 @@ competence on both sides of the Atlantic`
     description: "Chartered Engineer (CEng) – IET Registration Support. Expert, structured coaching for engineers navigating UK-SPEC requirements through the IET.",
     icon: "Briefcase",
     calendlyLink: "https://calendly.com/sayeependke/available-slots",
+    image: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=800&q=80",
 
     features: [
       "IET registration and application support",
@@ -581,6 +583,7 @@ Non-accredited degrees are assessed individually.`
     description: "Chartered Engineer (CEng) – ICE Professional Registration Support. Navigate one of the most demanding engineering registrations in the UK with expert guidance on UK-SPEC competencies, report writing, and professional review preparation.",
     icon: "Target",
     calendlyLink: "https://calendly.com/sayeependke/available-slots",
+    image: "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?w=800&q=80",
 
     features: [
       "ICE CEng application and competency guidance",
@@ -742,6 +745,7 @@ Phone:
     description: "Professional Engineer (P.Eng.) – Canadian Licensure Support. Navigate the Canadian engineering licensing process with expert guidance on competency-based assessment (CBA), application strategy, and NPPE preparation.",
     icon: "Globe",
     calendlyLink: "https://calendly.com/sayeependke/available-slots",
+    image: "https://images.unsplash.com/photo-1503387762-592dee58c460?w=800&q=80",
 
     features: [
       "P.Eng application and competency-based assessment support",

@@ -13,11 +13,11 @@ interface Currency {
 }
 
 export const CURRENCIES: Record<CurrencyCode, Currency> = {
-  CAD: { code: 'CAD', symbol: '$', label: 'CAD', flag: 'https://flagcdn.com/w40/ca.png', rate: 1 },
-  USD: { code: 'USD', symbol: '$', label: 'USD', flag: 'https://flagcdn.com/w40/us.png', rate: 0.74 },
-  GBP: { code: 'GBP', symbol: '£', label: 'GBP', flag: 'https://flagcdn.com/w40/gb.png', rate: 0.58 },
-  INR: { code: 'INR', symbol: '₹', label: 'INR', flag: 'https://flagcdn.com/w40/in.png', rate: 62.0 },
-  AED: { code: 'AED', symbol: 'د.إ', label: 'AED', flag: 'https://flagcdn.com/w40/ae.png', rate: 2.72 },
+  CAD: { code: 'CAD', symbol: '$', label: 'CAD', flag: 'https://flagcdn.com/ca.svg', rate: 1 },
+  USD: { code: 'USD', symbol: '$', label: 'USD', flag: 'https://flagcdn.com/us.svg', rate: 0.74 },
+  GBP: { code: 'GBP', symbol: '£', label: 'GBP', flag: 'https://flagcdn.com/gb.svg', rate: 0.58 },
+  INR: { code: 'INR', symbol: '₹', label: 'INR', flag: 'https://flagcdn.com/in.svg', rate: 62.0 },
+  AED: { code: 'AED', symbol: 'د.إ', label: 'AED', flag: 'https://flagcdn.com/ae.svg', rate: 2.72 },
 };
 
 interface CurrencyContextType {

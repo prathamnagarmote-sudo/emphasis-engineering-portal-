@@ -23,7 +23,7 @@ const CurrencySwitcher = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all border border-gray-100 bg-white shadow-sm hover:shadow-md"
       >
-        <img src={currency.flag} alt={currency.code} className="w-5 h-auto rounded-sm object-contain" />
+        <img src={currency.flag} alt={currency.code} className="w-5 h-auto rounded-sm object-contain" loading="eager" />
         <span className="text-xs font-extrabold text-secondary tracking-tight">{currency.code}</span>
         <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </motion.button>
@@ -35,7 +35,7 @@ const CurrencySwitcher = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[100] bg-black/20" 
+              className="fixed inset-0 z-[100] bg-transparent" 
               onClick={() => setIsOpen(false)} 
             />
             <motion.div
@@ -64,7 +64,7 @@ const CurrencySwitcher = () => {
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <img src={CURRENCIES[code].flag} alt={code} className="w-5 h-auto rounded-sm object-contain group-hover:scale-110 transition-transform duration-300" />
+                    <img src={CURRENCIES[code].flag} alt={code} className="w-5 h-auto rounded-sm object-contain group-hover:scale-110 transition-transform duration-300" loading="eager" />
                     <span>{CURRENCIES[code].label}</span>
                   </div>
                   {currency.code === code && <Check className="w-4 h-4" />}

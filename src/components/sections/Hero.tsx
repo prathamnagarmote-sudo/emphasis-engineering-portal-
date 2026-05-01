@@ -273,7 +273,7 @@ const FloatingReviewCard: FC<{
   yOffset: number;
 }> = ({ testimonial, positionClass, delay, yOffset }) => (
   <motion.div
-    className={`absolute hidden min-[1600px]:flex flex-col gap-2 p-2 xl:p-3 rounded-2xl w-[180px] xl:w-[200px] 2xl:w-[240px] z-0 shadow-2xl ${positionClass}`}
+    className={`absolute hidden min-[1800px]:flex flex-col gap-2 p-2 xl:p-3 rounded-2xl w-[180px] xl:w-[200px] 2xl:w-[240px] z-0 shadow-2xl ${positionClass}`}
     style={{
       background: "rgba(255,255,255,0.05)",
       backdropFilter: "blur(12px)",
@@ -394,10 +394,10 @@ const Hero: FC = () => {
       <BackgroundOrbs />
 
       {/* ── FLOATING REVIEWS (Desktop Only) ── */}
-      <FloatingReviewCard testimonial={heroTestimonials[0]} positionClass="top-[15%] left-[1%] 2xl:left-[4%]" delay={0.6} yOffset={15} />
-      <FloatingReviewCard testimonial={heroTestimonials[1]} positionClass="bottom-[10%] left-[1%] 2xl:left-[6%]" delay={0.8} yOffset={-12} />
-      <FloatingReviewCard testimonial={heroTestimonials[2]} positionClass="top-[20%] right-[1%] 2xl:right-[4%]" delay={0.7} yOffset={10} />
-      <FloatingReviewCard testimonial={heroTestimonials[3]} positionClass="bottom-[15%] right-[1%] 2xl:right-[3%]" delay={0.9} yOffset={-15} />
+      <FloatingReviewCard testimonial={heroTestimonials[0]} positionClass="top-[15%] left-[2%] 2xl:left-[4%]" delay={0.6} yOffset={15} />
+      <FloatingReviewCard testimonial={heroTestimonials[1]} positionClass="bottom-[10%] left-[2%] 2xl:left-[6%]" delay={0.8} yOffset={-12} />
+      <FloatingReviewCard testimonial={heroTestimonials[2]} positionClass="top-[20%] right-[2%] 2xl:right-[4%]" delay={0.7} yOffset={10} />
+      <FloatingReviewCard testimonial={heroTestimonials[3]} positionClass="bottom-[15%] right-[2%] 2xl:right-[3%]" delay={0.9} yOffset={-15} />
 
 
       {/* ── CONTENT ── */}

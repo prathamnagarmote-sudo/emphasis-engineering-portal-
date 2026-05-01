@@ -64,9 +64,9 @@ const ChatBot = () => {
 
       case "pathway":
         addBotMessage("Great! Which country are you looking to get licensed in?", [
-          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="United Kingdom (CEng)" />, action: () => { addUserMessage("United Kingdom (CEng)"); showStep("pathway_uk"); } },
-          { label: <Flag url="https://flagcdn.com/w40/us.png" label="United States (PE)" />, action: () => { addUserMessage("United States (PE)"); showStep("pathway_us"); } },
-          { label: <Flag url="https://flagcdn.com/w40/ca.png" label="Canada (P.Eng)" />, action: () => { addUserMessage("Canada (P.Eng)"); showStep("pathway_ca"); } },
+          { label: <Flag url="https://flagcdn.com/gb.svg" label="United Kingdom (CEng)" />, action: () => { addUserMessage("United Kingdom (CEng)"); showStep("pathway_uk"); } },
+          { label: <Flag url="https://flagcdn.com/us.svg" label="United States (PE)" />, action: () => { addUserMessage("United States (PE)"); showStep("pathway_us"); } },
+          { label: <Flag url="https://flagcdn.com/ca.svg" label="Canada (P.Eng)" />, action: () => { addUserMessage("Canada (P.Eng)"); showStep("pathway_ca"); } },
           { label: "⬅️ Back", action: () => showStep("start"), isBack: true },
         ]);
         break;
@@ -122,21 +122,21 @@ const ChatBot = () => {
 
       case "courses":
         addBotMessage("Which engineering institution or country are you preparing for?", [
-          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="IMechE" />, action: () => router.push("/courses/imech-101") },
-          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="IET" />, action: () => router.push("/courses/iet-101") },
-          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="ICE" />, action: () => router.push("/courses/ice-101") },
-          { label: <Flag url="https://flagcdn.com/w40/ca.png" label="Canadian P.Eng" />, action: () => router.push("/courses/peng-101") },
+          { label: <Flag url="https://flagcdn.com/gb.svg" label="IMechE" />, action: () => router.push("/courses/imech-101") },
+          { label: <Flag url="https://flagcdn.com/gb.svg" label="IET" />, action: () => router.push("/courses/iet-101") },
+          { label: <Flag url="https://flagcdn.com/gb.svg" label="ICE" />, action: () => router.push("/courses/ice-101") },
+          { label: <Flag url="https://flagcdn.com/ca.svg" label="Canadian P.Eng" />, action: () => router.push("/courses/peng-101") },
           { label: "⬅️ Back", action: () => showStep("start"), isBack: true },
         ]);
         break;
 
       case "services":
         addBotMessage("Which specific 1-on-1 mentorship service are you looking for?", [
-          { label: <Flag url="https://flagcdn.com/w40/us.png" label="US PE MRA Support" />, action: () => router.push("/services/US%20PE") },
-          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="IMechE CEng Support" />, action: () => router.push("/services/IMECHE") },
-          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="IET CEng Support" />, action: () => router.push("/services/IET") },
-          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="ICE CEng Support" />, action: () => router.push("/services/ICE") },
-          { label: <Flag url="https://flagcdn.com/w40/ca.png" label="Canadian P.Eng Support" />, action: () => router.push("/services/CANADIAN%20PEng") },
+          { label: <Flag url="https://flagcdn.com/us.svg" label="US PE MRA Support" />, action: () => router.push("/services/US%20PE") },
+          { label: <Flag url="https://flagcdn.com/gb.svg" label="IMechE CEng Support" />, action: () => router.push("/services/IMECHE") },
+          { label: <Flag url="https://flagcdn.com/gb.svg" label="IET CEng Support" />, action: () => router.push("/services/IET") },
+          { label: <Flag url="https://flagcdn.com/gb.svg" label="ICE CEng Support" />, action: () => router.push("/services/ICE") },
+          { label: <Flag url="https://flagcdn.com/ca.svg" label="Canadian P.Eng Support" />, action: () => router.push("/services/CANADIAN%20PEng") },
           { label: "⬅️ Back", action: () => showStep("start"), isBack: true },
         ]);
         break;

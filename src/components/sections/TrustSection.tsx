@@ -90,37 +90,37 @@ const ACCREDITATION_BODIES: AccreditationBody[] = [
     abbr: "IET",
     full: "Institution of Engineering & Technology",
     region: "United Kingdom",
-    flag: "https://flagcdn.com/w40/gb.png",
+    flag: "https://flagcdn.com/gb.svg",
   },
   {
     abbr: "ICE",
     full: "Institution of Civil Engineers",
     region: "United Kingdom",
-    flag: "https://flagcdn.com/w40/gb.png",
+    flag: "https://flagcdn.com/gb.svg",
   },
   {
     abbr: "IMechE",
     full: "Institution of Mechanical Engineers",
     region: "United Kingdom",
-    flag: "https://flagcdn.com/w40/gb.png",
+    flag: "https://flagcdn.com/gb.svg",
   },
   {
     abbr: "NCEES",
     full: "National Council of Examiners for Engineering",
     region: "United States",
-    flag: "https://flagcdn.com/w40/us.png",
+    flag: "https://flagcdn.com/us.svg",
   },
   {
     abbr: "Engineers Canada",
     full: "National Engineering Regulatory Body",
     region: "Canada",
-    flag: "https://flagcdn.com/w40/ca.png",
+    flag: "https://flagcdn.com/ca.svg",
   },
   {
     abbr: "PEO",
     full: "Professional Engineers Ontario",
     region: "Canada",
-    flag: "https://flagcdn.com/w40/ca.png",
+    flag: "https://flagcdn.com/ca.svg",
   },
 ];
 
