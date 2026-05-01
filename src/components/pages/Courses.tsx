@@ -9,7 +9,7 @@ import {
   ArrowRight, Shield, ChevronDown, BookOpen, Award, Zap,
   Quote, TrendingUp, FileText, Video, MessageSquare,
   Trophy, Globe, Calendar, ChevronRight, Target, Layers,
-  BarChart, Lightbulb, CheckCircle,
+  BarChart, Lightbulb, CheckCircle, Trash2,
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useCurrency } from '@/context/CurrencyContext';
@@ -154,7 +154,7 @@ const CourseCard: FC<{ course: Course; index: number; onPreview: (c: Course) => 
   course, index, onPreview,
 }) => {
   const router = useRouter();
-  const { isPurchased, purchaseItem, addToCart, isInCart } = useCart();
+  const { isPurchased, purchaseItem, addToCart, isInCart, removeFromCart } = useCart();
   const { formatPrice } = useCurrency();
   const purchased = isPurchased(course.id);
   const inCart = isInCart(course.id);
@@ -273,16 +273,19 @@ const CourseCard: FC<{ course: Course; index: number; onPreview: (c: Course) => 
                 whileTap={{ scale: 0.95 }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  addToCart({ id: course.id, title: course.title, price: course.price, type: 'course', thumbnail: course.thumbnail });
+                  if (inCart) {
+                    removeFromCart(course.id);
+                  } else {
+                    addToCart({ id: course.id, title: course.title, price: course.price, type: 'course', thumbnail: course.thumbnail });
+                  }
                 }}
-                disabled={inCart}
                 className={`w-11 h-11 rounded-xl border-2 flex items-center justify-center flex-shrink-0 transition-all ${inCart
-                  ? 'border-primary bg-primary/10 text-primary'
+                  ? 'border-red-500 bg-red-50 text-red-500 hover:bg-red-100'
                   : 'border-gray-200 text-gray-500 hover:border-primary hover:text-primary hover:bg-primary/5'
                   }`}
-                title={inCart ? 'In cart' : 'Add to cart'}
+                title={inCart ? 'Remove from cart' : 'Add to cart'}
               >
-                {inCart ? <Check className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
+                {inCart ? <Trash2 className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
               </motion.button>
             </>
           )}

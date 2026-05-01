@@ -171,28 +171,13 @@ export default function AchievementPopup() {
                           style={{ backgroundColor: ach.color || '#3F9FA3', transform: 'scale(1.2)' }}
                         />
                         
-                        {/* Blob border */}
-                        <svg
-                          viewBox="0 0 200 200"
-                          className="absolute inset-0 w-full h-full"
-                          style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,0.4))", transform: 'scale(1.15)' }}
-                        >
-                          <defs>
-                            <clipPath id={`blob-${ach.id}`}>
-                              <path d="M47.3,-57.2C59.9,-46.2,67.9,-29.5,69.5,-12.5C71.1,4.5,66.4,21.8,57,35.3C47.6,48.8,33.6,58.4,17.4,63.6C1.2,68.8,-17.1,69.5,-31.7,62.6C-46.3,55.7,-57.1,41.2,-62.8,24.9C-68.5,8.6,-69,-9.5,-62.3,-24.6C-55.6,-39.7,-41.6,-51.8,-26.4,-61.8C-11.2,-71.8,5.2,-79.6,20,-76.3C34.8,-73,34.7,-68.2,47.3,-57.2Z" transform="translate(100 100)" />
-                            </clipPath>
-                          </defs>
-                          <path
-                            d="M47.3,-57.2C59.9,-46.2,67.9,-29.5,69.5,-12.5C71.1,4.5,66.4,21.8,57,35.3C47.6,48.8,33.6,58.4,17.4,63.6C1.2,68.8,-17.1,69.5,-31.7,62.6C-46.3,55.7,-57.1,41.2,-62.8,24.9C-68.5,8.6,-69,-9.5,-62.3,-24.6C-55.6,-39.7,-41.6,-51.8,-26.4,-61.8C-11.2,-71.8,5.2,-79.6,20,-76.3C34.8,-73,34.7,-68.2,47.3,-57.2Z"
-                            transform="translate(100 100)"
-                            fill="none"
-                            stroke={ach.color || '#3F9FA3'}
-                            strokeWidth="3.5"
-                          />
-                        </svg>
+                        {/* Standard Circle */}
                         <div
-                          className="w-36 h-36 rounded-full overflow-hidden relative z-10 border-4 border-transparent"
-                          style={{ clipPath: `url(#blob-${ach.id})` }}
+                          className="w-36 h-36 rounded-full overflow-hidden relative z-10"
+                          style={{ 
+                            border: `4px solid ${ach.color || '#3F9FA3'}`,
+                            boxShadow: `0 8px 32px ${ach.color || '#3F9FA3'}50`
+                          }}
                         >
                           <img
                             src={ach.photo}

@@ -273,7 +273,7 @@ const FloatingReviewCard: FC<{
   yOffset: number;
 }> = ({ testimonial, positionClass, delay, yOffset }) => (
   <motion.div
-    className={`absolute hidden lg:flex flex-col gap-2 p-2 xl:p-3 rounded-2xl w-[180px] xl:w-[200px] 2xl:w-[240px] z-0 shadow-2xl ${positionClass}`}
+    className={`absolute hidden xl:flex flex-col gap-2 p-2 xl:p-3 rounded-2xl w-[180px] xl:w-[200px] 2xl:w-[240px] z-0 shadow-2xl ${positionClass}`}
     style={{
       background: "rgba(255,255,255,0.05)",
       backdropFilter: "blur(12px)",
@@ -371,7 +371,7 @@ const Hero: FC = () => {
   }, []);
 
   return (
-    <section className="relative min-h-screen overflow-hidden">
+    <section className="relative min-h-[90vh] overflow-hidden">
 
       {/* ── BACKGROUND PHOTO ── */}
       <div
@@ -401,7 +401,7 @@ const Hero: FC = () => {
 
 
       {/* ── CONTENT ── */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 pt-28 pb-16 pointer-events-none">
+      <div className="relative z-10 min-h-[90vh] flex flex-col items-center justify-center text-center px-4 sm:px-6 pt-24 pb-12 pointer-events-none">
         <div className="max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl w-full pointer-events-auto">
 
           {/* ── STATUS BADGE ── */}

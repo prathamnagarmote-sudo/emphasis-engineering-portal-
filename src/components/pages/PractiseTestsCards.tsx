@@ -9,7 +9,7 @@ import {
   Shield, Award, Zap, Target, BarChart3, BookOpen,
   TrendingUp, CheckCircle, Quote, Brain, Timer, Trophy,
   Play, Lightbulb, Layers, Calendar, Globe, AlertCircle,
-  ChevronDown, Video, FileText, MessageSquare,
+  ChevronDown, Video, FileText, MessageSquare, Trash2,
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useCart } from '@/context/CartContext';
@@ -116,7 +116,7 @@ const itemVariant: any = {
    TEST CARD
 ═══════════════════════════════════════ */
 const TestCard: FC<{ test: any; index: number }> = ({ test, index }) => {
-  const { addToCart, isInCart } = useCart();
+  const { addToCart, isInCart, removeFromCart } = useCart();
   const { formatPrice } = useCurrency();
   const inCart = isInCart(test.id);
   const savings = test.originalPrice
@@ -236,15 +236,21 @@ const TestCard: FC<{ test: any; index: number }> = ({ test, index }) => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => addToCart({ id: test.id, title: test.title, price: test.price, type: 'test', thumbnail: test.image })}
-            disabled={inCart}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (inCart) {
+                removeFromCart(test.id);
+              } else {
+                addToCart({ id: test.id, title: test.title, price: test.price, type: 'test', thumbnail: test.image });
+              }
+            }}
             className={`w-11 h-11 rounded-xl border-2 flex items-center justify-center flex-shrink-0 transition-all ${inCart
-                ? 'border-primary bg-primary/10 text-primary'
+                ? 'border-red-500 bg-red-50 text-red-500 hover:bg-red-100'
                 : 'border-gray-200 text-gray-500 hover:border-primary hover:text-primary hover:bg-primary/5'
               }`}
-            title={inCart ? 'In cart' : 'Add to cart'}
+            title={inCart ? 'Remove from cart' : 'Add to cart'}
           >
-            {inCart ? <Check className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
+            {inCart ? <Trash2 className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
           </motion.button>
         </div>
       </div>
