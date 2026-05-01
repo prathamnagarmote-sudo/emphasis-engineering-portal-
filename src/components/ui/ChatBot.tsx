@@ -42,7 +42,7 @@ const ChatBot = () => {
     }
   }, []);
 
-  const addBotMessage = (text: string, buttons?: { label: string; action: () => void; isBack?: boolean }[]) => {
+  const addBotMessage = (text: string, buttons?: { label: React.ReactNode; action: () => void; isBack?: boolean }[]) => {
     setMessages((prev) => [...prev, { text, from: "bot", buttons }]);
   };
 
