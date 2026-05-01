@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const DEV_USERNAME = process.env.DEV_PANEL_USERNAME || 'developer';
+const DEV_USERNAME = process.env.DEV_PANEL_USERNAME;
 
 export function verifyDevAuth(request: Request): boolean {
   const authHeader = request.headers.get('x-dev-token');
