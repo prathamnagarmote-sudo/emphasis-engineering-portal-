@@ -220,7 +220,7 @@ export default function AdminDashboard() {
                 <div className="px-3 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded-full uppercase tracking-wider">Live Sales Data</div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {Object.entries(revenueByCountry).map(([country, data]) => (
                   <div key={country} className="p-5 rounded-2xl bg-gray-50 border border-gray-100 flex flex-col justify-between">
                     <div>
