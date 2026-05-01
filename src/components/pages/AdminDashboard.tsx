@@ -91,20 +91,19 @@ export default function AdminDashboard() {
     return count;
   }, [users]);
 
-  // Group revenue by country (excluding India)
+  // Group revenue by country (Target markets only)
   const revenueByCountry = useMemo(() => {
     const stats: Record<string, { total: number; courses: Record<string, number> }> = {
       "United Kingdom": { total: 0, courses: {} },
       "Canada": { total: 0, courses: {} },
       "United States": { total: 0, courses: {} },
-      "Other": { total: 0, courses: {} },
     };
 
     if (!users || !Array.isArray(users)) return stats;
 
     users.forEach(user => {
       if (!user) return;
-      // Don't include India or UAE/Dubai
+      // Filter out non-target countries
       if (user.country === "India" || user.country === "UAE" || user.country === "Dubai" || user.country === "United Arab Emirates") return;
 
       if (user.purchasedContent && Array.isArray(user.purchasedContent)) {
@@ -119,9 +118,9 @@ export default function AdminDashboard() {
               if (lowerId.includes('imech') || lowerId.includes('iet') || lowerId.includes('ice')) country = "United Kingdom";
               else if (lowerId.includes('peng')) country = "Canada";
               else if (lowerId.includes('pe') || lowerId.includes('ncees')) country = "United States";
-              else country = "Other";
             }
 
+            // Only track revenue for our 3 main markets
             if (country && stats[country]) {
               stats[country].total += (product.price || 0);
               const title = product.title || "Unknown Product";
@@ -216,7 +215,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-xl font-bold text-gray-900 font-display">International Revenue Collection</h2>
-                  <p className="text-xs text-gray-500 mt-1">Breakdown by main markets (Excluding India)</p>
+                  <p className="text-xs text-gray-500 mt-1">Breakdown by target markets (UK, Canada, US)</p>
                 </div>
                 <div className="px-3 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded-full uppercase tracking-wider">Live Sales Data</div>
               </div>
