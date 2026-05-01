@@ -181,8 +181,8 @@ export default function AdminDashboard() {
         <main className="flex-1">
           <div className="space-y-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 font-display mb-2">Platform Command Center</h1>
-              <p className="text-gray-500">Monitor your students, sales, and target market performance.</p>
+              <h1 className="text-3xl font-bold text-teal-600 font-display mb-2">Admin Command Center v3</h1>
+              <p className="text-gray-500">Live monitoring of UK, Canada, and US revenue streams.</p>
             </div>
 
             {/* Stats Row */}
@@ -214,8 +214,8 @@ export default function AdminDashboard() {
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 font-display">International Revenue Collection</h2>
-                  <p className="text-xs text-gray-500 mt-1">Breakdown by target markets (UK, Canada, US)</p>
+                  <h2 className="text-xl font-bold text-gray-900 font-display">Target Market Analytics</h2>
+                  <p className="text-xs text-teal-600 font-bold mt-1">UK, CANADA & US ONLY (ALL OTHERS REMOVED)</p>
                 </div>
                 <div className="px-3 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded-full uppercase tracking-wider">Live Sales Data</div>
               </div>
