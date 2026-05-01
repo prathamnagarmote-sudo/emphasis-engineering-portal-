@@ -23,7 +23,7 @@ const CurrencySwitcher = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all border border-gray-100 bg-white shadow-sm hover:shadow-md"
       >
-        <span className="text-xl leading-none">{currency.flag}</span>
+        <img src={currency.flag} alt={currency.code} className="w-5 h-auto rounded-sm object-contain" />
         <span className="text-xs font-extrabold text-secondary tracking-tight">{currency.code}</span>
         <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </motion.button>
@@ -35,7 +35,7 @@ const CurrencySwitcher = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/5 backdrop-blur-[2px]" 
+              className="fixed inset-0 z-[100] bg-black/20" 
               onClick={() => setIsOpen(false)} 
             />
             <motion.div
@@ -43,7 +43,7 @@ const CurrencySwitcher = () => {
               animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
               exit={{ opacity: 0, y: 12, scale: 0.95, filter: 'blur(4px)' }}
               transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-              className="absolute right-0 top-full mt-3 w-44 bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] py-2 border border-gray-100 z-50 overflow-hidden"
+              className="absolute right-0 top-full mt-3 w-44 bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] py-2 border border-gray-100 z-[101] overflow-hidden"
             >
               <div className="px-4 py-2 mb-1 border-b border-gray-50 flex justify-between items-center">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Select Currency</span>
@@ -64,7 +64,7 @@ const CurrencySwitcher = () => {
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-xl leading-none transition-transform group-hover:scale-125 duration-300">{CURRENCIES[code].flag}</span>
+                    <img src={CURRENCIES[code].flag} alt={code} className="w-5 h-auto rounded-sm object-contain group-hover:scale-110 transition-transform duration-300" />
                     <span>{CURRENCIES[code].label}</span>
                   </div>
                   {currency.code === code && <Check className="w-4 h-4" />}

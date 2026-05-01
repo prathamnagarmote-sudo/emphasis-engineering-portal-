@@ -11,11 +11,18 @@ const avatar = "https://res.cloudinary.com/dwk1cnlw2/image/upload/v1776854809/lo
 type Message = {
   text: string;
   from: "bot" | "user";
-  buttons?: { label: string; action: () => void; isBack?: boolean }[];
+  buttons?: { label: React.ReactNode; action: () => void; isBack?: boolean }[];
 };
 
 const ChatBot = () => {
   const router = useRouter();
+
+  const Flag = ({ url, label }: { url: string; label: string }) => (
+    <span className="flex items-center gap-2">
+      <img src={url} alt="flag" className="w-4 h-auto rounded-sm object-contain" />
+      {label}
+    </span>
+  );
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -57,9 +64,9 @@ const ChatBot = () => {
 
       case "pathway":
         addBotMessage("Great! Which country are you looking to get licensed in?", [
-          { label: "🇬🇧 United Kingdom (CEng)", action: () => { addUserMessage("United Kingdom (CEng)"); showStep("pathway_uk"); } },
-          { label: "🇺🇸 United States (PE)", action: () => { addUserMessage("United States (PE)"); showStep("pathway_us"); } },
-          { label: "🇨🇦 Canada (P.Eng)", action: () => { addUserMessage("Canada (P.Eng)"); showStep("pathway_ca"); } },
+          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="United Kingdom (CEng)" />, action: () => { addUserMessage("United Kingdom (CEng)"); showStep("pathway_uk"); } },
+          { label: <Flag url="https://flagcdn.com/w40/us.png" label="United States (PE)" />, action: () => { addUserMessage("United States (PE)"); showStep("pathway_us"); } },
+          { label: <Flag url="https://flagcdn.com/w40/ca.png" label="Canada (P.Eng)" />, action: () => { addUserMessage("Canada (P.Eng)"); showStep("pathway_ca"); } },
           { label: "⬅️ Back", action: () => showStep("start"), isBack: true },
         ]);
         break;
@@ -115,21 +122,21 @@ const ChatBot = () => {
 
       case "courses":
         addBotMessage("Which engineering institution or country are you preparing for?", [
-          { label: "🇬🇧 IMechE", action: () => router.push("/courses/imech-101") },
-          { label: "🇬🇧 IET", action: () => router.push("/courses/iet-101") },
-          { label: "🇬🇧 ICE", action: () => router.push("/courses/ice-101") },
-          { label: "🇨🇦 Canadian P.Eng", action: () => router.push("/courses/peng-101") },
+          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="IMechE" />, action: () => router.push("/courses/imech-101") },
+          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="IET" />, action: () => router.push("/courses/iet-101") },
+          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="ICE" />, action: () => router.push("/courses/ice-101") },
+          { label: <Flag url="https://flagcdn.com/w40/ca.png" label="Canadian P.Eng" />, action: () => router.push("/courses/peng-101") },
           { label: "⬅️ Back", action: () => showStep("start"), isBack: true },
         ]);
         break;
 
       case "services":
         addBotMessage("Which specific 1-on-1 mentorship service are you looking for?", [
-          { label: "🇺🇸 US PE MRA Support", action: () => router.push("/services/US%20PE") },
-          { label: "🇬🇧 IMechE CEng Support", action: () => router.push("/services/IMECHE") },
-          { label: "🇬🇧 IET CEng Support", action: () => router.push("/services/IET") },
-          { label: "🇬🇧 ICE CEng Support", action: () => router.push("/services/ICE") },
-          { label: "🇨🇦 Canadian P.Eng Support", action: () => router.push("/services/CANADIAN%20PEng") },
+          { label: <Flag url="https://flagcdn.com/w40/us.png" label="US PE MRA Support" />, action: () => router.push("/services/US%20PE") },
+          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="IMechE CEng Support" />, action: () => router.push("/services/IMECHE") },
+          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="IET CEng Support" />, action: () => router.push("/services/IET") },
+          { label: <Flag url="https://flagcdn.com/w40/gb.png" label="ICE CEng Support" />, action: () => router.push("/services/ICE") },
+          { label: <Flag url="https://flagcdn.com/w40/ca.png" label="Canadian P.Eng Support" />, action: () => router.push("/services/CANADIAN%20PEng") },
           { label: "⬅️ Back", action: () => showStep("start"), isBack: true },
         ]);
         break;

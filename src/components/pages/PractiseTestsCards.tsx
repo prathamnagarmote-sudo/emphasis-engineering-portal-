@@ -35,7 +35,7 @@ const HOW_IT_WORKS = [
 const ROADMAPS = [
   {
     title: "UK CEng Practice",
-    flag: "🇬🇧",
+    flag: "https://flagcdn.com/w40/gb.png",
     timeline: "2–4 weeks",
     steps: [
       { label: "Complete baseline assessment test", covered: true },
@@ -59,7 +59,7 @@ const ROADMAPS = [
   },
   {
     title: "Canadian P.Eng Practice",
-    flag: "🇨🇦",
+    flag: "https://flagcdn.com/w40/ca.png",
     timeline: "4–6 weeks",
     steps: [
       { label: "NPPE diagnostic test", covered: true },
@@ -540,7 +540,12 @@ const RoadmapSection: FC = () => {
                   : 'bg-gray-100 text-gray-600 hover:border-primary/40 hover:text-primary border border-gray-200'
                 }`}
             >
-              {rm.flag} {rm.title}
+              {rm.flag.startsWith('http') ? (
+                <img src={rm.flag} alt="flag" className="w-4 h-auto rounded-sm inline-block mr-1.5 object-contain" />
+              ) : (
+                <span className="mr-1.5">{rm.flag}</span>
+              )}
+              {rm.title}
             </motion.button>
           ))}
         </div>

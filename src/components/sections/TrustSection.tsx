@@ -90,37 +90,37 @@ const ACCREDITATION_BODIES: AccreditationBody[] = [
     abbr: "IET",
     full: "Institution of Engineering & Technology",
     region: "United Kingdom",
-    flag: "🇬🇧",
+    flag: "https://flagcdn.com/w40/gb.png",
   },
   {
     abbr: "ICE",
     full: "Institution of Civil Engineers",
     region: "United Kingdom",
-    flag: "🇬🇧",
+    flag: "https://flagcdn.com/w40/gb.png",
   },
   {
     abbr: "IMechE",
     full: "Institution of Mechanical Engineers",
     region: "United Kingdom",
-    flag: "🇬🇧",
+    flag: "https://flagcdn.com/w40/gb.png",
   },
   {
     abbr: "NCEES",
     full: "National Council of Examiners for Engineering",
     region: "United States",
-    flag: "🇺🇸",
+    flag: "https://flagcdn.com/w40/us.png",
   },
   {
     abbr: "Engineers Canada",
     full: "National Engineering Regulatory Body",
     region: "Canada",
-    flag: "🇨🇦",
+    flag: "https://flagcdn.com/w40/ca.png",
   },
   {
     abbr: "PEO",
     full: "Professional Engineers Ontario",
     region: "Canada",
-    flag: "🇨🇦",
+    flag: "https://flagcdn.com/w40/ca.png",
   },
 ];
 
@@ -380,7 +380,7 @@ const AccreditationItem: FC<AccreditationBody & { delay: number }> = ({
         >
           {abbr}
         </span>
-        <span style={{ fontSize: "1rem" }}>{flag}</span>
+        <img src={flag} alt="flag" className="w-5 h-auto rounded-sm object-contain" />
         <span
           className="inline-flex items-center px-2 py-0.5 rounded-full"
           style={{
@@ -511,7 +511,7 @@ const OutcomeCard: FC<OutcomeCard & { delay: number; featured?: boolean }> = ({
           {credential} · {body}
         </span>
       </div>
-      <span style={{ fontSize: "1.2rem" }}>{flag}</span>
+      <img src={flag} alt="flag" className="w-5 h-auto rounded-sm object-contain" />
     </div>
 
     {/* Quote */}

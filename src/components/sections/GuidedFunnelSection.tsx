@@ -41,7 +41,7 @@ const PRO_ROUTES = [
   {
     id: "IMECHE",
     label: "UK CEng – IMechE",
-    flag: "🇬🇧",
+    flag: "https://flagcdn.com/w40/gb.png",
     color: "from-teal-500 to-cyan-600",
     border: "border-teal-200",
     bg: "bg-teal-50",
@@ -52,7 +52,7 @@ const PRO_ROUTES = [
   {
     id: "IET",
     label: "UK CEng – IET",
-    flag: "🇬🇧",
+    flag: "https://flagcdn.com/w40/gb.png",
     color: "from-purple-500 to-violet-600",
     border: "border-purple-200",
     bg: "bg-purple-50",
@@ -63,7 +63,7 @@ const PRO_ROUTES = [
   {
     id: "ICE",
     label: "UK CEng – ICE",
-    flag: "🇬🇧",
+    flag: "https://flagcdn.com/w40/gb.png",
     color: "from-orange-500 to-amber-600",
     border: "border-orange-200",
     bg: "bg-orange-50",
@@ -74,7 +74,7 @@ const PRO_ROUTES = [
   {
     id: "CANADIAN PEng",
     label: "Canada P.Eng",
-    flag: "🇨🇦",
+    flag: "https://flagcdn.com/w40/ca.png",
     color: "from-rose-500 to-red-600",
     border: "border-rose-200",
     bg: "bg-rose-50",
@@ -85,7 +85,7 @@ const PRO_ROUTES = [
   {
     id: "US PE",
     label: "US PE",
-    flag: "🇺🇸",
+    flag: "https://flagcdn.com/w40/us.png",
     color: "from-blue-500 to-indigo-600",
     border: "border-blue-200",
     bg: "bg-blue-50",
@@ -328,7 +328,7 @@ const GuidedFunnelSection: FC = () => {
 
                     <div className="pt-2">
                       <div className="flex items-start justify-between mb-3">
-                        <span className="text-3xl">{route.flag}</span>
+                        <img src={route.flag} alt="flag" className="w-8 h-auto rounded-sm object-contain" />
                         <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${route.bg} ${route.text} border ${route.border}`}>
                           {route.id === "US PE" ? "US PE" : route.id === "CANADIAN PEng" ? "P.Eng" : "CEng"}
                         </span>

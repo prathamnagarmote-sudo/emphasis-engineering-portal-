@@ -273,7 +273,7 @@ const FloatingReviewCard: FC<{
   yOffset: number;
 }> = ({ testimonial, positionClass, delay, yOffset }) => (
   <motion.div
-    className={`absolute hidden xl:flex flex-col gap-2 p-2 xl:p-3 rounded-2xl w-[180px] xl:w-[200px] 2xl:w-[240px] z-0 shadow-2xl ${positionClass}`}
+    className={`absolute hidden min-[1600px]:flex flex-col gap-2 p-2 xl:p-3 rounded-2xl w-[180px] xl:w-[200px] 2xl:w-[240px] z-0 shadow-2xl ${positionClass}`}
     style={{
       background: "rgba(255,255,255,0.05)",
       backdropFilter: "blur(12px)",

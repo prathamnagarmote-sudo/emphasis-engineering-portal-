@@ -72,7 +72,7 @@ const HOW_IT_WORKS = [
 const ROADMAPS = [
   {
     title: "UK CEng (IMechE / IET)",
-    flag: "🇬🇧",
+    flag: "https://flagcdn.com/w40/gb.png",
     timeline: "6–18 months",
     steps: [
       { label: "Academic qualification check", covered: true },
@@ -96,7 +96,7 @@ const ROADMAPS = [
   },
   {
     title: "Canadian P.Eng",
-    flag: "🇨🇦",
+    flag: "https://flagcdn.com/w40/ca.png",
     timeline: "12–24 months",
     steps: [
       { label: "Academic credential assessment", covered: true },
@@ -582,7 +582,12 @@ const RoadmapSection: FC = () => {
                 : 'bg-gray-100 text-gray-600 hover:border-primary/40 hover:text-primary border border-gray-200'
                 }`}
             >
-              {rm.flag} {rm.title}
+              {rm.flag.startsWith('http') ? (
+                <img src={rm.flag} alt="flag" className="w-4 h-auto rounded-sm inline-block mr-1.5 object-contain" />
+              ) : (
+                <span className="mr-1.5">{rm.flag}</span>
+              )}
+              {rm.title}
             </motion.button>
           ))}
         </div>
