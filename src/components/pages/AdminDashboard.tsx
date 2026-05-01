@@ -181,8 +181,8 @@ export default function AdminDashboard() {
         <main className="flex-1">
           <div className="space-y-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 font-display mb-2">Platform Overview</h1>
-              <p className="text-gray-500">Monitor your students, sales, and platform growth.</p>
+              <h1 className="text-3xl font-bold text-gray-900 font-display mb-2">Platform Command Center</h1>
+              <p className="text-gray-500">Monitor your students, sales, and target market performance.</p>
             </div>
 
             {/* Stats Row */}
