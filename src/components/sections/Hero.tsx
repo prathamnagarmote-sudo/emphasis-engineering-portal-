@@ -204,9 +204,6 @@ const StatCard: FC<{
       ref={ref}
       {...fadeUp(delay)}
       className="flex flex-col items-center gap-1 px-8 py-5"
-      style={{
-        borderRight: "1px solid rgba(255,255,255,0.08)",
-      }}
     >
       {/* Icon */}
       <div
@@ -534,7 +531,7 @@ const Hero: FC = () => {
           {/* ── STATS ROW ── */}
           <motion.div
             {...fadeUp(0.52)}
-            className="inline-flex items-stretch justify-center mt-14 rounded-2xl overflow-hidden"
+            className="grid grid-cols-1 sm:grid-cols-3 items-stretch justify-center mt-14 rounded-2xl overflow-hidden divide-y sm:divide-y-0 sm:divide-x divide-white/10"
             style={{
               background: "rgba(255,255,255,0.04)",
               border: "1px solid rgba(255,255,255,0.08)",

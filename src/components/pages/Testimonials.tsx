@@ -156,7 +156,7 @@ const Testimonials: FC = () => {
               <Sparkles className="w-3 h-3" /> Featured Story
             </span>
             <h2 className="text-4xl md:text-5xl font-bold text-secondary">
-              This Month's <span className="text-primary">Success Story</span>
+              Our Community <span className="text-primary">Success Stories</span>
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full mx-auto mt-4" />
           </motion.div>

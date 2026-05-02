@@ -11,7 +11,7 @@ interface Blog {
   content: string; featured: boolean;
 }
 
-const EMPTY: Blog = { blogId: "", service: "US PE", title: "", desc: "", img: "", author: "Prof.Max oyom", date: "", readTime: "8 min", tags: [], content: "", featured: false };
+const EMPTY: Blog = { blogId: "", service: "US PE", title: "", desc: "", img: "", author: "Maxwell Oyom", date: "", readTime: "8 min", tags: [], content: "", featured: false };
 const SERVICES = ["US PE", "IMECHE", "IET", "ICE", "P.Eng."];
 
 const quillModules = {
