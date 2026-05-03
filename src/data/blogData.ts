@@ -144,7 +144,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <h2>What Is UK-SPEC?</h2>
 
-      <p>All CEng applications are assessed against UK-SPEC — the UK Standard for Professional Engineering Competence and Commitment. It is the nationally agreed framework published by the Engineering Council that defines the competence and commitment requirements for professional engineering registration.</p>
+      <p>All CEng applications are assessed against UK-SPEC, the UK Standard for Professional Engineering Competence and Commitment. It is the nationally agreed framework published by the Engineering Council that defines the competence and commitment requirements for professional engineering registration.</p>
 
       <h3>UK-SPEC Competences (A–E)</h3>
 
@@ -266,7 +266,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <p>This stage is not about filling boxes. It is about reviewing your career through the lens of professional responsibility. Candidates should identify where they have exercised judgement, taken accountability, managed risk, and influenced outcomes.</p>
 
-      <p>Many engineers discover at this stage that some competences are well evidenced, while others are weaker. This is not a failure — it is valuable insight. Identifying gaps early allows time to address them through targeted professional development or expanded responsibility before submission.</p>
+      <p>Many engineers discover at this stage that some competences are well evidenced, while others are weaker. This is not a failure, it is valuable insight. Identifying gaps early allows time to address them through targeted professional development or expanded responsibility before submission.</p>
 
       <h2>Months Three and Four: Developing Clear, Assessor-Focused Evidence</h2>
 
@@ -306,7 +306,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <h2>Final Reflection</h2>
 
-      <p>The IET CEng process rewards planning, reflection, and professional maturity. Engineers who approach it strategically are far more likely to succeed — and to find the journey professionally rewarding.</p>
+      <p>The IET CEng process rewards planning, reflection, and professional maturity. Engineers who approach it strategically are far more likely to succeed, and to find the journey professionally rewarding.</p>
     `,
   },
   {
@@ -402,7 +402,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
     content: `
       <h2>The Complete P.Eng. Journey in Canada: From Academic Assessment to Licensure (A PEO Case Study)</h2>
 
-      <p>For engineers working in Canada, or planning to move there, achieving the Professional Engineer (P.Eng.) licence is not just a career milestone — it is a legal and professional turning point. Unlike chartership routes in many other countries, P.Eng. is not simply a professional recognition. It is a licence to practise engineering, granted by a provincial regulator, and backed by law.</p>
+      <p>For engineers working in Canada, or planning to move there, achieving the Professional Engineer (P.Eng.) licence is not just a career milestone, it is a legal and professional turning point. Unlike chartership routes in many other countries, P.Eng. is not simply a professional recognition. It is a licence to practise engineering, granted by a provincial regulator, and backed by law.</p>
 
       <p>This distinction is critical. In Canada, you do not become a professional engineer because of your job title, your seniority, or your employer's confidence in you. You become a professional engineer because a regulator, such as Professional Engineers Ontario (PEO), has assessed your education, experience, ethics, and professional judgement and determined that you are safe and competent to take responsibility for engineering work in the public interest.</p>
 
@@ -418,7 +418,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
         <li>Offer engineering services directly to the public</li>
       </ul>
 
-      <p>The regulator's primary mandate is public protection, not career advancement. This explains much of what candidates find frustrating about the P.Eng. process. Every requirement — academic review, experience assessment, ethics exam, and final approval — exists to ensure that engineers practising independently are competent, ethical, and accountable.</p>
+      <p>The regulator's primary mandate is public protection, not career advancement. This explains much of what candidates find frustrating about the P.Eng. process. Every requirement, including academic review, experience assessment, ethics exam, and final approval, exists to ensure that engineers practising independently are competent, ethical, and accountable.</p>
 
       <h2>The Structure of Engineering Regulation in Canada</h2>
 
@@ -431,7 +431,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <p>While Engineers Canada provides coordination, accreditation standards, and national examinations like the NPPE, it does not license engineers. Licensure decisions are made by the provincial regulators. This means that P.Eng. is always granted by a province, but licences are portable across Canada through interprovincial mobility agreements once obtained.</p>
 
-      <h2>Step 1: Academic Assessment — Establishing Your Educational Base</h2>
+      <h2>Step 1: Academic Assessment: Establishing Your Educational Base</h2>
 
       <p>The first formal step in the P.Eng. journey is academic assessment. PEO must be satisfied that your education provides an appropriate foundation in engineering principles.</p>
 
@@ -445,7 +445,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <p>The key point is this: academic assessment is a gate. Until it is resolved, the rest of the process cannot meaningfully progress.</p>
 
-      <h2>Step 2: Engineering Experience — The Core of Licensure</h2>
+      <h2>Step 2: Engineering Experience: The Core of Licensure</h2>
 
       <p>Once academic requirements are confirmed, attention turns to engineering experience. This is the heart of the P.Eng. process.</p>
 
@@ -464,7 +464,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <p>Each competency must be demonstrated using real work examples, written in a structured way that shows context, individual actions, and outcomes and responsibility.</p>
 
-      <h2>Step 3: Validators — Independent Confirmation of Your Experience</h2>
+      <h2>Step 3: Validators: Independent Confirmation of Your Experience</h2>
 
       <p>A defining feature of CBA is the use of validators. Validators are individuals who know your work directly, can confirm your competence, and provide independent ratings of your experience.</p>
 
@@ -472,7 +472,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <h2>Step 4: The National Professional Practice Examination (NPPE)</h2>
 
-      <p>The NPPE is a mandatory exam for all P.Eng. applicants in Canada. This exam is not technical — it tests professional ethics, engineering law, professional practice, regulation and discipline, and risk, liability, and duty of care.</p>
+      <p>The NPPE is a mandatory exam for all P.Eng. applicants in Canada. This exam is not technical, it tests professional ethics, engineering law, professional practice, regulation and discipline, and risk, liability, and duty of care.</p>
 
       <p>The NPPE exists because technical competence alone is not enough. Licensed engineers must understand their legal and ethical responsibilities.</p>
 
@@ -486,7 +486,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <h2>Final Reflection: The Right Mindset for P.Eng.</h2>
 
-      <p>The most successful P.Eng. candidates are not necessarily the most senior or technically brilliant. They are the ones who understand that licensure is about professional accountability, not personal validation. If you approach P.Eng. as a regulatory process — structured, evidence-based, and grounded in public protection — you place yourself in a strong position to succeed.</p>
+      <p>The most successful P.Eng. candidates are not necessarily the most senior or technically brilliant. They are the ones who understand that licensure is about professional accountability, not personal validation. If you approach P.Eng. as a regulatory process, structured, evidence-based, and grounded in public protection, you place yourself in a strong position to succeed.</p>
     `,
   },
   {
@@ -546,10 +546,10 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
       <p>Every competency must be demonstrated using real work examples, written using the Situation–Action–Outcome (SAO) structure.</p>
 
       <h3>Situation</h3>
-      <p>This section provides context. It answers what was happening, what the challenge or responsibility was, and what constraints existed. This should be concise — assessors need enough information to understand the environment, not a project history.</p>
+      <p>This section provides context. It answers what was happening, what the challenge or responsibility was, and what constraints existed. This should be concise, assessors need enough information to understand the environment, not a project history.</p>
 
       <h3>Action</h3>
-      <p>This is the most important section. It must clearly explain what you did, what decisions you made, what judgement you exercised, and why you acted as you did. First-person language ("I decided", "I analysed", "I approved") is essential. PEO assessors cannot infer responsibility — you must demonstrate it explicitly.</p>
+      <p>This is the most important section. It must clearly explain what you did, what decisions you made, what judgement you exercised, and why you acted as you did. First-person language ("I decided", "I analysed", "I approved") is essential. PEO assessors cannot infer responsibility, you must demonstrate it explicitly.</p>
 
       <h3>Outcome</h3>
       <p>This section explains the result of your actions, the impact on safety, cost, schedule, quality, or learning, and what accountability you carried. Strong outcomes show reflection and responsibility, not just success.</p>
@@ -572,7 +572,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <h2>Why Project Managers Can Succeed in CBA</h2>
 
-      <p>A common concern among senior professionals is whether project managers who no longer do detailed technical design can still pass CBA. The answer is yes — if you demonstrate engineering judgement. CBA recognises technical oversight, risk management, decision-making, coordination of engineering work, and accountability for outcomes.</p>
+      <p>A common concern among senior professionals is whether project managers who no longer do detailed technical design can still pass CBA. The answer is yes, if you demonstrate engineering judgement. CBA recognises technical oversight, risk management, decision-making, coordination of engineering work, and accountability for outcomes.</p>
 
       <h2>Common CBA Mistakes That Cause Delays</h2>
 
@@ -608,7 +608,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <p>For many engineers pursuing P.Eng. licensure in Canada, the National Professional Practice Examination (NPPE) is viewed as an afterthought. Candidates often assume that because it is not technical, it must be easy. Others postpone preparing for it until the last moment, believing professional experience alone will carry them through.</p>
 
-      <p>This mindset is one of the most common reasons otherwise strong candidates fail the NPPE. The NPPE is designed to test whether you understand what it means to be a licensed professional engineer in Canada — legally, ethically, and socially.</p>
+      <p>This mindset is one of the most common reasons otherwise strong candidates fail the NPPE. The NPPE is designed to test whether you understand what it means to be a licensed professional engineer in Canada, legally, ethically, and socially.</p>
 
       <h2>What the NPPE Really Is and Why It Exists</h2>
 
@@ -661,7 +661,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <h2>How to Prepare Effectively for the NPPE</h2>
 
-      <p>Effective NPPE preparation is conceptual, not mechanical. Strong candidates study the syllabus topics — not just summaries — focus on understanding why rules exist, work through ethical scenarios carefully, think like a regulator rather than an employee, and practise applying principles under time pressure.</p>
+      <p>Effective NPPE preparation is conceptual, not mechanical. Strong candidates study the syllabus topics, not just summaries, focus on understanding why rules exist, work through ethical scenarios carefully, think like a regulator rather than an employee, and practise applying principles under time pressure.</p>
 
       <h2>What Happens If You Fail</h2>
 
@@ -753,7 +753,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <p>The ICE Chartered Engineer journey is demanding because the profession demands it. Civil engineers operate in contexts where mistakes have serious consequences. ICE's process reflects the responsibility entrusted to Chartered Engineers.</p>
 
-      <p>For candidates who understand the steps, plan early, and prepare professionally, CEng MICE is not only achievable but deeply rewarding. It marks the transition from developing engineer to trusted professional. Clarity is the key — when the process is understood, it becomes manageable.</p>
+      <p>For candidates who understand the steps, plan early, and prepare professionally, CEng MICE is not only achievable but deeply rewarding. It marks the transition from developing engineer to trusted professional. Clarity is the key, when the process is understood, it becomes manageable.</p>
     `,
   },
   {
@@ -797,7 +797,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <p>With the academic route confirmed, attention shifts to Initial Professional Development (IPD). ICE views IPD as a structured progression from supervised practice to independent professional responsibility.</p>
 
-      <p>During this phase, candidates should review their experience against ICE's attributes and identify where they have taken ownership of decisions, managed risk, and considered safety, sustainability, and ethics. Gaps often become apparent at this stage — identifying them early allows time to address them before formal assessment.</p>
+      <p>During this phase, candidates should review their experience against ICE's attributes and identify where they have taken ownership of decisions, managed risk, and considered safety, sustainability, and ethics. Gaps often become apparent at this stage, identifying them early allows time to address them before formal assessment.</p>
 
       <h2>Phase 3: Career Appraisal Preparation</h2>
 
@@ -824,7 +824,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <h2>Phase 6: The Professional Review and Outcome</h2>
 
-      <p>The Professional Review itself is the culmination of the ICE journey. For candidates who have prepared properly, it is demanding but fair. Outcomes are typically released weeks after the review. Candidates may pass, be deferred with specific requirements, or be advised to undertake further development. A deferral is not a failure — it is ICE's way of maintaining standards while providing a clear route forward.</p>
+      <p>The Professional Review itself is the culmination of the ICE journey. For candidates who have prepared properly, it is demanding but fair. Outcomes are typically released weeks after the review. Candidates may pass, be deferred with specific requirements, or be advised to undertake further development. A deferral is not a failure, it is ICE's way of maintaining standards while providing a clear route forward.</p>
 
       <h2>Common Mistakes That Delay ICE CEng</h2>
 
@@ -841,7 +841,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <p>The ICE CEng process is not complex for its own sake. It is structured because civil engineers operate in high-risk, high-responsibility environments. ICE's roadmap reflects the seriousness of that responsibility.</p>
 
-      <p>For candidates who understand the sequence, respect the timing, and prepare deliberately, CEng MICE is achievable within a realistic timeframe. The key is planning — when the journey is clear, progress becomes steady rather than stressful.</p>
+      <p>For candidates who understand the sequence, respect the timing, and prepare deliberately, CEng MICE is achievable within a realistic timeframe. The key is planning, when the journey is clear, progress becomes steady rather than stressful.</p>
     `,
   },
   {
@@ -857,7 +857,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
     content: `
       <h2>ICE vs IET CEng: Which Path Makes Sense for Civil Engineers?</h2>
 
-      <p>If you're working in civil engineering — or managing civil engineering projects — you've likely considered becoming a Chartered Engineer (CEng). But now you're torn between the Institution of Civil Engineers (ICE) and the Institution of Engineering and Technology (IET).</p>
+      <p>If you're working in civil engineering, or managing civil engineering projects, you've likely considered becoming a Chartered Engineer (CEng). But now you're torn between the Institution of Civil Engineers (ICE) and the Institution of Engineering and Technology (IET).</p>
 
       <p>On one hand, ICE CEng is a gold-standard for civil engineers, but it's known to be lengthy and rigorous. On the other, IET CEng is perceived as more accessible, but does it truly fit your civil engineering career? Let's walk through the critical factors affecting your choice.</p>
 
@@ -865,12 +865,12 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <p>ICE CEng is deeply rooted in civil engineering technical competence. ICE requires candidates to demonstrate management of complex technical decisions, attention to public safety, risk, and sustainability, and technical justifications including engineering analysis and innovation.</p>
 
-      <p>In contrast, IET CEng can sometimes better accommodate senior engineers who focus more on leadership, strategy, and systems than day-to-day design. Civil engineers — including those in wastewater — can pursue CEng via IET if they can show competence, regardless of whether they perform "hard technical" tasks.</p>
+      <p>In contrast, IET CEng can sometimes better accommodate senior engineers who focus more on leadership, strategy, and systems than day-to-day design. Civil engineers, including those in wastewater, can pursue CEng via IET if they can show competence, regardless of whether they perform "hard technical" tasks.</p>
 
       <h3>Advice</h3>
       <ul>
         <li>If you're actively designing structures, analysing geotechnical systems, or making core engineering decisions, ICE is the stronger choice.</li>
-        <li>If your work is more supervisory, managing projects, processes, or teams — and you're comfortable demonstrating engineering competence without deep technical detail — IET may be a better fit.</li>
+        <li>If your work is more supervisory, managing projects, processes, or teams, and you're comfortable demonstrating engineering competence without deep technical detail, IET may be a better fit.</li>
       </ul>
 
       <h2>2. Route Complexity and Timeline</h2>
@@ -910,7 +910,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <h2>4. Technical Work vs Leadership Roles</h2>
 
-      <p>For civil engineers whose role is project management, construction supervision, or contract oversight — rather than technical design — ICE may be a more demanding fit, as it expects demonstration of engineering analysis and technical judgement.</p>
+      <p>For civil engineers whose role is project management, construction supervision, or contract oversight, rather than technical design, ICE may be a more demanding fit, as it expects demonstration of engineering analysis and technical judgement.</p>
 
       <p>IET allows such candidates to qualify by demonstrating leadership, systems thinking, and multidisciplinary responsibility, provided they address UK-SPEC competences.</p>
 
@@ -935,7 +935,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
       <p>You're doing design, analysis, or specialist technical work. In this case, ICE CEng is the strongest fit. The process is demanding, but aligns closely with your daily responsibilities.</p>
 
       <h3>Case B: You're Managing Civil Engineering Projects</h3>
-      <p>Your work involves planning, procurement, coordination, and oversight — but limited technical analysis. In this scenario, IET CEng may suit you better, as it acknowledges management and leadership, not just technical depth.</p>
+      <p>Your work involves planning, procurement, coordination, and oversight, but limited technical analysis. In this scenario, IET CEng may suit you better, as it acknowledges management and leadership, not just technical depth.</p>
 
       <h3>Case C: You Want Flexibility</h3>
       <p>ICE for technical credibility plus IET for flexibility is a viable dual pathway. Just be sure you have time and evidence for both processes.</p>
@@ -951,7 +951,7 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
       <ul>
         <li>Begin by assessing your technical vs managerial balance</li>
         <li>Map your experience to UK-SPEC (IET) and ICE Attributes</li>
-        <li>Check your academic qualifications early — clarify if you're missing MEng at ICE</li>
+        <li>Check your academic qualifications early, clarify if you're missing MEng at ICE</li>
         <li>Understand how ICE windows align with your timeline</li>
         <li>Consider mentoring support for both IET and ICE paths</li>
         <li>If pursuing both, plan for double work and assess whether you can commit the time and resources</li>
@@ -959,11 +959,11 @@ Candidates who fail to appreciate this distinction often misinterpret delays or 
 
       <h2>Final Reflection</h2>
 
-      <p>The choice between ICE and IET CEng isn't about which is easier — it's about which aligns with your role and career direction. ICE offers unmatched technical recognition but requires rigorous preparation and clear technical evidence. IET provides a practical route for engineers whose roles focus more on management, systems, or supervisory responsibility.</p>
+      <p>The choice between ICE and IET CEng isn't about which is easier, it's about which aligns with your role and career direction. ICE offers unmatched technical recognition but requires rigorous preparation and clear technical evidence. IET provides a practical route for engineers whose roles focus more on management, systems, or supervisory responsibility.</p>
 
-      <p>Both routes confer Chartered status recognised by the Engineering Council and respected worldwide. What matters most is aligning your strengths and ambitions with the right process — and preparing strategically.</p>
+      <p>Both routes confer Chartered status recognised by the Engineering Council and respected worldwide. What matters most is aligning your strengths and ambitions with the right process, and preparing strategically.</p>
 
-      <p>If you're still unsure, book an exploratory session to review where you stand academically, professionally, and procedurally. Making the right choice early can save you months — and help you reach Chartered status with confidence.</p>
+      <p>If you're still unsure, book an exploratory session to review where you stand academically, professionally, and procedurally. Making the right choice early can save you months, and help you reach Chartered status with confidence.</p>
     `,
   },
 ];

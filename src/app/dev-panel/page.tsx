@@ -47,7 +47,7 @@ export default function DevPanelPage() {
             <span className="text-white text-2xl font-black">⚡</span>
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Developer Panel</h1>
-          <p className="text-gray-500 text-sm">Emphasis Engineering — Content Management</p>
+          <p className="text-gray-500 text-sm">Emphasis Engineering - Content Management</p>
         </div>
         <div className="bg-[#111827] rounded-2xl border border-white/5 p-8 shadow-2xl">
           {error && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm text-center">{error}</div>}

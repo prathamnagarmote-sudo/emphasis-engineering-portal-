@@ -472,7 +472,7 @@ const Hero: FC = () => {
             <span className="text-white font-semibold">Canadian P.Eng</span>,
             and{" "}
             <span className="text-white font-semibold">US PE</span> licensure
-            pathways — from first application to final approval.
+            pathways - from first application to final approval.
           </motion.p>
 
           {/* ── CTA BUTTONS ── */}

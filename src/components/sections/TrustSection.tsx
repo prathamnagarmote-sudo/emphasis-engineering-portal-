@@ -128,7 +128,7 @@ const FEATURE_POINTS: FeaturePoint[] = [
   {
     icon: ShieldCheck,
     title: "Outcome Guarantee",
-    body: "If you don't achieve your credential within the agreed timeline, we extend mentorship at zero additional cost — no questions asked.",
+    body: "If you don't achieve your credential within the agreed timeline, we extend mentorship at zero additional cost - no questions asked.",
   },
   {
     icon: BookOpen,
@@ -138,7 +138,7 @@ const FEATURE_POINTS: FeaturePoint[] = [
   {
     icon: Zap,
     title: "Active Mentor Network",
-    body: "All mentors are currently chartered or licensed engineers — actively practising in their field, not retired academics.",
+    body: "All mentors are currently chartered or licensed engineers - actively practising in their field, not retired academics.",
   },
   {
     icon: Clock,
@@ -508,10 +508,10 @@ const OutcomeCard: FC<OutcomeCard & { delay: number; featured?: boolean }> = ({
             color: featured ? "#6ecdd1" : "#2d7a7d",
           }}
         >
-          {credential} · {body}
+          {credential}
         </span>
       </div>
-      <img src={flag} alt="flag" className="w-5 h-auto rounded-sm object-contain" />
+      {flag && <img src={flag} alt="flag" className="w-5 h-auto rounded-sm object-contain" />}
     </div>
 
     {/* Quote */}
@@ -523,7 +523,7 @@ const OutcomeCard: FC<OutcomeCard & { delay: number; featured?: boolean }> = ({
         fontWeight: 500,
       }}
     >
-      "{excerpt}"
+      "{body}"
     </blockquote>
 
     {/* Divider */}
@@ -668,7 +668,7 @@ const TrustSection: FC = () => {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          BLOCK 1 — STATS
+          BLOCK 1 - STATS
       ════════════════════════════════════════════════════════════════════════ */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-20">
         {/* Section header */}
@@ -705,7 +705,7 @@ const TrustSection: FC = () => {
             }}
           >
             Every metric is drawn from verified programme outcomes across our
-            active client base — not projections, not estimates.
+            active client base - not projections, not estimates.
           </motion.p>
         </div>
 
@@ -749,7 +749,7 @@ const TrustSection: FC = () => {
               <span style={{ color: "#1a3040", fontWeight: 700 }}>
                 61% industry average
               </span>{" "}
-              —{" "}
+              -{" "}
               <span style={{ color: "#3F9FA3", fontWeight: 800 }}>
                 +33 percentage points
               </span>{" "}
@@ -775,7 +775,7 @@ const TrustSection: FC = () => {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          BLOCK 2 — ACCREDITATIONS + WHY US
+          BLOCK 2 - ACCREDITATIONS + WHY US
       ════════════════════════════════════════════════════════════════════════ */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-20 pb-20">
         <div className="text-center mb-16">
@@ -811,7 +811,7 @@ const TrustSection: FC = () => {
             }}
           >
             Our programmes are structured to the exact competency standards
-            set by each licensing authority — nothing approximated.
+            set by each licensing authority - nothing approximated.
           </motion.p>
         </div>
 
@@ -867,7 +867,7 @@ const TrustSection: FC = () => {
               </div>
             </div>
 
-            {/* Feature points — white text on dark */}
+            {/* Feature points - white text on dark */}
             <div className="flex flex-col gap-6">
               {FEATURE_POINTS.map((fp, i) => (
                 <motion.div
@@ -951,7 +951,7 @@ const TrustSection: FC = () => {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          BLOCK 3 — OUTCOME CARDS → BRIDGE TO TESTIMONIALS
+          BLOCK 3 - OUTCOME CARDS → BRIDGE TO TESTIMONIALS
       ════════════════════════════════════════════════════════════════════════ */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-20 pb-28">
         <div className="text-center mb-16">
@@ -986,7 +986,7 @@ const TrustSection: FC = () => {
               fontWeight: 500,
             }}
           >
-            Every story below is from an engineer who came to us stuck — and
+            Every story below is from an engineer who came to us stuck - and
             left fully licensed. No curated edge cases.
           </motion.p>
         </div>

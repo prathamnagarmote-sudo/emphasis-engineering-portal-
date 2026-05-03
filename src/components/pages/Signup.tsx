@@ -153,7 +153,7 @@ const Signup = () => {
       const data = await res.json();
       if (!res.ok) { setError(data.message || "Registration failed."); setIsLoading(false); return; }
 
-      // Try to send OTP — falls back to direct sign-in if not configured
+      // Try to send OTP - falls back to direct sign-in if not configured
       try {
         const otpRes = await fetch("/api/auth/send-otp", {
           method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: formData.email }),
@@ -234,7 +234,7 @@ const Signup = () => {
 
                 <motion.div variants={item}>
                   <h2 className="text-3xl font-bold text-gray-900 mb-1">Create account</h2>
-                  <p className="text-gray-500 text-sm">Start your free trial today — no credit card required</p>
+                  <p className="text-gray-500 text-sm">Start your free trial today - no credit card required</p>
                 </motion.div>
 
                 <motion.div variants={item} className="mt-8"><GoogleButton label="Sign up" /></motion.div>

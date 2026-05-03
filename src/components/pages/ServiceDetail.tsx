@@ -62,7 +62,7 @@ const StepDetailModal: FC<{
         <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none" />
         <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none" />
 
-        {/* Header — fixed */}
+        {/* Header - fixed */}
         <div
           className="relative flex items-center justify-between px-8 py-6 flex-shrink-0"
           style={{ background: 'linear-gradient(135deg, #061F33, #0d3654)' }}
@@ -149,7 +149,7 @@ const StepDetailModal: FC<{
           </div>
         </div>
 
-        {/* Footer nav — fixed */}
+        {/* Footer nav - fixed */}
         <div className="flex items-center justify-between px-8 py-5 border-t border-gray-100 flex-shrink-0 bg-white relative z-20">
           <button
             onClick={() => onNav(-1)}
@@ -379,8 +379,8 @@ const ServiceDetail: FC = () => {
         <div className="max-w-5xl mx-auto px-4 py-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
-              { icon: Star, val: '95%', label: 'Success Rate' },
-              { icon: Users, val: '1,200+', label: 'Engineers Guided' },
+              { icon: Star, val: '100%', label: 'Success Rate' },
+              { icon: Users, val: '2,000+', label: 'Engineers Guided' },
               { icon: Clock, val: '4–6 mo', label: 'Avg. Timeline' },
               { icon: Zap, val: '24h', label: 'Response Time' },
             ].map(({ icon: Icon, val, label }) => (
@@ -585,18 +585,33 @@ const ServiceDetail: FC = () => {
                       whileTap={{ scale: 0.97 }}
                       disabled={isBuying === pkg.id}
                       onClick={async () => {
-                        setIsBuying(pkg.id);
-                        // Simulated mock payment delay
-                        await new Promise(resolve => setTimeout(resolve, 1500));
-                        
-                        purchaseItem(pkg.id);
-                        if (pkg.calendlyUrl) {
-                          window.open(pkg.calendlyUrl, '_blank');
-                        } else if (service.calendlyLink) {
-                          window.open(service.calendlyLink, '_blank');
+                        try {
+                          setIsBuying(pkg.id);
+                          
+                          const response = await fetch('/api/checkout', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              items: [{
+                                id: pkg.id,
+                                title: `${service.title} – ${pkg.title}`,
+                                price: pkg.price,
+                                type: 'service'
+                              }]
+                            }),
+                          });
+
+                          const data = await response.json();
+                          if (data.url) {
+                            window.location.href = data.url;
+                          } else {
+                            throw new Error(data.error || 'Failed to create checkout session');
+                          }
+                        } catch (err: any) {
+                          alert(err.message);
+                        } finally {
+                          setIsBuying(null);
                         }
-                        setIsBuying(null);
-                        router.push('/dashboard');
                       }}
                       className={`w-full py-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${isPopular
                         ? 'text-white'

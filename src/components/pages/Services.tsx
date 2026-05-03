@@ -133,10 +133,10 @@ const Services: FC = () => {
             className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
           >
             {[
-              { value: '50,000+', label: 'Engineers Mentored', icon: Users },
-              { value: '95%', label: 'Success Rate', icon: TrendingUp },
+              { value: '2,000+', label: 'Engineers Mentored', icon: Users },
+              { value: '100%', label: 'Success Rate', icon: TrendingUp },
               { value: '24/7', label: 'Expert Support', icon: Clock },
-              { value: '100+', label: 'Countries Served', icon: Globe },
+              { value: '10+', label: 'Countries Served', icon: Globe },
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
@@ -423,7 +423,7 @@ const Services: FC = () => {
                     <TrendingUp className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-secondary">95%</div>
+                    <div className="text-2xl font-bold text-secondary">100%</div>
                     <div className="text-xs text-gray-500">Pass Rate</div>
                   </div>
                 </div>

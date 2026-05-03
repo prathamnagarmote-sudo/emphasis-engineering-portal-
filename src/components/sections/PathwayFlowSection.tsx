@@ -33,7 +33,7 @@ const pathways = [
   {
     id: "uk",
     title: "UK Chartered Engineer (CEng)",
-    desc: "IET · IMechE · ICE — choose your professional body",
+    desc: "IET · IMechE · ICE - choose your professional body",
     hasSubRoutes: true, // expands to show 3 bodies
     steps: [
       { label: "Competence", desc: "Demonstrate engineering capability via UK-SPEC" },
@@ -133,7 +133,7 @@ const PathwayFlowSection: FC = () => {
 
                 {/* Explore button */}
                 {item.hasSubRoutes ? (
-                  /* UK — toggle sub-routes */
+                  /* UK - toggle sub-routes */
                   <button
                     onClick={() => setExpandedUK((p) => !p)}
                     className="flex items-center gap-2 text-primary hover:text-primary-light transition-colors font-medium text-sm"
@@ -146,7 +146,7 @@ const PathwayFlowSection: FC = () => {
                     />
                   </button>
                 ) : (
-                  /* Canada / US — direct link */
+                  /* Canada / US - direct link */
                   <Link href={item.link || "#"}
                     className="flex items-center gap-2 text-primary hover:text-primary-light transition-colors font-medium text-sm group"
                   >

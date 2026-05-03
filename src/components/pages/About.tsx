@@ -164,7 +164,7 @@ const About: FC = () => {
         {/* Deep ambient glows */}
         <div className="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] bg-[#3F9FA3]/20 rounded-full blur-[120px] mix-blend-screen animate-pulse duration-[10s]" />
         <div className="absolute bottom-1/4 right-1/4 w-[50vw] h-[50vw] bg-blue-900/20 rounded-full blur-[150px] mix-blend-screen" />
-        
+
         {/* Subtle noise texture */}
         <div
           className="absolute inset-0 pointer-events-none opacity-[0.02]"
@@ -220,7 +220,7 @@ const About: FC = () => {
       <section className="py-24 relative z-10">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
+
             {/* Story Card (Span 2) */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
@@ -279,23 +279,21 @@ const About: FC = () => {
           </div>
 
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-start">
-            
+
             {/* Tabs (Left) */}
             <div className="lg:col-span-4 flex flex-col gap-3">
               {servicesList.map((service) => (
                 <button
                   key={service.id}
                   onClick={() => setActiveService(service.id)}
-                  className={`flex items-center gap-4 p-5 rounded-2xl transition-all duration-300 border text-left ${
-                    activeService === service.id
+                  className={`flex items-center gap-4 p-5 rounded-2xl transition-all duration-300 border text-left ${activeService === service.id
                       ? "bg-[#3F9FA3]/10 border-[#3F9FA3]/50 text-white"
                       : "bg-white/[0.02] border-white/5 text-gray-500 hover:bg-white/[0.05] hover:text-gray-300"
-                  }`}
+                    }`}
                 >
                   <service.icon
-                    className={`w-6 h-6 ${
-                      activeService === service.id ? "text-[#3F9FA3]" : "opacity-50"
-                    }`}
+                    className={`w-6 h-6 ${activeService === service.id ? "text-[#3F9FA3]" : "opacity-50"
+                      }`}
                   />
                   <span className="font-semibold text-lg">{service.data.title.split('–')[0]}</span>
                 </button>
@@ -354,7 +352,7 @@ const About: FC = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#061F33]/20 to-transparent" />
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            
+
             {/* Image Side */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -368,23 +366,7 @@ const About: FC = () => {
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#020813] via-transparent to-transparent" />
-              
-              {/* Glass Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4 }}
-                className="absolute bottom-10 left-10 p-5 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl flex items-center gap-4"
-              >
-                <div className="w-12 h-12 rounded-full bg-[#3F9FA3] flex items-center justify-center">
-                  <Briefcase className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold leading-none">10+</div>
-                  <div className="text-xs text-gray-300 uppercase tracking-wider font-semibold mt-1">Years Experience</div>
-                </div>
-              </motion.div>
+
             </motion.div>
 
             {/* Text Side */}
@@ -400,9 +382,9 @@ const About: FC = () => {
                 {aboutData.founder.name}
               </h3>
               <p className="text-xl text-gray-400 mb-8">{aboutData.founder.title}</p>
-              
+
               <div className="w-16 h-1 bg-gradient-to-r from-[#3F9FA3] to-transparent rounded-full mb-8" />
-              
+
               <p className="text-gray-300 text-lg leading-relaxed mb-10">
                 {aboutData.founder.bio}
               </p>
@@ -414,7 +396,9 @@ const About: FC = () => {
                   rel="noopener noreferrer"
                   className="p-4 rounded-full bg-white/5 border border-white/10 hover:bg-[#0077B5] hover:border-transparent transition-all"
                 >
-                  <Globe className="w-6 h-6" />
+                  <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
                 </a>
               </div>
             </motion.div>
@@ -428,7 +412,7 @@ const About: FC = () => {
       <section className="py-32 relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12 perspective-1000">
-            
+
             {/* Vision */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
@@ -484,7 +468,7 @@ const About: FC = () => {
           <div className="relative">
             {/* Background dull line */}
             <div className="absolute left-[27px] md:left-1/2 top-0 bottom-0 w-1 bg-white/5 md:-translate-x-1/2 rounded-full" />
-            
+
             {/* Bright animated glowing line */}
             <motion.div
               style={{ height: lineHeight }}
@@ -500,9 +484,8 @@ const About: FC = () => {
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-100px" }}
-                    className={`relative flex items-center ${
-                      isEven ? "md:flex-row" : "md:flex-row-reverse"
-                    }`}
+                    className={`relative flex items-center ${isEven ? "md:flex-row" : "md:flex-row-reverse"
+                      }`}
                   >
                     {/* Empty Space for Desktop */}
                     <div className="hidden md:block w-1/2" />
@@ -514,9 +497,8 @@ const About: FC = () => {
 
                     {/* Content Card */}
                     <div
-                      className={`w-full pl-20 md:pl-0 md:w-1/2 ${
-                        isEven ? "md:pr-16 md:text-right" : "md:pl-16 md:text-left"
-                      }`}
+                      className={`w-full pl-20 md:pl-0 md:w-1/2 ${isEven ? "md:pr-16 md:text-right" : "md:pl-16 md:text-left"
+                        }`}
                     >
                       <span className="text-3xl font-display font-bold text-[#3F9FA3] block mb-2">
                         {item.year}

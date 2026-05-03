@@ -249,7 +249,7 @@ const BlogPreviewSection: FC = () => {
             <div className="overflow-hidden">
               <motion.h2 initial={{ y: 60, opacity: 0 }} animate={isInView ? { y: 0, opacity: 1 } : {}} className="text-4xl md:text-5xl lg:text-[56px] font-extrabold leading-[1.08] tracking-tight"><span className="bg-gradient-to-r from-primary via-teal-400 to-primary bg-clip-text text-transparent" style={{ backgroundSize: "200%" }}>& Expert Guides</span></motion.h2>
             </div>
-            <motion.p initial={{ opacity: 0, y: 16 }} animate={isInView ? { opacity: 1, y: 0 } : {}} className="text-gray-400 mt-5 text-lg max-w-xl leading-relaxed">Practical articles from licensed engineers — helping you navigate licensure pathways with confidence.</motion.p>
+            <motion.p initial={{ opacity: 0, y: 16 }} animate={isInView ? { opacity: 1, y: 0 } : {}} className="text-gray-400 mt-5 text-lg max-w-xl leading-relaxed">Practical articles from licensed engineers - helping you navigate licensure pathways with confidence.</motion.p>
           </div>
           <motion.div initial={{ opacity: 0, x: 24 }} animate={isInView ? { opacity: 1, x: 0 } : {}}>
             <Link href="/blog">

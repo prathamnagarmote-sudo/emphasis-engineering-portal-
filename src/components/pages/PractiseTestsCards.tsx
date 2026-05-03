@@ -96,10 +96,10 @@ const TESTIMONIALS = [
 ];
 
 const FAQS = [
-  { q: "How many times can I attempt a test?", a: "Unlimited attempts — retake as many times as you need until you're confident." },
+  { q: "How many times can I attempt a test?", a: "Unlimited attempts - retake as many times as you need until you're confident." },
   { q: "Are the questions exam-standard?", a: "Yes. Every question is written by licensed professional engineers and reviewed against real licensing body frameworks." },
   { q: "Do I get explanations for wrong answers?", a: "Absolutely. Every question includes a detailed explanation so you learn, not just score." },
-  { q: "Can I access tests on mobile?", a: "Yes — fully responsive on all devices including tablets and smartphones." },
+  { q: "Can I access tests on mobile?", a: "Yes - fully responsive on all devices including tablets and smartphones." },
   { q: "Is there a money-back guarantee?", a: "Yes. We offer a moneyback guarantee under fairuse terms if our services do not meet the promised standard. Please note that final registration decisions remain with external institutions." },
 ];
 
@@ -324,7 +324,7 @@ const HowItWorksSection: FC = () => (
           How It <span className="text-primary">Works</span>
         </h2>
         <p className="text-gray-500 mt-4 max-w-xl mx-auto text-lg">
-          From purchase to passing — a clear, proven 5-step journey
+          From purchase to passing - a clear, proven 5-step journey
         </p>
       </motion.div>
 
@@ -388,7 +388,7 @@ const MentorVideoSection: FC = () => {
             <span className="text-primary">Get You Exam-Ready</span>
           </h2>
           <p className="text-gray-400 leading-relaxed mb-8 text-lg">
-            Most engineers fail exams not because of lack of knowledge — but because they
+            Most engineers fail exams not because of lack of knowledge - but because they
             haven't practiced under real exam conditions. Our tests bridge exactly that gap.
           </p>
 
@@ -470,8 +470,8 @@ const MentorVideoSection: FC = () => {
                       alt="Dr. Maxwell"
                     />
                     <div>
-                      <div className="text-white font-semibold text-sm">Dr. Maxwell Oyom</div>
-                      <div className="text-gray-400 text-xs">CEng, FIET — Founder & Lead Instructor</div>
+                      <div className="text-white font-semibold text-sm">Maxwell Oyom</div>
+                      <div className="text-gray-400 text-xs"> Lead Instructor</div>
                     </div>
                   </div>
                 </div>
@@ -497,7 +497,7 @@ const MentorVideoSection: FC = () => {
             transition={{ delay: 0.55, duration: 0.4 }}
             className="absolute -top-5 -right-5 bg-white px-5 py-4 rounded-2xl shadow-2xl"
           >
-            <div className="text-2xl font-bold text-green-600">95%</div>
+            <div className="text-2xl font-bold text-green-600">100%</div>
             <div className="text-gray-500 text-xs mt-0.5">Pass rate</div>
           </motion.div>
         </motion.div>
@@ -644,7 +644,7 @@ const RoadmapSection: FC = () => {
                 </div>
                 <div>
                   <div className="text-secondary font-bold text-sm">Structured. Timed. Proven.</div>
-                  <div className="text-gray-500 text-xs">Used by 10,000+ engineers worldwide</div>
+                  <div className="text-gray-500 text-xs">Used by 2,000+ engineers worldwide</div>
                 </div>
               </div>
             </div>
@@ -674,7 +674,7 @@ const TestimonialsSection: FC = () => (
           <Star className="w-3 h-3 fill-primary text-primary" /> Success Stories
         </span>
         <h2 className="text-4xl md:text-5xl font-bold text-white">
-          Trusted by <span className="text-primary">10,000+ Engineers</span>
+          Trusted by <span className="text-primary">2,000+ Engineers</span>
         </h2>
         <p className="text-gray-400 mt-4 max-w-xl mx-auto text-lg">
           Real results from engineers who practiced with our tests
@@ -737,7 +737,7 @@ const PractiseTestsCards: FC = () => {
 
       {/* ② URGENCY BANNER */}
       <div className="bg-secondary px-4 py-3 text-center text-white text-sm font-medium">
-        🔥 <strong>Limited-time offer:</strong> Save up to 30% on all practice tests — ends soon.
+        🔥 <strong>Limited-time offer:</strong> Save up to 30% on all practice tests - ends soon.
         <Link href="/contact" className="ml-3 underline font-bold hover:no-underline">
           Get in touch →
         </Link>
@@ -857,7 +857,7 @@ const PractiseTestsCards: FC = () => {
               Ready to Start Practicing?
             </h2>
             <p className="text-gray-400 mb-10 text-lg">
-              Join 10,000+ engineers who used our practice tests to pass their licensing exams first time.
+              Join 2,000+ engineers who used our practice tests to pass their licensing exams first time.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="#tests">

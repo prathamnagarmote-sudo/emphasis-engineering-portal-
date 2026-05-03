@@ -24,7 +24,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Invalid OTP. Please check your email and try again." }, { status: 400 });
     }
 
-    // OTP valid — mark user as verified in DB
+    // OTP valid - mark user as verified in DB
     await User.findOneAndUpdate({ email }, { isVerified: true });
 
     // Clean up used OTP

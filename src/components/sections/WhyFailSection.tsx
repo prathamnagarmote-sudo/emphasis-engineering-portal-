@@ -126,7 +126,7 @@ const WhyFailSection = () => {
           </div>
 
           <h2 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
-            Why Engineers Fail —{" "}
+            Why Engineers Fail -{" "}
             <span className="bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 bg-clip-text text-transparent">
               And How We Fix It
             </span>
@@ -171,7 +171,7 @@ const WhyFailSection = () => {
         {/* ── COMPARISON GRID ─────────────────────────────────────────────── */}
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 relative">
 
-          {/* Center divider with arrow — desktop only */}
+          {/* Center divider with arrow - desktop only */}
           <div className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
             <motion.div
               initial={{ scale: 0, rotate: -180 }}

@@ -20,7 +20,7 @@ export const aboutData = {
     "Emphasis Engineering was founded in the United Kingdom in 2014 with a single, clear purpose: to help engineers navigate professional licensure and chartership properly, confidently, and successfully.",
     "Over the past decade, we have supported more than 2,000 engineers worldwide in achieving Chartered Engineer (CEng) recognition through leading UK institutions, including IET, IMechE, and ICE.",
     "As our clients' careers became increasingly international, our services expanded beyond the UK. We now provide specialist support for Canadian P.Eng. and US PE registration via the UK-US MRA.",
-    "We do not offer generic coaching — every service we provide is grounded in regulatory requirements, assessor expectations, and real decision-making criteria."
+    "We do not offer generic coaching - every service we provide is grounded in regulatory requirements, assessor expectations, and real decision-making criteria."
   ],
 
   // ✅ EXTRA DETAILS

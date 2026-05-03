@@ -63,7 +63,7 @@ const FeaturedCourses: FC = () => {
           • fetchpriority="high" tells the browser to grab this image ASAP
           • decoding="async" keeps the main thread free while decoding
           • The motion starts at scale(1.06) so even a partially-loaded image
-            looks intentional — the slow zoom-out eases the eye away from
+            looks intentional - the slow zoom-out eases the eye away from
             any loading artefacts
         */}
         <motion.img
@@ -84,7 +84,7 @@ const FeaturedCourses: FC = () => {
 
         {/* LEFT ─────────────────────────────────────────────────────────────── */}
         <div>
-          {/* Heading — first thing visible, no delay */}
+          {/* Heading - first thing visible, no delay */}
           <motion.h2
             variants={fadeUp}
             initial="hidden"
@@ -96,7 +96,7 @@ const FeaturedCourses: FC = () => {
             Courses That Get You Licensed
           </motion.h2>
 
-          {/* Paragraph — tiny offset so it cascades behind heading */}
+          {/* Paragraph - tiny offset so it cascades behind heading */}
           <motion.p
             variants={fadeUp}
             initial="hidden"
@@ -170,7 +170,7 @@ const FeaturedCourses: FC = () => {
           variants={fadeLeft}
           initial="hidden"
           whileInView="show"
-          custom={0.15}                               // very small delay — appears almost with left col
+          custom={0.15}                               // very small delay - appears almost with left col
           viewport={{ once: true, margin: "-60px" }}
           className="relative"
         >
@@ -178,7 +178,7 @@ const FeaturedCourses: FC = () => {
             KEY OPTIMISATION:
             • Cloudinary f_auto,q_auto trims file size while keeping quality
             • The wrapper starts slightly blurred so a partially-loaded JPEG
-              doesn't look broken — blur lifts as opacity rises
+              doesn't look broken - blur lifts as opacity rises
             • Floating animation starts immediately so the card already feels
               alive even before the image fully decodes
           */}
@@ -186,7 +186,7 @@ const FeaturedCourses: FC = () => {
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" as any }}
           >
-            {/* Soft glow — pure CSS, renders before image */}
+            {/* Soft glow - pure CSS, renders before image */}
             <div className="absolute -inset-2 rounded-3xl bg-primary/20 blur-2xl opacity-50 pointer-events-none" />
 
             <motion.img

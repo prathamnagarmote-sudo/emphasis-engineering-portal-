@@ -6,7 +6,7 @@ import { ArrowRight, CheckCircle } from "lucide-react";
 import Link from 'next/link';
 
 // ─── Only GPU-friendly props (transform + opacity) ────────────────────────────
-// NO filter, NO blur animations — those force raster repaints and lag
+// NO filter, NO blur animations - those force raster repaints and lag
 const CHECKS = [
   "Country-specific licensing strategy",
   "Profile evaluation & roadmap",
@@ -37,7 +37,7 @@ const ServicesPreview: FC = () => {
   return (
     <section className="relative py-32 overflow-hidden bg-white">
 
-      {/* ── BACKGROUND — static, no motion on it at all ──────────────────────
+      {/* ── BACKGROUND - static, no motion on it at all ──────────────────────
           Moving a full-width image on scroll = massive repaint.
           We just let it sit; the content animations carry the energy.       */}
       <div className="absolute inset-0">
@@ -60,10 +60,10 @@ const ServicesPreview: FC = () => {
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as any }}
         >
-          {/* Card — NO backdrop-blur during animation, add after via CSS */}
+          {/* Card - NO backdrop-blur during animation, add after via CSS */}
           <div className="bg-white/80 backdrop-blur-xl border border-gray-200 rounded-3xl p-6 shadow-2xl">
 
-            {/* Image — static, no motion wrapper. Let the card animate it. */}
+            {/* Image - static, no motion wrapper. Let the card animate it. */}
             <img
               decoding="async"
               src="https://res.cloudinary.com/dwk1cnlw2/image/upload/f_auto,q_auto,w_700/v1776348635/Chartered-Engineer-2.jpg_jrvafx.webp"
@@ -79,7 +79,7 @@ const ServicesPreview: FC = () => {
             </p>
           </div>
 
-          {/* Floating stat card — simple fade+scale, no continuous loop */}
+          {/* Floating stat card - simple fade+scale, no continuous loop */}
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -88,13 +88,13 @@ const ServicesPreview: FC = () => {
             className="absolute -bottom-6 -right-6 bg-white px-6 py-4 rounded-xl shadow-xl"
           >
             <div className="text-sm text-gray-500">Success Rate</div>
-            <div className="text-2xl font-bold text-primary">95%</div>
+            <div className="text-2xl font-bold text-primary">100%</div>
           </motion.div>
         </motion.div>
 
         {/* ── RIGHT CONTENT ─────────────────────────────────────────────────
             One parent handles the slide-in.
-            Children stagger with variants — zero individual whileInView calls.  */}
+            Children stagger with variants - zero individual whileInView calls.  */}
         <motion.div
           initial={{ opacity: 0, x: 36 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -112,11 +112,11 @@ const ServicesPreview: FC = () => {
           </h2>
 
           <p className="text-gray-600 mt-6 max-w-lg text-lg">
-            We don't offer random services — we guide engineers through
+            We don't offer random services - we guide engineers through
             structured, country-specific licensing systems.
           </p>
 
-          {/* Staggered list — ONE whileInView on parent, variants handle children */}
+          {/* Staggered list - ONE whileInView on parent, variants handle children */}
           <motion.ul
             className="mt-8 space-y-4"
             variants={containerVariants}

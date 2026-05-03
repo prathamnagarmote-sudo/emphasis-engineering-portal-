@@ -152,17 +152,17 @@ const GuidedFunnelSection: FC = () => {
             <span className="text-primary">Right Now?</span>
           </h2>
           <p className="text-gray-500 mt-4 max-w-xl mx-auto text-lg">
-            Tell us your current situation — we'll show you the exact next step.
+            Tell us your current situation - we'll show you the exact next step.
           </p>
         </motion.div>
 
         <AnimatePresence mode="wait">
 
-          {/* ══ STEP 1 — Choose path ══ */}
+          {/* ══ STEP 1 - Choose path ══ */}
           {path === null && (
             <motion.div key="choose" {...fadeSlide} className="grid md:grid-cols-2 gap-6">
 
-              {/* Card — Student / Graduate */}
+              {/* Card - Student / Graduate */}
               <motion.button
                 whileHover={{ y: -6, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -184,7 +184,7 @@ const GuidedFunnelSection: FC = () => {
                 </div>
               </motion.button>
 
-              {/* Card — Working Professional */}
+              {/* Card - Working Professional */}
               <motion.button
                 whileHover={{ y: -6, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -209,7 +209,7 @@ const GuidedFunnelSection: FC = () => {
             </motion.div>
           )}
 
-          {/* ══ PATH 1 — Student / Graduate ══ */}
+          {/* ══ PATH 1 - Student / Graduate ══ */}
           {path === "student" && (
             <motion.div key="student" {...fadeSlide}>
 
@@ -220,7 +220,7 @@ const GuidedFunnelSection: FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-10">
 
-                {/* LEFT — Journey */}
+                {/* LEFT - Journey */}
                 <div className="bg-white/95 rounded-3xl p-8 shadow-xl border border-gray-100">
                   <h3 className="text-xl font-bold text-secondary mb-2">Your Journey</h3>
                   <p className="text-gray-500 text-sm mb-8">
@@ -254,7 +254,7 @@ const GuidedFunnelSection: FC = () => {
                   </p>
                 </div>
 
-                {/* RIGHT — How We Help */}
+                {/* RIGHT - How We Help */}
                 <div className="flex flex-col gap-6">
                   <div className="bg-primary/5 border border-primary/15 rounded-3xl p-8">
                     <div className="flex items-center gap-3 mb-5">
@@ -309,7 +309,7 @@ const GuidedFunnelSection: FC = () => {
             </motion.div>
           )}
 
-          {/* ══ PATH 2 — Working Professional ══ */}
+          {/* ══ PATH 2 - Working Professional ══ */}
           {path === "professional" && (
             <motion.div key="professional" {...fadeSlide}>
 

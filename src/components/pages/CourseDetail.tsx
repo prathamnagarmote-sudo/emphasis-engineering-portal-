@@ -228,11 +228,10 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
     }
   }, [selectedLesson, purchased, selectedLessonIndex]);
 
-  const handleMockPurchase = async () => {
+  const handlePurchase = async () => {
     if (!course) return;
 
     if (!session?.user) {
-      alert("Please log in first to save the purchase to your account.");
       router.push("/login");
       return;
     }
@@ -240,13 +239,27 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
     setIsProcessingMockPayment(true);
 
     try {
-      // Update Frontend Context and Backend Database via CartContext
-      await purchaseItem(course.id);
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: [{
+            id: course.id,
+            title: course.title,
+            price: course.price,
+            type: 'course'
+          }]
+        }),
+      });
 
-      // Reload to refresh NextAuth session token and unlock videos visually
-      window.location.reload();
-    } catch (err) {
-      console.error(err);
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Failed to create checkout session');
+      }
+    } catch (err: any) {
+      alert(err.message);
       setIsProcessingMockPayment(false);
     }
   };
@@ -357,7 +370,7 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
                 />
                 <div>
                   <p className="text-white font-semibold">{course.instructor}</p>
-                  <p className="text-gray-400 text-sm">CEng, FIET — Lead Instructor</p>
+                  <p className="text-gray-400 text-sm">CEng, FIET - Lead Instructor</p>
                 </div>
               </motion.div>
             </motion.div>
@@ -393,7 +406,7 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                       <Button
                         className="w-full py-4 text-base shadow-lg shadow-primary/30"
-                        onClick={handleMockPurchase}
+                        onClick={handlePurchase}
                         disabled={isProcessingMockPayment}
                       >
                         {isProcessingMockPayment ? "Processing Payment..." : "Buy Course Now"}
@@ -507,7 +520,7 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
                       This lesson is part of the premium curriculum. Enroll now to unlock full access.
                     </p>
                     <Button
-                      onClick={handleMockPurchase}
+                      onClick={handlePurchase}
                       disabled={isProcessingMockPayment}
                     >
                       {isProcessingMockPayment ? "Verifying Payment..." : "Buy Course to Unlock"}
@@ -951,7 +964,7 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => purchaseItem(course.id)}
+                  onClick={handlePurchase}
                   className="w-full py-3 bg-white text-primary rounded-xl font-semibold shadow-lg flex items-center justify-center gap-2"
                 >
                   Enroll Now

@@ -124,7 +124,7 @@ const Testimonials: FC = () => {
   return (
     <div className="pt-20">
 
-      {/* ① HERO — untouched */}
+      {/* ① HERO - untouched */}
       <PageHero
         badge="Real Stories, Real Success"
         heading={
@@ -140,7 +140,7 @@ const Testimonials: FC = () => {
         secondaryCta={{ label: 'Book Free Consultation', href: '/contact' }}
       />
 
-      {/* ② FEATURED CAROUSEL — white bg */}
+      {/* ② FEATURED CAROUSEL - white bg */}
       <section className="py-24 bg-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(63,159,163,0.07),transparent_60%)]" />
 
@@ -319,7 +319,7 @@ const Testimonials: FC = () => {
         </div>
       </section>
 
-      {/* ③ SUCCESS METRICS — dark blue */}
+      {/* ③ SUCCESS METRICS - dark blue */}
       <section className="py-20 bg-[#061F33] relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(63,159,163,0.12),transparent_60%)]" />
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
@@ -370,7 +370,7 @@ const Testimonials: FC = () => {
         </div>
       </section>
 
-      {/* ④ ALL TESTIMONIALS GRID — white */}
+      {/* ④ ALL TESTIMONIALS GRID - white */}
       <section className="py-24 bg-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(63,159,163,0.06),transparent_60%)]" />
 
@@ -477,7 +477,7 @@ const Testimonials: FC = () => {
         </div>
       </section>
 
-      {/* ⑤ HOW IT WORKS — dark blue */}
+      {/* ⑤ HOW IT WORKS - dark blue */}
       <section className="py-24 bg-[#061F33] relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(63,159,163,0.1),transparent_60%)]" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-teal-400/8 blur-[120px] rounded-full pointer-events-none" />
@@ -534,7 +534,7 @@ const Testimonials: FC = () => {
         </div>
       </section>
 
-      {/* ⑥ VIDEO TESTIMONIAL — white */}
+      {/* ⑥ VIDEO TESTIMONIAL - white */}
       <section className="py-24 bg-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(63,159,163,0.06),transparent_60%)]" />
 
@@ -555,7 +555,7 @@ const Testimonials: FC = () => {
             </h2>
             <p className="text-gray-600 leading-relaxed mb-8 text-lg">
               Watch real engineers share their journey from application to licensing success.
-              Every story is unique, but they all share one thing — the right guidance.
+              Every story is unique, but they all share one thing - the right guidance.
             </p>
 
             <ul className="space-y-4">
@@ -615,7 +615,7 @@ const Testimonials: FC = () => {
                   />
                   <div>
                     <div className="text-secondary font-bold text-sm">James Okonkwo, CEng</div>
-                    <div className="text-gray-500 text-xs">IMechE Chartered Engineer — UK</div>
+                    <div className="text-gray-500 text-xs">IMechE Chartered Engineer - UK</div>
                   </div>
                 </div>
               </div>
@@ -629,14 +629,14 @@ const Testimonials: FC = () => {
               transition={{ delay: 0.4 }}
               className="absolute -top-6 -right-6 bg-white px-5 py-4 rounded-2xl shadow-2xl"
             >
-              <div className="text-2xl font-bold text-green-600">95%</div>
+              <div className="text-2xl font-bold text-green-600">100%</div>
               <div className="text-gray-500 text-xs">Pass rate</div>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* ⑦ CTA — dark blue */}
+      {/* ⑦ CTA - dark blue */}
       <section className="py-24 bg-[#061F33] relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(63,159,163,0.15),transparent_60%)]" />
 

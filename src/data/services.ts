@@ -143,7 +143,7 @@ export const services: Service[] = [
       },
       {
         question: "Are FE and PE exams always waived?",
-        answer: `Yes — only for MRA-participating states. Other states will not accept MRA exemptions.`
+        answer: `Yes - only for MRA-participating states. Other states will not accept MRA exemptions.`
       },
       {
         question: "Can I apply to multiple US states?",

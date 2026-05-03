@@ -15,5 +15,5 @@ export function verifyDevAuth(request: Request): boolean {
 }
 
 export function unauthorized() {
-  return NextResponse.json({ error: 'Unauthorized — invalid dev token' }, { status: 401 });
+  return NextResponse.json({ error: 'Unauthorized - invalid dev token' }, { status: 401 });
 }

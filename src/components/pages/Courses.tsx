@@ -34,7 +34,7 @@ const INCLUDED = [
 ];
 
 const FAQS = [
-  { q: 'How long do I have access after purchase?', a: 'Lifetime — you own the course forever including all future updates.' },
+  { q: 'How long do I have access after purchase?', a: 'Lifetime - you own the course forever including all future updates.' },
   { q: 'What experience level is required?', a: 'Each course states its level. Most are open to engineers with 2+ years of experience in their discipline.' },
   { q: 'Is there a money-back guarantee?', a: 'Yes. 30-day no-questions-asked refund if you are not satisfied.' },
   { q: 'Can the course be purchased by my employer?', a: 'Absolutely. Contact us for bulk/corporate licensing and invoice-based payment.' },
@@ -50,7 +50,7 @@ const HOW_IT_WORKS = [
   {
     icon: <Video className="w-6 h-6" />,
     title: "Learn at Your Pace",
-    description: "Access structured video modules led by Dr. Maxwell Oyom — practical and exam-focused.",
+    description: "Access structured video modules led by Dr. Maxwell Oyom - practical and exam-focused.",
   },
   {
     icon: <FileText className="w-6 h-6" />,
@@ -361,7 +361,7 @@ const HowItWorksSection: FC = () => (
           How It <span className="text-primary">Works</span>
         </h2>
         <p className="text-gray-500 mt-4 max-w-xl mx-auto text-lg">
-          From enrolment to licensed engineer — a clear, proven 5-step journey
+          From enrolment to licensed engineer - a clear, proven 5-step journey
         </p>
       </motion.div>
 
@@ -427,7 +427,7 @@ const MentorVideoSection: FC = () => {
             <span className="text-primary">Get You Licensed</span>
           </h2>
           <p className="text-gray-400 leading-relaxed mb-8 text-lg">
-            Most engineers fail licensing not because of lack of skill — but because they don't
+            Most engineers fail licensing not because of lack of skill - but because they don't
             know how to present their competence in the format these bodies expect. Our courses
             bridge exactly that gap.
           </p>
@@ -512,7 +512,7 @@ const MentorVideoSection: FC = () => {
                     />
                     <div>
                       <div className="text-white font-semibold text-sm">Dr. Maxwell Oyom</div>
-                      <div className="text-gray-400 text-xs">CEng, FIET — Founder & Lead Instructor</div>
+                      <div className="text-gray-400 text-xs">CEng, FIET - Founder & Lead Instructor</div>
                     </div>
                   </div>
                 </div>
@@ -792,7 +792,7 @@ const Courses: FC = () => {
   return (
     <div className="pt-20">
 
-      {/* ① HERO — dark blue (untouched) */}
+      {/* ① HERO - dark blue (untouched) */}
       <PageHero
         badge="Accredited Engineering Masterclasses"
         heading={
@@ -802,20 +802,20 @@ const Courses: FC = () => {
             <span className="text-gradient">Engineering Licensure</span>
           </>
         }
-        subtitle="Expert-led video masterclasses covering UK CEng (IMechE, IET, ICE) and Canadian P.Eng — with templates, mock reviews, and lifetime access."
+        subtitle="Expert-led video masterclasses covering UK CEng (IMechE, IET, ICE) and Canadian P.Eng - with templates, mock reviews, and lifetime access."
         primaryCta={{ label: "Explore All Courses", href: "#courses" }}
         secondaryCta={{ label: "Book Free Consultation", href: "/contact" }}
       />
 
-      {/* ② URGENCY BANNER — continues the dark tone */}
+      {/* ② URGENCY BANNER - continues the dark tone */}
       <div className="bg-secondary px-4 py-3 text-center text-white text-sm font-medium">
-        🔥 <strong>Limited-time offer:</strong> Save up to 22% on all masterclasses — ends soon.
+        🔥 <strong>Limited-time offer:</strong> Save up to 22% on all masterclasses - ends soon.
         <Link href="/contact" className="ml-3 underline font-bold hover:no-underline">
           Book a free consultation →
         </Link>
       </div>
 
-      {/* ③ FILTER TABS — sticky, white — first light section */}
+      {/* ③ FILTER TABS - sticky, white - first light section */}
       <section id="courses" className="py-5 bg-white sticky top-20 z-40 border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 flex flex-wrap gap-2 justify-center">
           {FILTERS.map(f => (
@@ -836,7 +836,7 @@ const Courses: FC = () => {
         </div>
       </section>
 
-      {/* ④ COURSE GRID — light gray */}
+      {/* ④ COURSE GRID - light gray */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatePresence mode="wait">
@@ -870,19 +870,19 @@ const Courses: FC = () => {
         </div>
       </section>
 
-      {/* ⑤ HOW IT WORKS — white */}
+      {/* ⑤ HOW IT WORKS - white */}
       <HowItWorksSection />
 
-      {/* ⑥ MENTOR VIDEO — dark blue */}
+      {/* ⑥ MENTOR VIDEO - dark blue */}
       <MentorVideoSection />
 
-      {/* ⑦ ROADMAPS — white */}
+      {/* ⑦ ROADMAPS - white */}
       <RoadmapSection />
 
-      {/* ⑧ TESTIMONIALS — dark blue */}
+      {/* ⑧ TESTIMONIALS - dark blue */}
       <TestimonialsSection />
 
-      {/* ⑨ GUARANTEE — white */}
+      {/* ⑨ GUARANTEE - white */}
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4">
           <motion.div
@@ -914,7 +914,7 @@ const Courses: FC = () => {
         </div>
       </section>
 
-      {/* ⑩ FAQ — light gray */}
+      {/* ⑩ FAQ - light gray */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4">
           <motion.div
@@ -934,7 +934,7 @@ const Courses: FC = () => {
         </div>
       </section>
 
-      {/* ⑪ FINAL CTA — dark blue */}
+      {/* ⑪ FINAL CTA - dark blue */}
       <section className="py-24 bg-[#061F33] relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(63,159,163,0.1),transparent_60%)]" />
         <div className="relative max-w-3xl mx-auto px-4 text-center">

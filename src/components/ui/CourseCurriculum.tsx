@@ -125,7 +125,7 @@ const LockedModal: FC<{ onClose: () => void }> = ({ onClose }) => (
       <h3 className="text-xl font-bold text-secondary mb-2">Lesson Locked</h3>
       <p className="text-gray-500 text-sm leading-relaxed mb-7">
         Purchase this course to unlock all lessons and watch them at any time,
-        on any device — with lifetime access.
+        on any device - with lifetime access.
       </p>
       <div className="flex gap-3 justify-center">
         <button

@@ -67,7 +67,7 @@ export interface CurriculumLesson {
   id?: string; // Secure lesson identifier (matched in MongoDB)
   title: string;
   duration: string;
-  vimeoId?: string; // Optional — if provided, it's public. If missing, we fetch from API.
+  vimeoId?: string; // Optional - if provided, it's public. If missing, we fetch from API.
   /** true = watchable as a free preview */
   free?: boolean;
 }
@@ -103,7 +103,7 @@ export interface Course {
   lessons: number;
   isPurchased: boolean;
   videos: Video[];
-  /** Sectioned curriculum — powers the accordion curriculum view */
+  /** Sectioned curriculum - powers the accordion curriculum view */
   curriculum?: CurriculumSection[];
   downloadableResources?: DownloadableResource[];
 }

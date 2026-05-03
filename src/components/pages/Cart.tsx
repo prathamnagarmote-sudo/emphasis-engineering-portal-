@@ -15,27 +15,32 @@ const Cart: FC = () => {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const handleCheckout = async () => {
+    if (items.length === 0) return;
     setIsCheckingOut(true);
-    
-    // Simulate payment processing delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
 
-    // Check if any item in the cart is a service
-    const serviceItem = items.find((item) => item.type === 'service');
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: items.map(item => ({
+            id: item.id,
+            title: item.title,
+            price: item.price,
+            type: item.type
+          }))
+        }),
+      });
 
-    // Simulate purchase
-    for (const item of items) {
-      await purchaseItem(item.id);
-    }
-    
-    clearCart();
-    setIsCheckingOut(false);
-
-    // If there's a service, redirect to calendly.
-    if (serviceItem) {
-      window.location.href = "https://calendly.com/sayeependke/available-slots";
-    } else {
-      window.location.href = "/dashboard";
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Failed to create checkout session');
+      }
+    } catch (err: any) {
+      alert(err.message);
+      setIsCheckingOut(false);
     }
   };
 

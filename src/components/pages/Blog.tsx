@@ -25,10 +25,10 @@ interface Blog {
 
 /* ── badge colours ── */
 const SERVICE_COLORS: Record<string, string> = {
-  "US PE":  "bg-blue-50   text-blue-700   border-blue-200",
-  IMECHE:   "bg-emerald-50 text-emerald-700 border-emerald-200",
-  IET:      "bg-violet-50 text-violet-700 border-violet-200",
-  ICE:      "bg-orange-50 text-orange-700 border-orange-200",
+  "US PE": "bg-blue-50   text-blue-700   border-blue-200",
+  IMECHE: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  IET: "bg-violet-50 text-violet-700 border-violet-200",
+  ICE: "bg-orange-50 text-orange-700 border-orange-200",
   "P.Eng.": "bg-rose-50   text-rose-700   border-rose-200",
 };
 
@@ -39,18 +39,18 @@ const TAGS = [
 
 /* ── stats ── */
 const STATS = [
-  { icon: Users,     value: "2,400+", label: "Engineers Guided"    },
-  { icon: Globe,     value: "18+",    label: "Countries Reached"   },
-  { icon: Award,     value: "96%",    label: "Success Rate"        },
-  { icon: TrendingUp,value: "50+",    label: "Articles Published"  },
+  { icon: Users, value: "2,000+", label: "Engineers Guided" },
+  { icon: Globe, value: "10+", label: "Countries Reached" },
+  { icon: Award, value: "100%", label: "Success Rate" },
+  { icon: TrendingUp, value: "10+", label: "Years Experience" },
 ];
 
 /* ── services quick-links ── */
 const SERVICES = [
-  { label: "US PE",   color: "bg-blue-500",    desc: "Professional Engineer licensure pathway"   },
-  { label: "IET",     color: "bg-violet-500",  desc: "Chartered Engineer via IET"                },
-  { label: "ICE",     color: "bg-orange-500",  desc: "CEng MICE registration roadmap"            },
-  { label: "P.Eng.",  color: "bg-rose-500",    desc: "Canadian engineering licensure"            },
+  { label: "US PE", color: "bg-blue-500", desc: "Professional Engineer licensure pathway" },
+  { label: "IET", color: "bg-violet-500", desc: "Chartered Engineer via IET" },
+  { label: "ICE", color: "bg-orange-500", desc: "CEng MICE registration roadmap" },
+  { label: "P.Eng.", color: "bg-rose-500", desc: "Canadian engineering licensure" },
 ];
 
 /* ════════════════════════════════════════════
@@ -249,7 +249,7 @@ const SmartGrid = ({
 
   const remainder = blogs.length % 3;
   const gridBlogs = remainder === 1 ? blogs.slice(0, -1) : blogs;
-  const wideCard  = remainder === 1 ? blogs[blogs.length - 1] : null;
+  const wideCard = remainder === 1 ? blogs[blogs.length - 1] : null;
 
   return (
     <>
@@ -371,7 +371,7 @@ const BlogPage = () => {
     const q = search.toLowerCase();
     return blogs.filter((b) => {
       const matchSearch = b.title.toLowerCase().includes(q) || b.desc.toLowerCase().includes(q);
-      const matchTag    = !selectedTag || b.tags?.includes(selectedTag);
+      const matchTag = !selectedTag || b.tags?.includes(selectedTag);
       return matchSearch && matchTag;
     });
   }, [search, selectedTag, blogs]);
@@ -379,9 +379,9 @@ const BlogPage = () => {
   const isFiltering = !!(search || selectedTag);
 
   /* Editorial slices */
-  const hero     = filtered[0];
-  const twoCol   = filtered.slice(1, 3);
-  const rest     = filtered.slice(3);
+  const hero = filtered[0];
+  const twoCol = filtered.slice(1, 3);
+  const rest = filtered.slice(3);
 
   const navigate = (id: string) => router.push(`/blog/${id}`);
 
@@ -429,9 +429,8 @@ const BlogPage = () => {
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setSelectedTag(null)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                  !selectedTag ? "bg-[#061F33] text-white" : "bg-gray-50 text-gray-500 hover:bg-gray-100 border border-gray-100"
-                }`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${!selectedTag ? "bg-[#061F33] text-white" : "bg-gray-50 text-gray-500 hover:bg-gray-100 border border-gray-100"
+                  }`}
               >
                 All
               </button>
@@ -439,11 +438,10 @@ const BlogPage = () => {
                 <button
                   key={tag}
                   onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
-                    selectedTag === tag
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${selectedTag === tag
                       ? "bg-[#3F9FA3] text-white border-[#3F9FA3]"
                       : "bg-white text-gray-500 border-gray-200 hover:border-[#3F9FA3] hover:text-[#3F9FA3]"
-                  }`}
+                    }`}
                 >
                   {tag}
                 </button>
