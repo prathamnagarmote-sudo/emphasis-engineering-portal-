@@ -9,8 +9,18 @@ import { AnimatePresence } from 'framer-motion';
 import Button from '@/components/ui/Button';
 import { useCart } from '@/context/CartContext';
 import { Lock } from 'lucide-react';
+import Link from 'next/link';
 
 const EXAM_DURATION = 600; // 10 minutes in seconds
+
+interface Question {
+  _id?: string;
+  id?: number;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation?: string;
+}
 
 interface PracticeTest {
   _id: string;
