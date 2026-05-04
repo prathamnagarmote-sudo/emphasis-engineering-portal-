@@ -1,8 +1,8 @@
 "use client";
 
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { practiceTests } from '@/data/practiceTests';
+// import { practiceTests } from '@/data/practiceTests';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star, Clock, Users, ShoppingCart, Check, ArrowRight,
@@ -112,13 +112,33 @@ const itemVariant: any = {
   show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as any } },
 };
 
+interface PracticeTest {
+  _id: string;
+  testId: string;
+  title: string;
+  description: string;
+  image: string;
+  category: string;
+  duration: number;
+  questionsCount: number;
+  instructor?: string;
+  instructorImage?: string;
+  level: string;
+  rating?: number;
+  reviews?: number;
+  price: number;
+  originalPrice?: number;
+  isFree?: boolean;
+}
+
 /* ═══════════════════════════════════════
    TEST CARD
 ═══════════════════════════════════════ */
-const TestCard: FC<{ test: any; index: number }> = ({ test, index }) => {
+const TestCard: FC<{ test: PracticeTest; index: number }> = ({ test, index }) => {
   const { addToCart, isInCart, removeFromCart } = useCart();
   const { formatPrice } = useCurrency();
-  const inCart = isInCart(test.id);
+  const testId = test.testId || test._id;
+  const inCart = isInCart(testId);
   const savings = test.originalPrice
     ? Math.round(((test.originalPrice - test.price) / test.originalPrice) * 100)
     : 0;
@@ -139,7 +159,7 @@ const TestCard: FC<{ test: any; index: number }> = ({ test, index }) => {
           className="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-[#061F33]/55 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
-          <Link href={`/practice-tests/${test.id}`}>
+          <Link href={`/practice-tests/${testId}`}>
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
@@ -188,7 +208,7 @@ const TestCard: FC<{ test: any; index: number }> = ({ test, index }) => {
 
         <div className="flex items-center gap-4 text-xs text-gray-400 mb-4">
           <span className="flex items-center gap-1">
-            <BookOpen className="w-3.5 h-3.5" /> {test.questions} questions
+            <BookOpen className="w-3.5 h-3.5" /> {test.questionsCount} questions
           </span>
           <span className="flex items-center gap-1">
             <Clock className="w-3.5 h-3.5" /> {test.duration} min
@@ -230,7 +250,7 @@ const TestCard: FC<{ test: any; index: number }> = ({ test, index }) => {
         </div>
 
         <div className="flex gap-2">
-          <Link href={`/practice-tests/${test.id}`} className="flex-1">
+          <Link href={`/practice-tests/${testId}`} className="flex-1">
             <Button className="w-full text-sm">Buy Now</Button>
           </Link>
           <motion.button
@@ -239,9 +259,9 @@ const TestCard: FC<{ test: any; index: number }> = ({ test, index }) => {
             onClick={(e) => {
               e.stopPropagation();
               if (inCart) {
-                removeFromCart(test.id);
+                removeFromCart(testId);
               } else {
-                addToCart({ id: test.id, title: test.title, price: test.price, type: 'test', thumbnail: test.image });
+                addToCart({ id: testId, title: test.title, price: test.price, type: 'test', thumbnail: test.image });
               }
             }}
             className={`h-11 rounded-xl border-2 flex items-center justify-center gap-2 transition-all ${inCart
@@ -718,6 +738,26 @@ const TestimonialsSection: FC = () => (
    MAIN PAGE
 ═══════════════════════════════════════ */
 const PractiseTestsCards: FC = () => {
+  const [tests, setTests] = useState<PracticeTest[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTests = async () => {
+      try {
+        const res = await fetch('/api/practice-tests');
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setTests(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch practice tests:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTests();
+  }, []);
+
   return (
     <div className="pt-20">
 
@@ -764,16 +804,31 @@ const PractiseTestsCards: FC = () => {
             </p>
           </motion.div>
 
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {practiceTests.map((test, index) => (
-              <TestCard key={test.id} test={test} index={index} />
-            ))}
-          </motion.div>
+          {loading ? (
+            <div className="col-span-full py-20 flex flex-col items-center justify-center">
+              <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+              <p className="text-gray-500 font-medium">Loading practice tests...</p>
+            </div>
+          ) : tests.length > 0 ? (
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              {tests.map((test, index) => (
+                <TestCard key={test.testId || test._id} test={test} index={index} />
+              ))}
+            </motion.div>
+          ) : (
+            <div className="col-span-full py-20 text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-xl font-bold text-secondary mb-2">No tests available</h3>
+              <p className="text-gray-500">Check back later for new practice materials.</p>
+            </div>
+          )}
         </div>
       </section>
 

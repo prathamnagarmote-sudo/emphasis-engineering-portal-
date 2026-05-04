@@ -17,7 +17,8 @@ import {
   BookOpen,
   Trophy,
   Play,
-  Loader2
+  Loader2,
+  Calendar
 } from "lucide-react";
 import Link from "next/link";
 
@@ -217,16 +218,24 @@ export default function Dashboard() {
                               Purchased & Unlocked
                             </span>
                             
-                            <Link href={
-                              content.type === 'course' ? `/courses/${content.id}` :
-                              content.type === 'test' ? `/practice-tests/${content.id}` :
-                              `/services/${content.id}`
-                            }>
-                              <button className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg font-semibold transition-colors text-sm">
-                                <Play className="w-4 h-4" />
-                                {content.type === 'course' ? 'Continue Learning' : content.type === 'test' ? 'Start Exam' : 'View Service'}
-                              </button>
-                            </Link>
+                            {content.type === 'service' ? (
+                              <a href="https://cal.com/emphasis-engineering-cbfkch/30min" target="_blank" rel="noopener noreferrer">
+                                <button className="flex items-center gap-2 px-4 py-2 bg-purple-600/10 text-purple-600 hover:bg-purple-600 hover:text-white rounded-lg font-semibold transition-colors text-sm">
+                                  <Calendar className="w-4 h-4" />
+                                  Schedule Meeting
+                                </button>
+                              </a>
+                            ) : (
+                              <Link href={
+                                content.type === 'course' ? `/courses/${content.id}` :
+                                `/practice-tests/${content.id}`
+                              }>
+                                <button className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg font-semibold transition-colors text-sm">
+                                  <Play className="w-4 h-4" />
+                                  {content.type === 'course' ? 'Continue Learning' : 'Start Exam'}
+                                </button>
+                              </Link>
+                            )}
                           </div>
                         </div>
                       </div>

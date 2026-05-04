@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { Plus, Edit2, Trash2, Save, X, Upload, FileUp, ChevronDown, ChevronUp } from "lucide-react";
+import * as XLSX from "xlsx";
 
 interface Question { question: string; options: string[]; correctAnswer: number; explanation?: string; }
 interface PracticeTest {
@@ -26,6 +27,7 @@ export default function PracticeTestsManager({ headers, uploadFile }: { headers:
   const [expandedQ, setExpandedQ] = useState<number | null>(null);
   const csvRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const excelRef = useRef<HTMLInputElement>(null);
 
   const fetchTests = async () => { setLoading(true); const res = await fetch("/api/dev/practice-tests", { headers }); setTests(await res.json()); setLoading(false); };
   useEffect(() => { fetchTests(); }, []);
@@ -37,11 +39,41 @@ export default function PracticeTestsManager({ headers, uploadFile }: { headers:
 
   const handleSave = async () => {
     if (!editing) return;
+
+    // Validation
+    if (!editing.testId || editing.testId.trim() === "") {
+      setTab("info");
+      alert("⚠️ Test ID is required. Please provide a unique ID (e.g., 'ethics-test-1').");
+      return;
+    }
+    if (!editing.title || editing.title.trim() === "") {
+      setTab("info");
+      alert("⚠️ Test Title is required.");
+      return;
+    }
+    if (!editing.category || editing.category.trim() === "") {
+      setTab("info");
+      alert("⚠️ Category is required.");
+      return;
+    }
+
     setSaving(true);
     editing.questionsCount = editing.questions.length;
     const url = isNew ? "/api/dev/practice-tests" : `/api/dev/practice-tests/${editing.testId || editing._id}`;
-    await fetch(url, { method: isNew ? "POST" : "PUT", headers, body: JSON.stringify(editing) });
-    setSaving(false); setEditing(null); fetchTests();
+    try {
+      const res = await fetch(url, { method: isNew ? "POST" : "PUT", headers, body: JSON.stringify(editing) });
+      if (!res.ok) {
+        const err = await res.json();
+        alert(`❌ Failed to save: ${err.error || 'Unknown error'}`);
+      } else {
+        alert("✅ Practice test saved successfully!");
+        setEditing(null); 
+        fetchTests();
+      }
+    } catch (e: any) {
+      alert(`❌ Network error: ${e.message}`);
+    }
+    setSaving(false); 
   };
 
   const handleDelete = async (t: PracticeTest) => {
@@ -74,6 +106,73 @@ export default function PracticeTestsManager({ headers, uploadFile }: { headers:
     const reader = new FileReader();
     reader.onload = (ev) => { setCsvText(ev.target?.result as string || ""); };
     reader.readAsText(file);
+  };
+
+  const handleExcelFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editing) return;
+    setImporting(true);
+    
+    try {
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data, { type: "array" });
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows: any[] = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+      
+      const newQuestions: Question[] = [];
+      
+      // Start loop from 1 to skip the header row
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row || !row[0]) continue;
+        
+        const questionText = String(row[0] || "").trim();
+        
+        // Extract up to 6 options
+        const options: string[] = [];
+        const optionIndexes = [2, 4, 6, 8, 10, 12];
+        optionIndexes.forEach(idx => {
+          if (row[idx] && String(row[idx]).trim() !== "") {
+            options.push(String(row[idx]).trim());
+          }
+        });
+        
+        if (options.length === 0) continue;
+        
+        // Map Correct Answers (Column O = index 14) from 1-based to 0-based
+        let correctIndex = 0;
+        if (row[14] !== undefined) {
+          const rawCorrect = String(row[14]).trim();
+          const parsedInt = parseInt(rawCorrect, 10);
+          if (!isNaN(parsedInt) && parsedInt > 0 && parsedInt <= options.length) {
+            correctIndex = parsedInt - 1;
+          }
+        }
+        
+        // Overall Explanation (Column P = index 15)
+        const explanation = String(row[15] || "").trim();
+        
+        newQuestions.push({
+          question: questionText,
+          options: options,
+          correctAnswer: correctIndex,
+          explanation: explanation
+        });
+      }
+      
+      if (newQuestions.length > 0) {
+        setEditing({ ...editing, questions: [...editing.questions, ...newQuestions] });
+        alert(`✅ Successfully extracted ${newQuestions.length} questions from Excel! Please review them and click "Save All Changes".`);
+      } else {
+        alert("❌ No valid questions found. Please ensure your Excel matches the 16-column format.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("❌ Failed to parse Excel file.");
+    } finally {
+      setImporting(false);
+      if (excelRef.current) excelRef.current.value = "";
+    }
   };
 
   const addQuestion = () => {
@@ -171,15 +270,30 @@ export default function PracticeTestsManager({ headers, uploadFile }: { headers:
 
         {tab === "questions" && (
           <div className="space-y-4">
-            {/* CSV Import */}
-            <div className="bg-[#111827] rounded-2xl border border-white/5 p-6">
-              <h4 className="text-white font-bold text-sm mb-3">Import from CSV</h4>
-              <p className="text-gray-500 text-xs mb-3">Format: question, optionA, optionB, optionC, optionD, correctAnswer (0-3), explanation</p>
-              <textarea value={csvText} onChange={e => setCsvText(e.target.value)} rows={4} className={inputClass + " resize-none mb-3 font-mono text-xs"} placeholder="Paste CSV data here..." />
-              <div className="flex gap-3">
-                <input ref={csvRef} type="file" accept=".csv,.txt" onChange={handleCSVFile} className="hidden" />
-                <button onClick={() => csvRef.current?.click()} className="px-4 py-2 bg-white/5 text-gray-400 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-white/10"><FileUp className="w-3 h-3" /> Load CSV File</button>
-                <button onClick={handleCSVImport} disabled={importing || !csvText.trim()} className="px-4 py-2 bg-[#3F9FA3] text-white rounded-xl text-xs font-bold flex items-center gap-2 disabled:opacity-50"><Upload className="w-3 h-3" /> {importing ? "Importing..." : "Import"}</button>
+            {/* CSV & Excel Import */}
+            <div className="bg-[#111827] rounded-2xl border border-white/5 p-6 mb-4">
+              <h4 className="text-white font-bold text-sm mb-3">Import Questions</h4>
+              <p className="text-gray-500 text-xs mb-4">
+                <strong>CSV Format:</strong> question, optionA, optionB, optionC, optionD, correctAnswer (0-3), explanation<br/>
+                <strong>Excel (.xlsx) Format:</strong> 16-columns (6 Options Layout). Correct Answer in Column O, Overall Explanation in Column P.
+              </p>
+              
+              {/* CSV Upload */}
+              <div className="mb-4 pb-4 border-b border-white/5">
+                <textarea value={csvText} onChange={e => setCsvText(e.target.value)} rows={3} className={inputClass + " resize-none mb-3 font-mono text-xs"} placeholder="Paste CSV data here..." />
+                <div className="flex gap-3">
+                  <input ref={csvRef} type="file" accept=".csv,.txt" onChange={handleCSVFile} className="hidden" />
+                  <button onClick={() => csvRef.current?.click()} className="px-4 py-2 bg-white/5 text-gray-400 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-white/10"><FileUp className="w-3 h-3" /> Load CSV File</button>
+                  <button onClick={handleCSVImport} disabled={importing || !csvText.trim()} className="px-4 py-2 bg-[#3F9FA3] text-white rounded-xl text-xs font-bold flex items-center gap-2 disabled:opacity-50"><Upload className="w-3 h-3" /> {importing ? "Importing..." : "Import CSV"}</button>
+                </div>
+              </div>
+
+              {/* Excel Upload */}
+              <div>
+                <input ref={excelRef} type="file" accept=".xlsx,.xls" onChange={handleExcelFile} className="hidden" />
+                <button onClick={() => excelRef.current?.click()} disabled={importing} className="px-4 py-2 bg-[#107c41] text-white rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-[#0c6132] disabled:opacity-50 shadow-lg shadow-[#107c41]/20">
+                  <FileUp className="w-3 h-3" /> {importing ? "Processing Excel..." : "Upload Excel (.xlsx)"}
+                </button>
               </div>
             </div>
 

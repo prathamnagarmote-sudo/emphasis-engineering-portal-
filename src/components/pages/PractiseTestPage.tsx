@@ -5,12 +5,22 @@ import { motion } from 'framer-motion';
 import { Clock, ChevronLeft, ChevronRight, Flag, CheckCircle, XCircle, AlertCircle, RotateCcw } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
-import { practiceTests, practiceQuestions } from '@/data/practiceTests';
+// import { practiceTests, practiceQuestions } from '@/data/practiceTests';
 import Button from '@/components/ui/Button';
 import { useCart } from '@/context/CartContext';
 import { Lock } from 'lucide-react';
 
-type QuestionStatus = 'unanswered' | 'answered' | 'marked';
+const EXAM_DURATION = 600; // 10 minutes in seconds
+
+interface PracticeTest {
+  _id: string;
+  testId: string;
+  title: string;
+  description: string;
+  questions: Question[];
+  duration: number;
+  isFree?: boolean;
+}
 
 interface ExamState {
   currentQuestion: number;
@@ -20,17 +30,38 @@ interface ExamState {
   isSubmitted: boolean;
 }
 
-const EXAM_DURATION = 600; // 10 minutes in seconds
+type QuestionStatus = 'unanswered' | 'answered' | 'marked';
+
+const ReadMore: FC<{ text: string }> = ({ text }) => {
+  const [expanded, setExpanded] = useState(false);
+  const words = text.split(' ');
+  const isLong = words.length > 30;
+
+  if (!isLong) return <p className="text-gray-800 text-sm leading-relaxed">{text}</p>;
+
+  return (
+    <div>
+      <p className="text-gray-800 text-sm leading-relaxed">
+        {expanded ? text : words.slice(0, 30).join(' ') + '...'}
+      </p>
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="text-primary text-xs font-bold mt-1 hover:underline"
+      >
+        {expanded ? 'Read Less' : 'Read More'}
+      </button>
+    </div>
+  );
+};
 
 const PracticeTests: FC = () => {
   const params = useParams();
-  const testId = params?.id as string | undefined;
-  const currentTest = practiceTests.find((t) => t.id === testId) ?? practiceTests[0];
+  const testIdFromUrl = params?.id as string | undefined;
   const { isPurchased, purchaseItem } = useCart();
-  const testIdSafe = testId || "default-test";
-  const purchased = isPurchased(testIdSafe);
-  const canStart = currentTest?.isFree || purchased;
-
+  
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentTest, setCurrentTest] = useState<PracticeTest | null>(null);
   const [isStarted, setIsStarted] = useState(false);
   const [examState, setExamState] = useState<ExamState>({
     currentQuestion: 0,
@@ -40,6 +71,47 @@ const PracticeTests: FC = () => {
     isSubmitted: false,
   });
   const [activePhase, setActivePhase] = useState(0);
+  const [attempts, setAttempts] = useState(0);
+
+  const practiceQuestions = currentTest?.questions || [];
+  const testIdSafe = testIdFromUrl || "default-test";
+  const purchased = isPurchased(testIdSafe);
+  const canStart = currentTest?.isFree || purchased;
+
+  useEffect(() => {
+    if (testIdSafe) {
+      const savedAttempts = localStorage.getItem(`attempts_${testIdSafe}`);
+      if (savedAttempts) setAttempts(parseInt(savedAttempts));
+    }
+  }, [testIdSafe]);
+
+  const incrementAttempts = () => {
+    const newAttempts = attempts + 1;
+    setAttempts(newAttempts);
+    localStorage.setItem(`attempts_${testIdSafe}`, newAttempts.toString());
+  };
+
+  const reattemptLimitReached = !currentTest?.isFree && attempts >= 2;
+
+  useEffect(() => {
+    const fetchTestData = async () => {
+      if (!testIdFromUrl) return;
+      try {
+        const res = await fetch(`/api/practice-tests/${testIdFromUrl}`);
+        if (!res.ok) throw new Error('Test not found');
+        const data = await res.json();
+        setCurrentTest(data);
+        if (data.duration) {
+          setExamState(prev => ({ ...prev, timeLeft: data.duration * 60 }));
+        }
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTestData();
+  }, [testIdFromUrl]);
 
   const { currentQuestion, answers, markedQuestions, timeLeft, isSubmitted } = examState;
 
@@ -112,7 +184,10 @@ const PracticeTests: FC = () => {
   };
 
   const handleSubmit = () => {
-    setExamState((prev) => ({ ...prev, isSubmitted: true }));
+    if (window.confirm("Are you sure you want to submit the test? You won't be able to change your answers after this.")) {
+      setExamState((prev) => ({ ...prev, isSubmitted: true }));
+      incrementAttempts();
+    }
   };
 
   const handleRestart = () => {
@@ -120,7 +195,7 @@ const PracticeTests: FC = () => {
       currentQuestion: 0,
       answers: {},
       markedQuestions: new Set(),
-      timeLeft: EXAM_DURATION,
+      timeLeft: (currentTest?.duration || 10) * 60,
       isSubmitted: false,
     });
     setIsStarted(false);
@@ -128,13 +203,37 @@ const PracticeTests: FC = () => {
 
   const calculateScore = () => {
     let correct = 0;
-    practiceQuestions.forEach((q) => {
-      if (answers[q.id - 1] === q.correctAnswer) {
+    practiceQuestions.forEach((q, idx) => {
+      if (answers[idx] === q.correctAnswer) {
         correct++;
       }
     });
     return correct;
   };
+
+  if (loading) {
+    return (
+      <div className="pt-40 min-h-screen bg-gray-50 flex flex-col items-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+        <p className="text-gray-500 font-medium">Preparing your exam environment...</p>
+      </div>
+    );
+  }
+
+  if (error || !currentTest) {
+    return (
+      <div className="pt-40 min-h-screen bg-gray-50 flex flex-col items-center px-4">
+        <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-6">
+          <AlertCircle className="w-10 h-10 text-red-600" />
+        </div>
+        <h2 className="text-2xl font-bold text-secondary mb-2">Test Not Found</h2>
+        <p className="text-gray-500 mb-8 text-center max-w-md">The practice test you are looking for could not be loaded. Please try again or contact support.</p>
+        <Link href="/practice-tests">
+          <Button>Back to All Tests</Button>
+        </Link>
+      </div>
+    );
+  }
 
   // Start Screen
   if (!isStarted) {
@@ -157,46 +256,62 @@ const PracticeTests: FC = () => {
               {currentTest?.description ?? 'Test your knowledge with our comprehensive practice exam.'}
             </p>
 
-            <div className="grid grid-cols-3 gap-6 mb-10 max-w-md mx-auto">
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="font-display text-2xl font-bold text-secondary">{currentTest?.questions ?? practiceQuestions.length}</div>
-                <div className="text-gray-500 text-sm">Questions</div>
-              </div>
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="font-display text-2xl font-bold text-secondary">{currentTest?.duration ?? 30}</div>
-                <div className="text-gray-500 text-sm">Minutes</div>
-              </div>
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="font-display text-2xl font-bold text-secondary">60%</div>
-                <div className="text-gray-500 text-sm">Pass Score</div>
-              </div>
-            </div>
-
-            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-8 text-left max-w-md mx-auto">
-              <h3 className="font-semibold text-yellow-800 mb-2">Instructions:</h3>
-              <ul className="text-yellow-700 text-sm space-y-1">
-                <li>• Read each question carefully before answering</li>
-                <li>• You can mark questions for review</li>
-                <li>• Navigate between questions freely</li>
-                <li>• Submit before time runs out</li>
-              </ul>
-            </div>
-
-            {canStart ? (
-              <Button onClick={() => setIsStarted(true)} size="lg">
-                Start Exam
-              </Button>
-            ) : (
-              <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 mb-8 text-center max-w-md mx-auto">
-                <Lock className="w-8 h-8 text-primary mx-auto mb-3" />
-                <h3 className="font-semibold text-secondary mb-2">Premium Practice Test</h3>
-                <p className="text-gray-600 text-sm mb-4">
-                  Purchase this test to unlock unlimited attempts and detailed explanations.
+            {reattemptLimitReached ? (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-8 mb-8 text-center max-w-md mx-auto">
+                <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
+                <h3 className="font-bold text-secondary text-xl mb-2">Attempt Limit Reached</h3>
+                <p className="text-gray-600 mb-6">
+                  You have used your reattempt chance for this test. To continue practicing, please contact support for a reset.
                 </p>
-                <Button onClick={() => purchaseItem(testIdSafe)} size="lg" className="w-full">
-                  Buy Now to Unlock
-                </Button>
+                <Link href="/practice-tests">
+                  <Button variant="outline" className="w-full">Browse Other Tests</Button>
+                </Link>
               </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-3 gap-6 mb-10 max-w-md mx-auto">
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <div className="font-display text-2xl font-bold text-secondary">{practiceQuestions.length}</div>
+                    <div className="text-gray-500 text-sm">Questions</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <div className="font-display text-2xl font-bold text-secondary">{currentTest?.duration || 30}</div>
+                    <div className="text-gray-500 text-sm">Minutes</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <div className="font-display text-2xl font-bold text-secondary">60%</div>
+                    <div className="text-gray-500 text-sm">Pass Score</div>
+                  </div>
+                </div>
+
+                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-8 text-left max-w-md mx-auto">
+                  <h3 className="font-semibold text-yellow-800 mb-2">Instructions:</h3>
+                  <ul className="text-yellow-700 text-sm space-y-1">
+                    <li>• Read each question carefully before answering</li>
+                    <li>• You can mark questions for review</li>
+                    <li>• Navigate between questions freely</li>
+                    <li>• Submit before time runs out</li>
+                    {!currentTest?.isFree && <li>• You have only ONE reattempt for this test</li>}
+                  </ul>
+                </div>
+
+                {canStart ? (
+                  <Button onClick={() => setIsStarted(true)} size="lg">
+                    Start Exam
+                  </Button>
+                ) : (
+                  <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 mb-8 text-center max-w-md mx-auto">
+                    <Lock className="w-8 h-8 text-primary mx-auto mb-3" />
+                    <h3 className="font-semibold text-secondary mb-2">Premium Practice Test</h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      Purchase this test to unlock unlimited attempts and detailed explanations.
+                    </p>
+                    <Button onClick={() => purchaseItem(testIdSafe)} size="lg" className="w-full">
+                      Buy Now to Unlock
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </motion.div>
         </div>
@@ -262,11 +377,11 @@ const PracticeTests: FC = () => {
                 Review Answers
               </h3>
               <div className="space-y-4 max-h-96 overflow-y-auto">
-                {practiceQuestions.map((q) => {
-                  const isCorrect = answers[q.id - 1] === q.correctAnswer;
+                {practiceQuestions.map((q, idx) => {
+                  const isCorrect = answers[idx] === q.correctAnswer;
                   return (
                     <div
-                      key={q.id}
+                      key={idx}
                       className={`p-4 rounded-xl ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
                         }`}
                     >
@@ -276,18 +391,22 @@ const PracticeTests: FC = () => {
                         ) : (
                           <XCircle className="w-5 h-5 text-red-600 mt-0.5" />
                         )}
-                        <div>
-                          <p className="font-medium text-secondary mb-2">{q.question}</p>
+                        <div className="flex-1">
+                          <p className="text-secondary font-semibold mb-2">{q.question}</p>
                           <p className="text-sm text-gray-600">
                             Your answer: <span className={isCorrect ? 'text-green-600' : 'text-red-600'}>
-                              {answers[q.id - 1] !== undefined ? q.options[answers[q.id - 1]] : 'Not answered'}
+                              {answers[idx] !== undefined ? q.options[answers[idx]] : 'Not answered'}
                             </span>
                           </p>
                           {!isCorrect && (
-                            <p className="text-sm text-green-600">
-                              Correct answer: {q.options[q.correctAnswer]}
+                            <p className="text-sm text-green-600 mt-1">
+                              Correct answer: <span className="font-semibold">{q.options[q.correctAnswer]}</span>
                             </p>
                           )}
+                          <div className="mt-3 p-3 bg-white/50 rounded-lg">
+                            <p className="text-sm font-bold text-gray-700 mb-1">Explanation:</p>
+                            <ReadMore text={q.explanation || "No explanation provided."} />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -296,9 +415,9 @@ const PracticeTests: FC = () => {
               </div>
             </div>
 
-            <Button onClick={handleRestart} size="lg">
+            <Button onClick={handleRestart} size="lg" disabled={reattemptLimitReached}>
               <RotateCcw className="w-5 h-5 mr-2" />
-              Retake Exam
+              {reattemptLimitReached ? 'Attempt Limit Reached' : 'Retake Exam'}
             </Button>
           </motion.div>
         </div>
@@ -360,7 +479,7 @@ const PracticeTests: FC = () => {
                 </button>
               </div>
 
-              <h2 className="font-display text-xl md:text-2xl font-bold text-secondary mb-8">
+              <h2 className="font-display text-xl md:text-2xl font-semibold text-secondary mb-8">
                 {question.question}
               </h2>
 
@@ -387,14 +506,14 @@ const PracticeTests: FC = () => {
                       >
                         {String.fromCharCode(65 + index)}
                       </div>
-                      <span className="text-secondary">{option}</span>
+                      <span className="text-secondary text-sm">{option}</span>
                     </div>
                   </motion.button>
                 ))}
               </div>
 
-              {/* Instant Feedback (Free Test Only) */}
-              {currentTest?.isFree && answers[currentQuestion] !== undefined && (
+              {/* Instant Feedback (Free Test or After Submission Only) */}
+              {(currentTest?.isFree || isSubmitted) && answers[currentQuestion] !== undefined && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -419,7 +538,8 @@ const PracticeTests: FC = () => {
                       </p>
                       {question.explanation && (
                         <div className="text-sm bg-white/60 p-4 rounded-xl text-gray-800 border border-white">
-                          <strong>Explanation:</strong> {question.explanation}
+                          <p className="font-bold mb-1">Explanation:</p>
+                          <ReadMore text={question.explanation} />
                         </div>
                       )}
                     </div>

@@ -28,17 +28,20 @@ export async function POST(req: Request) {
       quantity: 1,
     }));
 
+    const hasService = items.some((i: any) => i.type === 'service');
+
     // Create Stripe Checkout Session
     const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items,
       mode: 'payment',
-      success_url: `${process.env.NEXTAUTH_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.NEXTAUTH_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}${hasService ? '&has_service=true' : ''}`,
       cancel_url: `${process.env.NEXTAUTH_URL}/cart`,
       customer_email: session.user.email as string,
       metadata: {
         userId: (session.user as any).id,
         itemIds: JSON.stringify(items.map((i: any) => i.id)),
+        hasService: hasService ? 'true' : 'false',
       },
     });
 
