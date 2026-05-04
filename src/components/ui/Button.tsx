@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, MouseEvent } from 'react';
 import { motion } from 'framer-motion';
 
 interface ButtonProps {
@@ -10,7 +10,7 @@ interface ButtonProps {
   children: ReactNode;
   className?: string;
   disabled?: boolean;
-  onClick?: () => void;
+  onClick?: (e?: MouseEvent<HTMLButtonElement>) => void;
   type?: 'button' | 'submit' | 'reset';
 }
 
