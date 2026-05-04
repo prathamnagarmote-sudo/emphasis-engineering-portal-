@@ -73,6 +73,7 @@ const PracticeTests: FC = () => {
   const { data: session } = useSession();
   const { isPurchased, purchaseItem } = useCart();
   const { currency, convertPrice } = useCurrency();
+  const [isBuying, setIsBuying] = useState(false);
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -249,9 +250,6 @@ const PracticeTests: FC = () => {
       </div>
     );
   }
-
-  const { currency, convertPrice } = useCurrency();
-  const [isBuying, setIsBuying] = useState(false);
 
   const handlePurchase = async () => {
     if (!currentTest) return;
