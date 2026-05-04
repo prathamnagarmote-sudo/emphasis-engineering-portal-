@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, Save, X, ChevronDown, ChevronUp } from "lucide-react";
 
-interface ServiceItem { serviceId: string; title: string; description: string; price: number; originalPrice?: number; features: string[]; calendlyUrl: string; }
+interface ServiceItem { serviceId: string; title: string; description: string; price: number; originalPrice?: number; popular?: boolean; features: string[]; calendlyUrl: string; }
 interface Step { stepNumber: number; title: string; description: string; content?: string; }
 interface FAQ { question: string; answer: string; }
 interface ServicePage {
