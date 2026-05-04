@@ -55,6 +55,10 @@ export default function ServicesManager({ headers }: { headers: any }) {
         body: JSON.stringify(editing) 
       });
       
+      if (res.status === 401) {
+        throw new Error("Unauthorized: Your session has expired. Please refresh and log in again.");
+      }
+
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Failed to save");
@@ -87,7 +91,7 @@ export default function ServicesManager({ headers }: { headers: any }) {
     if (!editing) return; 
     const randomId = Math.random().toString(36).substring(2, 8);
     const newId = `pkg-${randomId}`;
-    setEditing({ ...editing, services: [...editing.services, { serviceId: newId, title: "", description: "", price: 0, features: [], calendlyUrl: "https://calendly.com/" }] }); 
+    setEditing({ ...editing, services: [...editing.services, { serviceId: newId, title: "", description: "Premium service package", price: 0, features: [], calendlyUrl: "https://cal.com/emphasis-engineering-cbfkch/30min" }] }); 
   };
   const updatePackage = (idx: number, field: string, value: any) => { 
     if (!editing) return;

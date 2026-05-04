@@ -3,6 +3,7 @@
 import { useEffect, useState, ElementType, FC } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import {
   Check, ArrowLeft, ArrowRight, Briefcase, Building2, Code2, Target, Award,
@@ -233,6 +234,7 @@ const ServiceDetail: FC = () => {
   const router = useRouter();
   const { addToCart, removeFromCart, isInCart, purchaseItem } = useCart();
   const { formatPrice, currency, convertPrice } = useCurrency();
+  const { data: session } = useSession();
   
   const [service, setService] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -586,55 +588,68 @@ const ServiceDetail: FC = () => {
 
                   {/* CTAs */}
                   <div className="flex flex-col gap-3">
-                    <motion.button
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      disabled={isBuying === pkg.id}
-                      onClick={async () => {
-                        try {
-                          setIsBuying(pkg.id);
-                          
-                          const response = await fetch('/api/checkout', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              items: [{
-                                id: pkg.id,
-                                title: `${service.title} – ${pkg.title}`,
-                                price: convertPrice(pkg.price),
-                                type: 'service'
-                              }],
-                              currency: currency.code
-                            }),
-                          });
+                    {session?.user && (session.user as any).purchasedContent?.includes(pkg.id) ? (
+                      <a href={pkg.calendlyUrl || "https://cal.com/emphasis-engineering-cbfkch/30min"} target="_blank" rel="noopener noreferrer" className="w-full">
+                        <motion.button
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
+                          className="w-full py-4 rounded-xl font-bold text-sm bg-purple-600 text-white shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2"
+                        >
+                          <Calendar className="w-4 h-4" />
+                          Schedule Now
+                        </motion.button>
+                      </a>
+                    ) : (
+                      <motion.button
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        disabled={isBuying === pkg.id}
+                        onClick={async () => {
+                          try {
+                            setIsBuying(pkg.id);
+                            
+                            const response = await fetch('/api/checkout', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                items: [{
+                                  id: pkg.id,
+                                  title: `${service.title} – ${pkg.title}`,
+                                  price: convertPrice(pkg.price),
+                                  type: 'service'
+                                }],
+                                currency: currency.code
+                              }),
+                            });
 
-                          const data = await response.json();
-                          if (data.url) {
-                            window.location.href = data.url;
-                          } else {
-                            throw new Error(data.error || 'Failed to create checkout session');
+                            const data = await response.json();
+                            if (data.url) {
+                              window.location.href = data.url;
+                            } else {
+                              throw new Error(data.error || 'Failed to create checkout session');
+                            }
+                          } catch (err: any) {
+                            alert(err.message);
+                          } finally {
+                            setIsBuying(null);
                           }
-                        } catch (err: any) {
-                          alert(err.message);
-                        } finally {
-                          setIsBuying(null);
-                        }
-                      }}
-                      className={`w-full py-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${isPopular
-                        ? 'text-white'
-                        : 'bg-secondary text-white hover:bg-secondary/90'
-                        }`}
-                      style={isPopular ? { background: 'linear-gradient(135deg, #3F9FA3, #2d7a7d)', boxShadow: '0 4px 16px rgba(63,159,163,0.3)' } : {}}
-                    >
-                      {isBuying === pkg.id ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          Processing...
-                        </>
-                      ) : (
-                        "Buy Now"
-                      )}
-                    </motion.button>
+                        }}
+                        className={`w-full py-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${isPopular
+                          ? 'text-white'
+                          : 'bg-secondary text-white hover:bg-secondary/90'
+                          }`}
+                        style={isPopular ? { background: 'linear-gradient(135deg, #3F9FA3, #2d7a7d)', boxShadow: '0 4px 16px rgba(63,159,163,0.3)' } : {}}
+                      >
+                        {isBuying === pkg.id ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          "Buy Now"
+                        )}
+                      </motion.button>
+                    )}
 
                     <motion.button
                       whileHover={{ scale: 1.03 }}

@@ -354,7 +354,7 @@ const PracticeTests: FC = () => {
 
                 {canStart ? (
                   <Button onClick={() => setIsStarted(true)} size="lg">
-                    Start Exam
+                    {currentTest?.isFree ? 'Try Now' : 'Start Exam'}
                   </Button>
                 ) : (
                   <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 mb-8 text-center max-w-md mx-auto">

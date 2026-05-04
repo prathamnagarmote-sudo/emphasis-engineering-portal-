@@ -242,43 +242,53 @@ const TestCard: FC<{ test: PracticeTest; index: number }> = ({ test, index }) =>
             <span className="text-xs text-gray-400">({test.reviews || 100})</span>
           </div>
           <div className="text-right">
-            {test.originalPrice && (
-              <span className="text-gray-400 text-xs line-through mr-1">{formatPrice(test.originalPrice)}</span>
+            {test.isFree ? (
+              <span className="text-green-600 font-extrabold text-lg uppercase">Free</span>
+            ) : (
+              <>
+                {test.originalPrice && (
+                  <span className="text-gray-400 text-xs line-through mr-1">{formatPrice(test.originalPrice)}</span>
+                )}
+                <span className="text-primary font-extrabold text-xl">{formatPrice(test.price)}</span>
+              </>
             )}
-            <span className="text-primary font-extrabold text-xl">{formatPrice(test.price)}</span>
           </div>
         </div>
 
         <div className="flex gap-2">
           <Link href={`/practice-tests/${testId}`} className="flex-1">
-            <Button className="w-full text-sm">Buy Now</Button>
+            <Button className="w-full text-sm">
+              {test.isFree ? 'Try Now' : 'Buy Now'}
+            </Button>
           </Link>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (inCart) {
-                removeFromCart(testId);
-              } else {
-                addToCart({ id: testId, title: test.title, price: test.price, type: 'test', thumbnail: test.image });
-              }
-            }}
-            className={`h-11 rounded-xl border-2 flex items-center justify-center gap-2 transition-all ${inCart
-                ? 'px-4 border-red-100 bg-red-50 text-red-600 hover:bg-red-100'
-                : 'w-11 border-gray-200 text-gray-500 hover:border-primary hover:text-primary hover:bg-primary/5'
-              }`}
-            title={inCart ? 'Remove from cart' : 'Add to cart'}
-          >
-            {inCart ? (
-              <>
-                <Trash2 className="w-4 h-4" />
-                <span className="text-xs font-bold">Remove</span>
-              </>
-            ) : (
-              <ShoppingCart className="w-4 h-4" />
-            )}
-          </motion.button>
+          {!test.isFree && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (inCart) {
+                  removeFromCart(testId);
+                } else {
+                  addToCart({ id: testId, title: test.title, price: test.price, type: 'test', thumbnail: test.image });
+                }
+              }}
+              className={`h-11 rounded-xl border-2 flex items-center justify-center gap-2 transition-all ${inCart
+                  ? 'px-4 border-red-100 bg-red-50 text-red-600 hover:bg-red-100'
+                  : 'w-11 border-gray-200 text-gray-500 hover:border-primary hover:text-primary hover:bg-primary/5'
+                }`}
+              title={inCart ? 'Remove from cart' : 'Add to cart'}
+            >
+              {inCart ? (
+                <>
+                  <Trash2 className="w-4 h-4" />
+                  <span className="text-xs font-bold">Remove</span>
+                </>
+              ) : (
+                <ShoppingCart className="w-4 h-4" />
+              )}
+            </motion.button>
+          )}
         </div>
       </div>
     </motion.div>

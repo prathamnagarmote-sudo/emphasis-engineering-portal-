@@ -1,11 +1,18 @@
-import connectToDatabase from "../src/lib/mongodb";
-import ServicePage from "../src/models/Service";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import path from "path";
 
-async function checkServices() {
-  await connectToDatabase();
-  const services = await ServicePage.find({}, { pageId: 1, title: 1 }).lean();
-  console.log("Services in DB:", JSON.stringify(services, null, 2));
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
+
+const MONGODB_URI = process.env.MONGODB_URI;
+
+async function check() {
+  await mongoose.connect(MONGODB_URI!);
+  const schema = new mongoose.Schema({}, { strict: false });
+  const ServicePage = mongoose.model("ServicePage", schema, "servicepages");
+  const data = await ServicePage.find({}).lean();
+  console.log(JSON.stringify(data, null, 2));
   process.exit(0);
 }
 
-checkServices();
+check();

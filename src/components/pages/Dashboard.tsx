@@ -77,9 +77,15 @@ export default function Dashboard() {
     const allContent = [
       ...dbData.courses.map(c => ({ ...c, type: 'course', image: c.thumbnail, id: c.id || c._id })),
       ...dbData.tests.map(p => ({ ...p, type: 'test', image: p.image, id: p.id || p.testId || p._id })),
-      ...dbData.services.map(s => ({ ...s, type: 'service', image: s.image, id: s.id || s.pageId || s._id }))
+      ...dbData.services.flatMap(s => (s.packages || []).map((pkg: any) => ({
+        ...s,
+        id: pkg.id, // Use package ID for matching
+        title: `${s.title} – ${pkg.title}`,
+        type: 'service',
+        image: s.image,
+        calendlyUrl: pkg.calendlyUrl || s.calendlyLink || "https://cal.com/emphasis-engineering-cbfkch/30min"
+      })))
     ];
-    // Simple filter: if purchasedIds includes the id OR if we are in dev and want to see everything
     return allContent.filter(c => purchasedIds.includes(c.id));
   }, [purchasedIds, dbData]);
 
@@ -219,7 +225,7 @@ export default function Dashboard() {
                             </span>
                             
                             {content.type === 'service' ? (
-                              <a href="https://cal.com/emphasis-engineering-cbfkch/30min" target="_blank" rel="noopener noreferrer">
+                              <a href={content.calendlyUrl || "https://cal.com/emphasis-engineering-cbfkch/30min"} target="_blank" rel="noopener noreferrer">
                                 <button className="flex items-center gap-2 px-4 py-2 bg-purple-600/10 text-purple-600 hover:bg-purple-600 hover:text-white rounded-lg font-semibold transition-colors text-sm">
                                   <Calendar className="w-4 h-4" />
                                   Schedule Meeting

@@ -144,8 +144,8 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency.code,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     }).format(converted);
   };
 

@@ -12,13 +12,11 @@ import {
   CalendarDays
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
-import { courses } from "@/data/courses";
-import { practiceTests } from "@/data/practiceTests";
-import { services } from "@/data/services";
 
 export default function AdminDashboard() {
   const { data: session } = useSession();
   const [users, setUsers] = useState<any[]>([]);
+  const [dbData, setDbData] = useState<{ courses: any[], tests: any[], services: any[] }>({ courses: [], tests: [], services: [] });
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
@@ -26,35 +24,54 @@ export default function AdminDashboard() {
   const productDictionary = useMemo(() => {
     const dict: Record<string, { title: string; price: number; type: string }> = {};
     
-    courses.forEach(c => dict[c.id] = { title: c.title, price: c.price, type: 'Course' });
-    practiceTests.forEach(p => dict[p.id] = { title: p.title, price: p.price || 0, type: 'Practice Test' });
-    services.forEach(s => {
-      (s.packages || []).forEach(pkg => {
+    dbData.courses.forEach(c => dict[c.id || c._id] = { title: c.title, price: c.price, type: 'Course' });
+    dbData.tests.forEach(p => dict[p.id || p.testId || p._id] = { title: p.title, price: p.price || 0, type: 'Practice Test' });
+    dbData.services.forEach(s => {
+      (s.packages || []).forEach((pkg: any) => {
         dict[pkg.id] = { title: `${s.title} - ${pkg.title}`, price: pkg.price, type: 'Service' };
       });
     });
     
     return dict;
-  }, []);
+  }, [dbData]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch("/api/admin/users");
-        if (res.ok) {
-          const data = await res.json();
+        const [resUsers, resCourses, resTests, resServices] = await Promise.all([
+          fetch("/api/admin/users"),
+          fetch("/api/courses"),
+          fetch("/api/practice-tests"),
+          fetch("/api/services")
+        ]);
+
+        if (resUsers.ok) {
+          const data = await resUsers.json();
           setUsers(data.users || []);
         }
+
+        const [courses, tests, services] = await Promise.all([
+          resCourses.json(),
+          resTests.json(),
+          resServices.json()
+        ]);
+
+        setDbData({ 
+          courses: Array.isArray(courses) ? courses : [], 
+          tests: Array.isArray(tests) ? tests : [], 
+          services: Array.isArray(services) ? services : [] 
+        });
+
       } catch (e) {
-        console.error("Failed to fetch users", e);
+        console.error("Failed to fetch admin data", e);
       } finally {
         setLoading(false);
       }
     };
     if (session && (session.user as any).role === "admin") {
-      fetchUsers();
+      fetchData();
     } else if (session) {
-      setLoading(false); // They aren't admin, UI will handle redirect via page.tsx
+      setLoading(false);
     }
   }, [session]);
 
