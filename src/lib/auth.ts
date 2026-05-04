@@ -106,14 +106,15 @@ export const authOptions: NextAuthOptions = {
         try {
           await connectToDatabase();
           // Find by email to be safe for both credentials and OAuth users
-          const dbUser = await User.findOne({ email: token.email }).select('purchasedContent role _id');
+          const dbUser = await User.findOne({ email: token.email }).select('purchasedContent scheduledServiceIds role _id');
           if (dbUser) {
             token.id = dbUser._id.toString();
             token.role = dbUser.role;
             token.purchasedContent = dbUser.purchasedContent || [];
+            token.scheduledServiceIds = dbUser.scheduledServiceIds || [];
           }
         } catch (e) {
-          console.error("Failed to fetch purchased content for token", e);
+          console.error("Failed to fetch user data for token", e);
         }
       }
       return token;
@@ -123,6 +124,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         (session.user as any).purchasedContent = token.purchasedContent as string[] || [];
+        (session.user as any).scheduledServiceIds = token.scheduledServiceIds as string[] || [];
       }
       return session;
     },

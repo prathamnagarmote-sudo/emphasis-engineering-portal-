@@ -568,6 +568,13 @@ const ServiceDetail: FC = () => {
                     </div>
                   )}
 
+                  {/* Purchased badge */}
+                  {session?.user && (session.user as any).purchasedContent?.includes(pkg.id) && (
+                    <div className="absolute top-5 left-5 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" /> Purchased
+                    </div>
+                  )}
+
                   <h3 className="font-bold text-secondary text-xl mb-2">{pkg.title}</h3>
 
                   <div className="flex items-baseline gap-1 mb-6">
@@ -589,16 +596,42 @@ const ServiceDetail: FC = () => {
                   {/* CTAs */}
                   <div className="flex flex-col gap-3">
                     {session?.user && (session.user as any).purchasedContent?.includes(pkg.id) ? (
-                      <a href={pkg.calendlyUrl || "https://cal.com/emphasis-engineering-cbfkch/30min"} target="_blank" rel="noopener noreferrer" className="w-full">
-                        <motion.button
-                          whileHover={{ scale: 1.03 }}
-                          whileTap={{ scale: 0.97 }}
-                          className="w-full py-4 rounded-xl font-bold text-sm bg-purple-600 text-white shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2"
-                        >
-                          <Calendar className="w-4 h-4" />
-                          Schedule Now
-                        </motion.button>
-                      </a>
+                      <div className="w-full">
+                        {(session.user as any).scheduledServiceIds?.includes(pkg.id) ? (
+                           <div className="w-full py-4 rounded-xl font-bold text-sm bg-green-100 text-green-700 flex items-center justify-center gap-2 border border-green-200">
+                             <CheckCircle className="w-4 h-4" />
+                             Scheduled
+                           </div>
+                        ) : (
+                          <a 
+                            href={pkg.calendlyUrl || "https://cal.com/emphasis-engineering-cbfkch/30min"} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="w-full"
+                            onClick={async () => {
+                              try {
+                                await fetch('/api/purchase/schedule', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ serviceId: pkg.id })
+                                });
+                                // Optionally refresh session or just let it update on next load
+                              } catch (e) {
+                                console.error("Failed to mark as scheduled", e);
+                              }
+                            }}
+                          >
+                            <motion.button
+                              whileHover={{ scale: 1.03 }}
+                              whileTap={{ scale: 0.97 }}
+                              className="w-full py-4 rounded-xl font-bold text-sm bg-purple-600 text-white shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2"
+                            >
+                              <Calendar className="w-4 h-4" />
+                              Schedule Now
+                            </motion.button>
+                          </a>
+                        )}
+                      </div>
                     ) : (
                       <motion.button
                         whileHover={{ scale: 1.03 }}
@@ -651,24 +684,26 @@ const ServiceDetail: FC = () => {
                       </motion.button>
                     )}
 
-                    <motion.button
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      disabled={isBuying === pkg.id}
-                      onClick={() => {
-                        if (inCart) {
-                          handleRemoveFromCart(pkg.id);
-                        } else {
-                          handleAddToCart(pkg.id, pkg.title, pkg.price);
-                        }
-                      }}
-                      className={`w-full py-4 rounded-xl text-sm font-bold border-2 transition-all ${inCart
-                        ? 'border-red-200 bg-red-50 text-red-500 hover:border-red-400 hover:bg-red-100'
-                        : 'border-gray-200 text-gray-600 hover:border-primary hover:text-primary hover:bg-primary/5'
-                        }`}
-                    >
-                      {inCart ? '✕ Remove from Cart' : 'Add to Cart'}
-                    </motion.button>
+                    {!(session?.user && (session.user as any).purchasedContent?.includes(pkg.id)) && (
+                      <motion.button
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        disabled={isBuying === pkg.id}
+                        onClick={() => {
+                          if (inCart) {
+                            handleRemoveFromCart(pkg.id);
+                          } else {
+                            handleAddToCart(pkg.id, pkg.title, pkg.price);
+                          }
+                        }}
+                        className={`w-full py-4 rounded-xl text-sm font-bold border-2 transition-all ${inCart
+                          ? 'border-red-200 bg-red-50 text-red-500 hover:border-red-400 hover:bg-red-100'
+                          : 'border-gray-200 text-gray-600 hover:border-primary hover:text-primary hover:bg-primary/5'
+                          }`}
+                      >
+                        {inCart ? '✕ Remove from Cart' : 'Add to Cart'}
+                      </motion.button>
+                    )}
                   </div>
                 </motion.div>
               );

@@ -21,7 +21,6 @@ export async function POST(req: Request) {
         currency: currency.toLowerCase(),
         product_data: {
           name: item.title,
-          description: `Access to ${item.title}`,
         },
         unit_amount: Math.round(item.price * 100),
       },

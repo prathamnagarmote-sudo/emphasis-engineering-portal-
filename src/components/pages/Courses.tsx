@@ -541,7 +541,7 @@ const MentorVideoSection: FC = () => {
                   </motion.button>
                   <div className="text-center">
                     <p className="text-white font-semibold text-sm">Why Our Courses Work</p>
-                    <p className="text-gray-400 text-xs">4 min message from Dr. Maxwell</p>
+                    <p className="text-gray-400 text-xs">4 min message from Maxwell Oyom</p>
                   </div>
                 </div>
 
@@ -553,8 +553,8 @@ const MentorVideoSection: FC = () => {
                       alt="Dr. Maxwell"
                     />
                     <div>
-                      <div className="text-white font-semibold text-sm">Dr. Maxwell Oyom</div>
-                      <div className="text-gray-400 text-xs">CEng, FIET - Founder & Lead Instructor</div>
+                      <div className="text-white font-semibold text-sm">Maxwell Oyom</div>
+                      <div className="text-gray-400 text-xs"> Lead Instructor</div>
                     </div>
                   </div>
                 </div>
@@ -569,7 +569,7 @@ const MentorVideoSection: FC = () => {
             transition={{ delay: 0.45, duration: 0.4 }}
             className="absolute -bottom-5 -left-5 bg-white px-5 py-4 rounded-2xl shadow-2xl"
           >
-            <div className="text-2xl font-bold text-primary">10K+</div>
+            <div className="text-2xl font-bold text-primary">2K+</div>
             <div className="text-gray-500 text-xs mt-0.5">Engineers trained globally</div>
           </motion.div>
 
@@ -580,7 +580,7 @@ const MentorVideoSection: FC = () => {
             transition={{ delay: 0.55, duration: 0.4 }}
             className="absolute -top-5 -right-5 bg-white px-5 py-4 rounded-2xl shadow-2xl"
           >
-            <div className="text-2xl font-bold text-green-600">95%</div>
+            <div className="text-2xl font-bold text-green-600">100%</div>
             <div className="text-gray-500 text-xs mt-0.5">First-attempt pass rate</div>
           </motion.div>
         </motion.div>
@@ -730,7 +730,7 @@ const RoadmapSection: FC = () => {
                 </div>
                 <div>
                   <div className="text-secondary font-bold text-sm">Structured. Clear. Proven.</div>
-                  <div className="text-gray-500 text-xs">Used by 10,000+ engineers worldwide</div>
+                  <div className="text-gray-500 text-xs">Used by 2,000+ engineers worldwide</div>
                 </div>
               </div>
             </div>
@@ -760,7 +760,7 @@ const TestimonialsSection: FC = () => (
           <Star className="w-3 h-3 fill-primary text-primary" /> Success Stories
         </span>
         <h2 className="text-4xl md:text-5xl font-bold text-white">
-          Trusted by <span className="text-primary">10,000+ Engineers</span>
+          Trusted by <span className="text-primary">2,000+ Engineers</span>
         </h2>
         <p className="text-gray-400 mt-4 max-w-xl mx-auto text-lg">
           Real results from real engineers who followed the pathway

@@ -41,6 +41,11 @@ const UserSchema = new mongoose.Schema(
         type: String, // Storing string IDs like 'imech-101' for now
       }
     ],
+    scheduledServiceIds: [
+      {
+        type: String, // IDs of services that have been scheduled
+      }
+    ],
   },
   {
     timestamps: true,
