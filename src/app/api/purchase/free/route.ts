@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import dbConnect from '@/lib/dbConnect';
+import connectToDatabase from '@/lib/mongodb';
 import User from '@/models/User';
 
 export async function POST(req: Request) {
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Item ID is required' }, { status: 400 });
     }
 
-    await dbConnect();
+    await connectToDatabase();
     
     const user = await User.findOne({ email: session.user.email });
     if (!user) {

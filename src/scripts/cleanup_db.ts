@@ -1,9 +1,9 @@
-import dbConnect from '../lib/dbConnect';
+import connectToDatabase from '../lib/mongodb';
 import ServicePage from '../models/ServicePage';
 
 async function cleanup() {
   try {
-    await dbConnect();
+    await connectToDatabase();
     console.log('Connected to DB');
 
     const pages = await ServicePage.find({});
