@@ -232,7 +232,7 @@ const ServiceDetail: FC = () => {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { addToCart, removeFromCart, isInCart, purchaseItem } = useCart();
-  const { formatPrice } = useCurrency();
+  const { formatPrice, currency, convertPrice } = useCurrency();
   
   const [service, setService] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -595,9 +595,10 @@ const ServiceDetail: FC = () => {
                               items: [{
                                 id: pkg.id,
                                 title: `${service.title} – ${pkg.title}`,
-                                price: pkg.price,
+                                price: convertPrice(pkg.price),
                                 type: 'service'
-                              }]
+                              }],
+                              currency: currency.code
                             }),
                           });
 

@@ -10,7 +10,7 @@ import Button from '@/components/ui/Button';
 
 const Cart: FC = () => {
   const { items, removeFromCart, clearCart, totalPrice, purchaseItem } = useCart();
-  const { formatPrice } = useCurrency();
+  const { formatPrice, currency, convertPrice } = useCurrency();
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
@@ -26,9 +26,10 @@ const Cart: FC = () => {
           items: items.map(item => ({
             id: item.id,
             title: item.title,
-            price: item.price,
+            price: convertPrice(item.price),
             type: item.type
-          }))
+          })),
+          currency: currency.code
         }),
       });
 

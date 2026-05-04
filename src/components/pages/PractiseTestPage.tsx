@@ -3,11 +3,13 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, ChevronLeft, ChevronRight, Flag, CheckCircle, XCircle, AlertCircle, RotateCcw } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { AnimatePresence } from 'framer-motion';
 // import { practiceTests, practiceQuestions } from '@/data/practiceTests';
 import Button from '@/components/ui/Button';
 import { useCart } from '@/context/CartContext';
+import { useCurrency } from '@/context/CurrencyContext';
 import { Lock } from 'lucide-react';
 import Link from 'next/link';
 
@@ -67,7 +69,10 @@ const ReadMore: FC<{ text: string }> = ({ text }) => {
 const PracticeTests: FC = () => {
   const params = useParams();
   const testIdFromUrl = params?.id as string | undefined;
+  const router = useRouter();
+  const { data: session } = useSession();
   const { isPurchased, purchaseItem } = useCart();
+  const { currency, convertPrice } = useCurrency();
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -245,6 +250,44 @@ const PracticeTests: FC = () => {
     );
   }
 
+  const { currency, convertPrice } = useCurrency();
+  const [isBuying, setIsBuying] = useState(false);
+
+  const handlePurchase = async () => {
+    if (!currentTest) return;
+    if (!session) {
+      router.push(`/login?callbackUrl=${window.location.pathname}`);
+      return;
+    }
+
+    setIsBuying(true);
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: [{
+            id: currentTest.testId,
+            title: currentTest.title,
+            price: convertPrice(currentTest.isFree ? 0 : 25), // Fallback price if not specified
+            type: 'practice-test'
+          }],
+          currency: currency.code
+        }),
+      });
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Failed to create checkout session');
+      }
+    } catch (err: any) {
+      alert(err.message);
+      setIsBuying(false);
+    }
+  };
+
   // Start Screen
   if (!isStarted) {
     return (
@@ -316,8 +359,8 @@ const PracticeTests: FC = () => {
                     <p className="text-gray-600 text-sm mb-4">
                       Purchase this test to unlock unlimited attempts and detailed explanations.
                     </p>
-                    <Button onClick={() => purchaseItem(testIdSafe)} size="lg" className="w-full">
-                      Buy Now to Unlock
+                    <Button onClick={handlePurchase} disabled={isBuying} size="lg" className="w-full">
+                      {isBuying ? "Processing..." : "Buy Now to Unlock"}
                     </Button>
                   </div>
                 )}

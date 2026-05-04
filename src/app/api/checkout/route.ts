@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { items } = await req.json();
+    const { items, currency = 'cad' } = await req.json();
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: 'No items in checkout' }, { status: 400 });
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 
     const line_items = items.map((item: any) => ({
       price_data: {
-        currency: 'gbp',
+        currency: currency.toLowerCase(),
         product_data: {
           name: item.title,
           description: `Access to ${item.title}`,

@@ -228,6 +228,8 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
     }
   }, [selectedLesson, purchased, selectedLessonIndex]);
 
+  const { currency, convertPrice } = useCurrency();
+
   const handlePurchase = async () => {
     if (!course) return;
 
@@ -246,9 +248,10 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
           items: [{
             id: course.id,
             title: course.title,
-            price: course.price,
+            price: convertPrice(course.price),
             type: 'course'
-          }]
+          }],
+          currency: currency.code
         }),
       });
 

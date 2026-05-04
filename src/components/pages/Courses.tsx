@@ -154,12 +154,46 @@ const CourseCard: FC<{ course: Course; index: number; onPreview: (c: Course) => 
   course, index, onPreview,
 }) => {
   const router = useRouter();
-  const { isPurchased, purchaseItem, addToCart, isInCart, removeFromCart } = useCart();
-  const { formatPrice } = useCurrency();
+  const { isPurchased, addToCart, isInCart, removeFromCart } = useCart();
+  const { formatPrice, currency, convertPrice } = useCurrency();
   const purchased = isPurchased(course.id);
   const inCart = isInCart(course.id);
   const savings = Math.round(((course.originalPrice - course.price) / course.originalPrice) * 100);
   const lc = levelColor(course.level);
+
+  const [isBuying, setIsBuying] = useState(false);
+
+  const handlePurchase = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (purchased) return;
+    
+    setIsBuying(true);
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: [{
+            id: course.id,
+            title: course.title,
+            price: convertPrice(course.price),
+            type: 'course'
+          }],
+          currency: currency.code
+        }),
+      });
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Failed to create checkout session');
+      }
+    } catch (err: any) {
+      alert(err.message);
+      setIsBuying(false);
+    }
+  };
 
   return (
     <motion.div
@@ -267,7 +301,9 @@ const CourseCard: FC<{ course: Course; index: number; onPreview: (c: Course) => 
             </Button>
           ) : (
             <>
-              <Button onClick={() => purchaseItem(course.id)} className="flex-1 text-sm">Buy Now</Button>
+              <Button onClick={handlePurchase} disabled={isBuying} className="flex-1 text-sm">
+                {isBuying ? "Processing..." : "Buy Now"}
+              </Button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
