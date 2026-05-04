@@ -163,8 +163,8 @@ const CourseCard: FC<{ course: Course; index: number; onPreview: (c: Course) => 
 
   const [isBuying, setIsBuying] = useState(false);
 
-  const handlePurchase = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handlePurchase = async (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     if (purchased) return;
     
     setIsBuying(true);
