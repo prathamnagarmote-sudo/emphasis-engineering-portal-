@@ -240,6 +240,12 @@ const ServiceDetail: FC = () => {
   const [isBuying, setIsBuying] = useState<string | null>(null);
 
   useEffect(() => {
+    const handlePageShow = () => setIsBuying(null);
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
+
+  useEffect(() => {
     async function fetchService() {
       try {
         const decodedId = decodeURIComponent(id || '');

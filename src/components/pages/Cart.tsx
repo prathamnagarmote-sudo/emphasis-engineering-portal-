@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { Trash2, ShoppingBag, ArrowRight, CreditCard, Shield, Tag } from 'lucide-react';
@@ -13,6 +13,12 @@ const Cart: FC = () => {
   const { formatPrice, currency, convertPrice } = useCurrency();
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+  useEffect(() => {
+    const handlePageShow = () => setIsCheckingOut(false);
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
 
   const handleCheckout = async () => {
     if (items.length === 0) return;

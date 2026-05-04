@@ -29,7 +29,7 @@ export default function PracticeTestsManager({ headers, uploadFile }: { headers:
   const fileRef = useRef<HTMLInputElement>(null);
   const excelRef = useRef<HTMLInputElement>(null);
 
-  const fetchTests = async () => { setLoading(true); const res = await fetch("/api/dev/practice-tests", { headers }); setTests(await res.json()); setLoading(false); };
+  const fetchTests = async () => { setLoading(true); const res = await fetch("/api/dev/practice-tests", { headers, cache: 'no-store' }); setTests(await res.json()); setLoading(false); };
   useEffect(() => { fetchTests(); }, []);
 
   const loadFullTest = async (testId: string) => {
@@ -59,7 +59,7 @@ export default function PracticeTestsManager({ headers, uploadFile }: { headers:
 
     setSaving(true);
     editing.questionsCount = editing.questions.length;
-    const url = isNew ? "/api/dev/practice-tests" : `/api/dev/practice-tests/${editing.testId || editing._id}`;
+    const url = isNew ? "/api/dev/practice-tests" : `/api/dev/practice-tests/${editing._id || editing.testId}`;
     try {
       const res = await fetch(url, { method: isNew ? "POST" : "PUT", headers, body: JSON.stringify(editing) });
       if (!res.ok) {
@@ -68,7 +68,7 @@ export default function PracticeTestsManager({ headers, uploadFile }: { headers:
       } else {
         alert("✅ Practice test saved successfully!");
         setEditing(null); 
-        fetchTests();
+        await fetchTests();
       }
     } catch (e: any) {
       alert(`❌ Network error: ${e.message}`);
@@ -78,8 +78,14 @@ export default function PracticeTestsManager({ headers, uploadFile }: { headers:
 
   const handleDelete = async (t: PracticeTest) => {
     if (!confirm(`Delete "${t.title}"?`)) return;
-    await fetch(`/api/dev/practice-tests/${t.testId || t._id}`, { method: "DELETE", headers });
-    fetchTests();
+    try {
+      const res = await fetch(`/api/dev/practice-tests/${t._id || t.testId}`, { method: "DELETE", headers });
+      if (!res.ok) throw new Error("Failed to delete");
+      alert("✅ Deleted successfully");
+      fetchTests();
+    } catch (e: any) {
+      alert(`❌ Error: ${e.message}`);
+    }
   };
 
   const handleCSVImport = async () => {

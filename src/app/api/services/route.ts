@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import ServicePage from "@/models/Service";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     await connectToDatabase();
@@ -20,12 +22,15 @@ export async function GET() {
         description: step.description,
         icon: step.icon || "CheckSquare"
       })) || [],
-      packages: s.packages?.map((pkg: any) => ({
-        id: pkg.id,
+      packages: s.services?.map((pkg: any) => ({
+        id: pkg.serviceId,
         title: pkg.title,
+        description: pkg.description,
         price: pkg.price,
+        originalPrice: pkg.originalPrice,
         popular: pkg.popular || false,
-        features: pkg.features || []
+        features: pkg.features || [],
+        calendlyUrl: pkg.calendlyUrl
       })) || [],
       faqs: s.faqs?.map((faq: any) => ({
         question: faq.question,

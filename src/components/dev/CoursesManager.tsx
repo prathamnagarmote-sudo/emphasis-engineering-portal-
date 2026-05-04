@@ -26,7 +26,7 @@ export default function CoursesManager({ headers, uploadFile }: { headers: any; 
 
   const fetchCourses = async () => {
     setLoading(true);
-    const res = await fetch("/api/dev/courses", { headers });
+    const res = await fetch("/api/dev/courses", { headers, cache: 'no-store' });
     setCourses(await res.json());
     setLoading(false);
   };
@@ -37,15 +37,39 @@ export default function CoursesManager({ headers, uploadFile }: { headers: any; 
     if (!editing) return;
     setSaving(true);
     editing.lessonsCount = editing.curriculum.reduce((sum, s) => sum + s.lessons.length, 0);
-    const url = isNew ? "/api/dev/courses" : `/api/dev/courses/${editing.courseId || editing._id}`;
-    await fetch(url, { method: isNew ? "POST" : "PUT", headers, body: JSON.stringify(editing) });
-    setSaving(false); setEditing(null); fetchCourses();
+    try {
+      const url = isNew ? "/api/dev/courses" : `/api/dev/courses/${editing._id || editing.courseId}`;
+      const res = await fetch(url, { 
+        method: isNew ? "POST" : "PUT", 
+        headers, 
+        body: JSON.stringify(editing) 
+      });
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to save");
+      }
+      
+      alert("✅ Course saved successfully!");
+      setEditing(null); 
+      await fetchCourses();
+    } catch (error: any) {
+      alert(`❌ Error: ${error.message}`);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleDelete = async (c: Course) => {
     if (!confirm(`Delete "${c.title}"?`)) return;
-    await fetch(`/api/dev/courses/${c.courseId || c._id}`, { method: "DELETE", headers });
-    fetchCourses();
+    try {
+      const res = await fetch(`/api/dev/courses/${c._id || c.courseId}`, { method: "DELETE", headers });
+      if (!res.ok) throw new Error("Failed to delete");
+      alert("✅ Deleted successfully");
+      fetchCourses();
+    } catch (error: any) {
+      alert(`❌ Error: ${error.message}`);
+    }
   };
 
   const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

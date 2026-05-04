@@ -18,6 +18,7 @@ const ServiceItemSchema = new mongoose.Schema({
   description: { type: String, required: true },
   price: { type: Number, required: true },
   originalPrice: { type: Number },
+  popular: { type: Boolean, default: false },
   features: [{ type: String }],
   calendlyUrl: { type: String, required: true }, // Redirect here after payment
 });

@@ -35,7 +35,7 @@ export default function BlogsManager({ headers, uploadFile }: { headers: any; up
 
   const fetchBlogs = async () => {
     setLoading(true);
-    const res = await fetch("/api/dev/blogs", { headers });
+    const res = await fetch("/api/dev/blogs", { headers, cache: 'no-store' });
     setBlogs(await res.json());
     setLoading(false);
   };
@@ -45,19 +45,42 @@ export default function BlogsManager({ headers, uploadFile }: { headers: any; up
   const handleSave = async () => {
     if (!editing) return;
     setSaving(true);
-    const url = isNew ? "/api/dev/blogs" : `/api/dev/blogs/${editing.blogId || editing._id}`;
-    const method = isNew ? "POST" : "PUT";
-    if (!editing.date) editing.date = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-    await fetch(url, { method, headers, body: JSON.stringify(editing) });
-    setSaving(false);
-    setEditing(null);
-    fetchBlogs();
+    try {
+      const url = isNew ? "/api/dev/blogs" : `/api/dev/blogs/${editing._id || editing.blogId}`;
+      const method = isNew ? "POST" : "PUT";
+      if (!editing.date) editing.date = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      
+      const res = await fetch(url, { 
+        method, 
+        headers, 
+        body: JSON.stringify(editing) 
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to save");
+      }
+
+      alert("✅ Blog post saved successfully!");
+      setEditing(null);
+      await fetchBlogs();
+    } catch (error: any) {
+      alert(`❌ Error: ${error.message}`);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleDelete = async (blog: Blog) => {
     if (!confirm(`Delete "${blog.title}"?`)) return;
-    await fetch(`/api/dev/blogs/${blog.blogId || blog._id}`, { method: "DELETE", headers });
-    fetchBlogs();
+    try {
+      const res = await fetch(`/api/dev/blogs/${blog._id || blog.blogId}`, { method: "DELETE", headers });
+      if (!res.ok) throw new Error("Failed to delete");
+      alert("✅ Deleted successfully");
+      fetchBlogs();
+    } catch (error: any) {
+      alert(`❌ Error: ${error.message}`);
+    }
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

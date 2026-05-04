@@ -163,6 +163,12 @@ const CourseCard: FC<{ course: Course; index: number; onPreview: (c: Course) => 
 
   const [isBuying, setIsBuying] = useState(false);
 
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => setIsBuying(false);
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
+
   const handlePurchase = async (e?: React.MouseEvent) => {
     e?.stopPropagation();
     if (purchased) return;

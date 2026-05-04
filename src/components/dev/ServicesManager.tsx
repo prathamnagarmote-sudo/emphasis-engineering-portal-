@@ -20,7 +20,7 @@ export default function ServicesManager({ headers }: { headers: any }) {
   const [saving, setSaving] = useState(false);
   const [tab, setTab] = useState<"info" | "packages" | "steps" | "faqs">("info");
 
-  const fetchPages = async () => { setLoading(true); const res = await fetch("/api/dev/services", { headers }); setPages(await res.json()); setLoading(false); };
+  const fetchPages = async () => { setLoading(true); const res = await fetch("/api/dev/services", { headers, cache: 'no-store' }); setPages(await res.json()); setLoading(false); };
   useEffect(() => { fetchPages(); }, []);
 
   const handleSave = async () => {
@@ -47,15 +47,39 @@ export default function ServicesManager({ headers }: { headers: any }) {
     }
 
     setSaving(true);
-    const url = isNew ? "/api/dev/services" : `/api/dev/services/${editing.pageId || editing._id}`;
-    await fetch(url, { method: isNew ? "POST" : "PUT", headers, body: JSON.stringify(editing) });
-    setSaving(false); setEditing(null); fetchPages();
+    try {
+      const url = isNew ? "/api/dev/services" : `/api/dev/services/${editing._id || editing.pageId}`;
+      const res = await fetch(url, { 
+        method: isNew ? "POST" : "PUT", 
+        headers, 
+        body: JSON.stringify(editing) 
+      });
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to save");
+      }
+      
+      alert("✅ Service page saved successfully!");
+      setEditing(null); 
+      await fetchPages();
+    } catch (error: any) {
+      alert(`❌ Error: ${error.message}`);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleDelete = async (p: ServicePage) => {
     if (!confirm(`Delete "${p.title}"?`)) return;
-    await fetch(`/api/dev/services/${p.pageId || p._id}`, { method: "DELETE", headers });
-    fetchPages();
+    try {
+      const res = await fetch(`/api/dev/services/${p._id || p.pageId}`, { method: "DELETE", headers });
+      if (!res.ok) throw new Error("Failed to delete");
+      alert("✅ Deleted successfully");
+      fetchPages();
+    } catch (error: any) {
+      alert(`❌ Error: ${error.message}`);
+    }
   };
 
   // Service package helpers
@@ -140,7 +164,14 @@ export default function ServicesManager({ headers }: { headers: any }) {
                   <div><label className="block text-[10px] text-gray-500 uppercase mb-1">Service ID</label><input value={pkg.serviceId} onChange={e => updatePackage(idx, "serviceId", e.target.value)} className={inputClass} /></div>
                   <div><label className="block text-[10px] text-gray-500 uppercase mb-1">Title</label><input value={pkg.title} onChange={e => updatePackage(idx, "title", e.target.value)} className={inputClass} /></div>
                   <div><label className="block text-[10px] text-gray-500 uppercase mb-1">Price (£)</label><input type="number" value={pkg.price} onChange={e => updatePackage(idx, "price", Number(e.target.value))} className={inputClass} /></div>
+                  <div><label className="block text-[10px] text-gray-500 uppercase mb-1">Original Price (£)</label><input type="number" value={pkg.originalPrice || ""} onChange={e => updatePackage(idx, "originalPrice", Number(e.target.value))} className={inputClass} placeholder="Leave empty if no discount" /></div>
                   <div><label className="block text-[10px] text-gray-500 uppercase mb-1">Calendly URL</label><input value={pkg.calendlyUrl} onChange={e => updatePackage(idx, "calendlyUrl", e.target.value)} className={inputClass} placeholder="https://calendly.com/..." /></div>
+                  <div className="flex items-end pb-2">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={pkg.popular || false} onChange={e => updatePackage(idx, "popular", e.target.checked)} className="w-4 h-4 accent-[#3F9FA3]" />
+                      <span className="text-xs text-gray-400 font-bold uppercase">Most Popular</span>
+                    </label>
+                  </div>
                   <div className="col-span-2"><label className="block text-[10px] text-gray-500 uppercase mb-1">Description</label><textarea value={pkg.description} onChange={e => updatePackage(idx, "description", e.target.value)} rows={2} className={inputClass + " resize-none"} /></div>
                   <div className="col-span-2">
                     <label className="block text-[10px] text-gray-500 uppercase mb-1">Features</label>

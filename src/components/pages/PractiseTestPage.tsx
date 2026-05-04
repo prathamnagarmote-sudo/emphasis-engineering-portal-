@@ -74,6 +74,12 @@ const PracticeTests: FC = () => {
   const { isPurchased, purchaseItem } = useCart();
   const { currency, convertPrice } = useCurrency();
   const [isBuying, setIsBuying] = useState(false);
+
+  useEffect(() => {
+    const handlePageShow = () => setIsBuying(false);
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
