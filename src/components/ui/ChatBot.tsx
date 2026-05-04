@@ -209,16 +209,16 @@ const ChatBot = () => {
     <>
       {/* FAB */}
       {!open && (
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
+        <motion.button
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 flex items-center gap-3 bg-white shadow-xl shadow-teal-500/20 px-4 py-3 rounded-full cursor-pointer z-50 border border-teal-100 hover:scale-105 transition-transform"
+          className="fixed bottom-4 right-4 md:bottom-6 md:right-6 w-14 h-14 bg-white shadow-lg shadow-black/10 rounded-full cursor-pointer z-50 border border-gray-200 hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center group"
+          aria-label="Open guide"
         >
-          <img src={avatar} className="w-10 h-10 rounded-full shadow-sm" alt="chat" />
-          <span className="text-sm font-semibold text-gray-800 pr-2">Guide me</span>
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-pulse" />
-        </motion.div>
+          <img src={avatar} className="w-10 h-10 rounded-full object-cover group-hover:scale-110 transition-transform" alt="Guide" />
+          <div className="absolute top-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white shadow-sm" />
+        </motion.button>
       )}
 
       {/* CHAT WINDOW */}

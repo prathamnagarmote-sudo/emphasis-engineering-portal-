@@ -1,0 +1,490 @@
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
+
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  console.error("❌ MONGODB_URI is missing");
+  process.exit(1);
+}
+
+const phasesData = {
+  "us-pe": [
+    {
+      stepNumber: 1,
+      title: "Establishing Your Eligibility",
+      description: "Before beginning the application, it is strategically vital to confirm your eligibility.",
+      content: `Before beginning the application, it is strategically vital to confirm your eligibility. The MRA is not an open pathway but is built upon a foundation of existing, high-level qualifications that demonstrate professional competence and standing. Meeting these non-negotiable prerequisites is the mandatory first step on your journey to U.S. licensure.
+
+Core Credential Requirements
+
+You must hold two mandatory credentials before initiating the process. These designations serve as the basis for the mutual recognition of professional standing between the U.K. and the U.S.
+
+• Chartered Engineer (CEng) Status: This designation from the U.K. is the primary professional qualification required. It signifies that you have met the U.K.’s rigorous standards for engineering competence and commitment.
+
+• International Professional Engineer (IntPE) Status: In addition to CEng, you must be a registrant in good standing on the U.K. International Registry. The NCEES website explicitly states that you must have IntPE status… before proceeding with the application.
+
+A Real-World Example: Initial Inquiry and Eligibility Confirmation
+To ensure you are on the correct path before investing time and resources, you should initiate the process by contacting both the Engineering Council and NCEES to confirm your eligibility. After NCEES confirms your eligibility under the MRA you can proceed to the next phase of the application.`
+    },
+    {
+      stepNumber: 2,
+      title: "Creating Your NCEES Record",
+      description: "This phase marks the official start of your application.",
+      content: `This phase marks the official start of your application. The creation of a MyNCEES account and a corresponding NCEES Record is the central hub for the entire process. This online profile is where you will compile, document, and ultimately transmit all required professional information to the U.S. licensing authorities for review.
+
+As specified on the NCEES website, the first two actions you must take are:
+
+1. Create a MyNCEES account: This is your primary user account and is created at ncees.org.
+
+2. Create an NCEES Record: Within your MyNCEES account, you will initiate an NCEES Record. This is the platform where you will build your comprehensive professional profile for evaluation.
+
+Account Setup and MRA-Specific Adjustments
+Because your application is being made under the MRA, the standard NCEES Record requirements are modified. Bypasses for certain sections will be added because the degree evaluation and exams/licenses are not required, and the MRA badge will be included in the account.
+Once your account structure is in place with the MRA-specific adjustments, the detailed work of populating it with professional information can begin.`
+    },
+    {
+      stepNumber: 3,
+      title: "Compiling and Verifying Your Professional Credentials",
+      description: "This phase is the most substantial part of the application process.",
+      content: `This phase is the most substantial part of the application process. It requires you to meticulously document your education, work experience, and professional standing according to the specific requirements of both NCEES and the Engineering Council.
+
+MRA Multistate Section Requirements
+You must complete five core sections within your NCEES Record.
+
+1. Education Information: You must send unofficial transcripts and diplomas directly to NCEES at transcripts@ncees.org.
+
+2. Work Experience: You must document your engineering work experience. When selecting individuals to verify this experience, respondents who are CEng or P.E. holders are recommended when possible.
+
+3. Exam and License Verification: The Fundamentals of Engineering (FE) and Principles and Practice of Engineering (PE) exams are waived for you as an MRA applicant. However, you must formally request verification of your CEng and IntPE status. To do this, you must download, complete, and send the official engc-ncees-proforma form to international@engc.org.uk. The Engineering Council then validates this form, confirming “that the applicant has not been subject to disciplinary action for misconduct or incompetence and is a registrant in good standing.” This validated document is then forwarded directly to NCEES and attached to your record.
+
+4. Professional References: A total of five references are required to attest to your professional reputation. It is recommended that these references be CEng or P.E. holders.
+
+5. Questions for the Applicant: This section consists of a brief series of questions regarding your professional registration status and history.
+
+NCEES Record Status Update
+After you have submitted your information and the Engineering Council has forwarded the validated proforma, NCEES will provide a comprehensive status update.
+This status update from NCEES serves as a critical progress report, confirming that the UK-based verifications are complete and the application is moving into the final US-based review stages.
+When your work experience completes, you may then Transmit and proceed to the transmittal steps. Your Record has MRA status which involves bypasses and exceptions and may only be transmitted to the MRA-participation boards.
+This update marks the successful compilation of your record, leading to the final review and transmittal phase.`
+    },
+    {
+      stepNumber: 4,
+      title: "Final Review, Transmittal, and State Licensure",
+      description: "Formal submission of your completed NCEES Record to a U.S. state licensing board.",
+      content: `This final phase involves the formal submission of your completed NCEES Record to a U.S. state licensing board. Following this transmittal, you must complete the final application steps required by that specific state to be granted the P.E. license.
+
+Once all sections of your NCEES Record are populated and verified, you can proceed with the official transmittal.
+
+1. Achieve Application Completion: All sections of your NCEES Record must be complete. This is indicated in the system when all items are marked as “green.”
+
+2. Purchase Transmittal: You must purchase a transmittal to a participating member board. The fee for this service is $100.
+
+3. Receive MRA Badge: Upon completion, your file is given a special MRA badge to notify the receiving state board of your status under the agreement, ensuring the MRA-specific waivers and exceptions are applied.
+
+Participating U.S. State Boards
+As of the agreement, the following state boards are ready to receive applications under the MRA.
+Alaska, Delaware, Georgia, Idaho, Maine, Maryland, Nebraska, Nevada, North Carolina, Oklahoma, Texas, Utah, Wyoming
+
+State-Specific Licensure Application
+It is critical to understand that the transmittal of your NCEES Record is not the final step in obtaining your license. As the official guidance states, “Transmittal of your Record does not constitute an application for licensure.” After transmitting your record, you must follow up directly with your chosen state board to complete any additional jurisdictional procedures, submit a state-specific application, and pay any further fees required to be granted the P.E. license.
+
+The U.S.-U.K. Mutual Recognition Agreement provides a highly efficient pathway for qualified Chartered Engineers to achieve professional licensure in the United States. While the process requires your careful documentation and strict adherence to the steps outlined by NCEES and the Engineering Council, it offers the strategic advantage of removing the two most significant hurdles: the FE and PE exams. By leveraging the professional standing of your CEng and IntPE designations, the MRA facilitates international mobility and recognizes the high standards of engineering competence on both sides of the Atlantic.`
+    }
+  ],
+  "imeche": [
+    {
+      stepNumber: 1,
+      title: "Foundational Readiness and Experience Assessment",
+      description: "This initial phase is the critical foundation upon which a successful application is built.",
+      content: `This initial phase is the critical foundation upon which a successful application is built. Before embarking on the detailed work of the application dossier, every candidate must confirm their eligibility and ensure they have accumulated the necessary professional experience. These are non-negotiable prerequisites that establish a candidate’s readiness for the CEng assessment process.
+
+Academic Requirements
+
+The first step in the journey is a formal review of your academic qualifications to ensure they meet the benchmark for a Chartered Engineer.
+• Candidates with degrees accredited by the IMechE can verify their standing using the online qualifications checker on the IMechE website.
+• Candidates with non-accredited degrees must undergo a formal academic review by the IMechE. In some instances, the IMechE’s Career Learning Assessment process can be used to substitute evidence from technical work experience for formal academic qualifications.
+For more information or to initiate a review of non-accredited qualifications, you can contact the IMechE directly at academicreview@imeche.org.
+
+Professional Experience
+A common misconception is that the CEng application is a simple matter of accumulating four years of experience. This is a critical error. Assessors are trained to look for impact and responsibility, not just time served. A candidate with three years of intensive, project-leading experience will always present a stronger case than one with five years of routine, low-responsibility tasks. Factors such as the opportunities available in your workplace and your individual work ethic ultimately determine your readiness.
+
+The core requirement is that all experience must be framed to clearly demonstrate the UK-SPEC competencies, which are the focus of the application itself. Successfully verifying your academic and professional foundations is the essential first step before proceeding to the practical task of documenting your competence in the formal application.`
+    },
+    {
+      stepNumber: 2,
+      title: "Constructing Your Application Dossier",
+      description: "The application form is the primary evidence dossier you will present to the IMechE.",
+      content: `The application form is the primary evidence dossier you will present to the IMechE. Its purpose is to build a compelling, evidence-based case for your professional registration before you attend the interview. A well-constructed application provides assessors with a clear and comprehensive narrative of your engineering capabilities.
+
+Application Form Structure
+The online application form is divided into five required sections. You should prepare scanned copies of your academic certificates for upload (with a 4MB size limit per document) and be aware that you can save your progress and return to the form as needed.
+• About you: Your personal and academic details.
+• Personal competence statements: The core of your application, where you demonstrate your skills against UK-SPEC.
+• Your organisation chart: To provide context for your role and responsibilities.
+• Development action plan: Outlining your short, medium, and long-term career goals and professional development objectives.
+• Sponsors: Details of two professionals who will endorse your application.
+
+Demonstrating Competence: The UK-SPEC Core
+This section is not a simple checklist. It is a narrative argument. For each competency, you must tell a concise story of your personal contribution using the ‘I’ pronoun. Your goal is to lead the assessor to an undeniable conclusion: that you operate at the CEng level. Frame every example around a challenge you faced, an action you personally took, and a measurable outcome that benefited the project or business.
+The IMechE expects approximately 400 words for each of the five areas.
+
+Competence A: Knowledge and understanding
+This competence requires you to demonstrate that you use a combination of general and specialist engineering knowledge to optimize complex systems.
+• Evidence Examples:
+o Maintaining and extending a sound theoretical approach (e.g., through formal training, research, or learning new engineering theories in the workplace).
+o Developing technological solutions to unusual or challenging problems.
+
+Competence B: Design, development and solving engineering problems
+This is about your ability to apply appropriate theoretical and practical methods to the analysis and solution of engineering problems.
+• Evidence Examples:
+o Taking an active role in the identification and definition of project requirements, problems and opportunities.
+o Identifying and carrying out physical tests, trials, or technical simulations and evaluating the results.
+o Implementing design solutions while accounting for critical constraints.
+
+Competence C: Responsibility, management and leadership
+This competence centres on your ability to provide technical and commercial leadership.
+• Evidence Examples:
+o Planning the work and resources needed to enable effective implementation of a significant engineering task or project.
+o Managing the balance between quality, cost, and time, while monitoring progress and associated costs.
+o Leading teams or technical specialisms.
+
+Competence D: Communication and interpersonal skills
+This area assesses your ability to communicate effectively with others.
+• Evidence Examples:
+o Communicating effectively with others, at all levels, in English.
+o Clearly presenting and discussing proposals, justifications, and conclusions.
+
+Competence E: Personal and professional commitment
+This competence requires you to demonstrate a commitment to professional standards.
+• Evidence Examples:
+o Understanding and complying with relevant codes of conduct.
+o Identifying and taking responsibility for health, safety, and welfare issues.
+o Carrying out and recording Continuing Professional Development (CPD).
+
+Securing Professional Sponsorship
+You are required to have two sponsors endorse your application. Ideally, your sponsors should be Chartered Engineers registered with the IMechE or another UK institution. Their role is to review your application for accuracy and validate it. Choose individuals who can not only vouch for your work but who also understand the CEng standard themselves.`
+    },
+    {
+      stepNumber: 3,
+      title: "Formal Assessment and the Professional Review Interview",
+      description: "This phase marks the transition from written evidence to live assessment.",
+      content: `This phase marks the transition from written evidence to live assessment. The Professional Review Interview (PRI) is the final and most important test of your competence, where your ability to articulate your experience and thinking under pressure is evaluated. It is the ultimate test of your technical knowledge and professional communication skills.
+
+Application Submission and Review
+To formally submit your application, you must pay a non-refundable fee online via credit or debit card. Upon submission, you will receive a confirmation email outlining the next steps. IMechE staff will then check your application for completeness. If all sections are satisfactory, you will be contacted to arrange your interview.
+
+The Professional Review Interview (PRI)
+The PRI is a formal interview where experienced assessors evaluate your competence and experience based on the evidence presented in your application. The PRI is where the written claims in your application are pressure-tested. As the real-world example demonstrates, assessors will probe your understanding of the projects you’ve listed. A failure to articulate your personal contribution, justify your decisions, and respond directly to questions—especially under pressure—can undermine even the strongest written application.
+
+The most effective preparation involves conducting rigorous mock interviews with sponsors or a professional registration advisor. The goal is not just to practice answers, but to simulate the pressure of a formal assessment and receive blunt, constructive feedback on your communication, clarity, and ability to substantiate your claims in real-time.`
+    },
+    {
+      stepNumber: 4,
+      title: "CEng Status and Lifelong Professional Commitment",
+      description: "Achieving Chartered Engineer status is the beginning of a career-long commitment.",
+      content: `Achieving Chartered Engineer status is not the end of the journey, but rather the beginning of a career-long commitment to upholding professional standards, engaging in ethical conduct, and pursuing continuous learning. It is an enduring responsibility to the profession and to the public.
+
+Receiving Your CEng Designation
+Upon successfully passing the Professional Review Interview, you will be formally elected to Corporate Member of the IMechE and registered as a Chartered Engineer with the Engineering Council. This achievement formally recognizes your professional standing.
+
+Your Obligation: Continuing Professional Development (CPD)
+Achieving CEng status is a pledge to the public and the profession that your expertise will not become obsolete. CPD is the mechanism by which you honor that pledge. Crucially, this is not just a post-registration activity. At Professional Review, all applicants will need to demonstrate how they meet their CPD obligations and show that they understand that this requires an ongoing commitment.
+
+The core CPD requirements for all registrants include:
+• Taking ownership of your learning needs and developing a plan to address them.
+• Carrying out a variety of development activities, both planned and unplanned.
+• Recording your CPD activities and reflecting on what you have learned.
+• Reviewing your development plan regularly to assess future needs.
+• Supporting the learning of others through activities such as mentoring.
+
+The IMechE undertakes annual random sampling of members’ CPD records. A persistent failure to respond to or engage with these requests can ultimately lead to removal from the Engineering Council Register.`
+    }
+  ],
+  "iet": [
+    {
+      stepNumber: 1,
+      title: "Foundational Readiness and Application Preparation",
+      description: "This initial phase is a critical strategic checkpoint in the journey toward CEng status.",
+      content: `This initial phase is a critical strategic checkpoint in the journey toward CEng status. Successfully navigating this stage involves more than just having the right experience; it requires a thorough self-assessment against professional standards and the meticulous preparation of the application dossier. This essential groundwork is the foundation for a smooth and successful registration journey, ensuring that you begin the formal process with a clear, compelling, and complete case for your professional competence.
+
+Verifying Academic Qualifications
+The first foundational requirement for CEng is meeting the necessary educational base. The primary pathways for satisfying this requirement involve holding one of the following qualifications, confirmed by the IET:
+• An accredited Master’s Degree
+• An accredited BEng Degree
+
+If a candidate’s degree is not accredited, the IET will conduct a formal academic review of the qualification. This assessment may result in a requirement for the candidate to undertake “Further learning to top up formal qualification” to meet the CEng educational standard.
+
+Mastering the UK-SPEC Competency Framework
+The UK Standard for Professional Engineering Competence (UK-SPEC) is the core framework against which all CEng applications are assessed. Candidates must provide evidence of their competence and commitment across five key areas:
+
+A. Knowledge and Understanding This area assesses the ability to use a combination of general and specialist engineering knowledge to optimize the application of advanced and complex systems.
+B. Design, Development and Solving Engineering Problems This concerns the ability to apply appropriate theoretical and practical methods to the analysis and solution of engineering problems.
+C. Responsibility, Management and Leadership This focuses on demonstrating technical and commercial leadership.
+D. Communication and Interpersonal Skills This evaluates the ability to communicate effectively with others.
+E. Personal and Professional Commitment This requires demonstrating a personal commitment to professional standards.
+
+Preparing the Application Dossier
+Once you have verified your qualifications and familiarized yourself with the UK-SPEC framework, the next step is to prepare your formal application. The key components of this dossier include:
+• The completed application form.
+• Documented evidence of your Continuing Professional Development (CPD).
+• A Development Action Plan (DAP) outlining your future learning goals.
+
+Throughout this preparation stage, it is highly recommended that you seek guidance and support from Sponsors, a Mentor, and a Professional Registration Advisor (PRA) to help refine your application and ensure it robustly meets the required standards.`
+    },
+    {
+      stepNumber: 2,
+      title: "Submission and Initial Assessment",
+      description: "The application dossier enters a formal review process managed by the IET.",
+      content: `Once the application dossier is meticulously prepared and submitted, it enters a formal review process managed by the IET. This phase involves a series of administrative and peer-led checks designed to ensure the application is complete and meets the initial standards of quality and evidence required to proceed to the main interview assessment.
+
+Application Submission and Acknowledgment
+After formal submission, the application dossier undergoes several assessment stages. The very first step is an office check conducted by the Registration & Standards Department. This initial review is designed to ensure that all necessary information and documentation are present before the application is passed on to the next stage of assessment.`
+    },
+    {
+      stepNumber: 3,
+      title: "The Professional Review Interview (PRI)",
+      description: "The Professional Review Interview (PRI) is the culminating assessment of the CEng application process.",
+      content: `The Professional Review Interview (PRI) is the culminating assessment of the CEng application process. This formal interview is designed to validate the evidence provided in your application and is conducted by two senior, professionally-registered engineering professionals. Crucially, at least one of the interviewers will be from the same engineering or technology discipline as you.
+
+This provides an opportunity for you to demonstrate your competence, professional commitment, and interpersonal skills in a direct conversation with experienced peers.
+
+Invitation and Preparation
+After the initial application assessment is successfully completed, candidates are invited to a PRI. To prepare effectively, you must undertake several critical steps:
+
+• Review UK-SPEC: Download and review the latest version of the UK Standard for Professional Engineering Competence (UK-SPEC).
+• Focus on Professional Ethics: Be prepared to discuss professional ethics as outlined in Competence E.
+• Articulate Your Personal Contribution: Practice presenting your case in the first person singular (“I”).
+
+Structuring the PRI Presentation
+At the start of the interview, you will be required to deliver a short presentation. This is a key opportunity to set the stage and showcase your technical abilities.
+
+• Duration: The presentation must last no more than 15 minutes.
+• Format: A PowerPoint presentation of 5-7 slides is the preferred method.
+• Content: The presentation should focus on demonstrating technical competence, particularly in areas A and B. This is best achieved by showcasing one or two specific projects and using the STAR (Situation, Task, Action, Result) technique.
+• Purpose: The presentation serves the dual purpose of highlighting your technical work while also allowing interviewers to assess your communication and presentation skills (Competence D).`
+    },
+    {
+      stepNumber: 4,
+      title: "Final Assessment and Professional Registration",
+      description: "The formal decision-making stage, where a dedicated registration panel reviews all accumulated evidence.",
+      content: `The journey toward CEng status does not end with the interview. This final phase is the formal decision-making stage, where a dedicated registration panel reviews all accumulated evidence—including your application, your sponsors’ references, and the interviewers’ detailed report—to make a final determination on your eligibility for registration.
+
+The Post-Interview Panel Review
+The interviewers will not provide a result on the day of the PRI. Instead, they complete a formal report and submit it, along with your entire application, to a final assessment registration panel. This panel is composed of representatives from the relevant engineering sector who are responsible for reviewing all the evidence presented. It is this panel that makes the final decision regarding your eligibility for registration.
+
+Notification and Next Steps
+You will be formally notified of the registration panel’s decision via email and letter. If your application is successful, you will proceed to the final steps of registration. If the application is unsuccessful, the letter will provide detailed reasons for the decision and offer guidance on how to address any shortfalls in a future application.
+
+The Lifelong Commitment of a Chartered Engineer
+Achieving the CEng designation is not an end point but the beginning of a lifelong commitment to professional development. All registrants are obligated to undertake and record Continuing Professional Development (CPD) to maintain and enhance their competence. This ongoing dedication to learning is essential for ensuring that society can have continued confidence in the engineering profession and is what underpins the enduring value of the professional title.`
+    }
+  ],
+  "ice": [
+    {
+      stepNumber: 1,
+      title: "Foundational Academic Assessment",
+      description: "The entire CEng journey begins with a mandatory Academic Assessment.",
+      content: `The entire CEng journey begins with a mandatory Academic Assessment. This assessment is not a mere formality; it is a critical diagnostic that dictates the precise route you will take toward chartership. The outcome of this review will define your immediate next steps as the ICE formally evaluates your educational qualifications against the Engineering Council’s requirements for a Chartered Engineer.
+
+Based on this formal review, there are two primary outcomes:
+
+1. Confirmation that your academic qualifications meet the educational base required for CEng registration.
+
+2. Notification that your qualifications do not meet the CEng base but may satisfy the requirements for another professional grade, such as Incorporated Engineer (IEng), along with clear guidance on how to bridge the academic gap.
+
+A Real-World Example: Academic Review Outcome
+Based on the “Academic Assessment Result” letter sent to applicant B. Kumar, the ICE determined that his qualifications met the educational base for Incorporated Engineer (IEng) but not for Chartered Engineer (CEng). The letter explicitly stated, “Your current academic qualifications do not meet the educational base needed to register as a chartered Engineer (CEng) with the Engineering Council.” Crucially, the ICE did not reject his ambition but instead outlined three distinct pathways to achieve the required educational base: “Option 1: Academic further learning,” “Option 2: Experiential Learning CEng submission,” and “Option 3: Technical Report Route (TRR).” This demonstrates that the initial assessment is a diagnostic step designed to provide a clear, tailored route forward.
+
+For candidates whose qualifications, like Mr. Kumar’s, are initially aligned with the IEng standard, the next phase involves strategically choosing and successfully completing one of the prescribed paths to bridge this academic gap.`
+    },
+    {
+      stepNumber: 2,
+      title: "Bridging the Academic Gap to CEng",
+      description: "This phase is for candidates whose initial academic assessment identified a gap.",
+      content: `This phase is for candidates whose initial academic assessment identified a gap between their existing qualifications and the Master’s-level educational base required for CEng. The ICE provides structured, rigorous routes for professionals to demonstrate this advanced learning through either further formal education or structured, work-based experience.
+
+The three primary options identified in official ICE correspondence are:
+• Academic Further Learning: Pursuing and completing a formal, accredited Master of Science (MSc) programme to meet the educational requirement directly.
+
+• Experiential Learning (EL): Preparing and submitting a detailed portfolio of evidence to demonstrate that Master’s-level knowledge and understanding have been acquired through professional engineering experience.
+
+• Technical Report Route (TRR): The third formal option provided by the ICE for demonstrating the required level of knowledge and competence.
+
+The Experiential Learning (EL) Submission
+The Experiential Learning route is a strategic mechanism for candidates who hold a suitable Bachelor’s degree and have gained significant professional experience—typically at least five years—to formally demonstrate their acquired Master’s-level knowledge without returning to full-time university study. This pathway allows you to map your advanced, on-the-job learning against specific academic outcomes required for CEng registration.
+
+Core Components of a Successful EL Submission
+A successful submission is a comprehensive portfolio designed to provide assessors with a clear and verifiable account of your advanced learning. You must treat each component as a vital piece of your argument.
+
+• Experiential Learning Assessment Form: This is the core of your argument. In this document, you must present compelling, first-person evidence against the four key Learning Outcomes (A, B, C, and D). Your task is not to list activities but to prove, through specific examples and reflection, how your work has delivered Master’s-level learning.
+
+• Extended CV: This is more than a simple career history; it is your narrative of professional progression. Use the four-page limit to demonstrate a clear trajectory of increasing responsibility and technical challenge, proving you have operated in environments that foster Master’s-level learning.
+
+• Appendices: This is your evidentiary support. Use the maximum of eight A4 pages wisely to provide targeted, high-impact proof (e.g., calculations, technical drawings, or reports) that directly substantiates the most critical claims made in your assessment form. Avoid using it as a document dump.
+
+• Continuing Professional Development (CPD) Records: Assessors see this as non-negotiable proof of your commitment to lifelong learning. Your Development Action Plan (DAP) and three years of Personal Development Records (PDR) must demonstrate a proactive, not reactive, approach to your professional growth, directly supporting your claim of advanced learning.
+
+• Mentor’s Letter of Support: This is crucial third-party validation from a respected professional, ideally a Chartered ICE Member. This letter confirms the authenticity of your work and lends significant credibility to your entire submission.
+
+A Real-World Example: Experiential Learning Assessment
+In a result letter regarding his Experiential Learning submission, Mr. B. Stanford was informed that while he had passed Learning Outcomes C & D, his submission required “Additional Information for Learning Outcomes A & B.” The assessors noted that his “learning was not clearly aligned with the Learning Outcomes” and requested a resubmission where he provides “specific examples of how, through experience and training, you have gained and applied knowledge and understanding.” This case underscores the high standard of evidence required and shows that the assessment is an iterative process, offering candidates the opportunity to refine their submission based on specific feedback within a six-month timeframe.
+
+Once the academic base for CEng is confirmed, either through the initial assessment or by successfully completing a route like Experiential Learning, you must then proceed to demonstrate your professional competence in practice.`
+    },
+    {
+      stepNumber: 3,
+      title: "Demonstrating Professional Competence Through a Career Appraisal",
+      description: "Proving your professional competence as a practicing engineer.",
+      content: `With the academic prerequisite fulfilled, the focus shifts entirely to proving your professional competence as a practicing engineer. You must treat the Career Appraisal as the central pillar of your application, where you submit a detailed report and supporting evidence demonstrating your skills and experience against the ICE’s seven core attributes for a Chartered Engineer.
+
+The evidence from failed appraisals reveals a universal truth: the most common point of failure is the inability to distinguish between participation and contribution. Your report must not be a project history; it must be a competence autobiography. You must meticulously detail your specific actions, the engineering principles you personally applied, and the professional judgment behind your decisions. As assessors explicitly warned one candidate, describing projects without indicating your personal contribution forces them to “try and ‘read between the lines'”—a situation that almost guarantees a request for additional information.
+
+A Real-World Example: Career Appraisal Feedback
+Applicant Ms. K. Flowers received a request for “Additional Information” following her Career Appraisal. The detailed feedback provides a masterclass in the level of scrutiny applied. For Attribute 1 (Understanding and Practical Application of Engineering), while her project examples were relevant (e.g., assessing foundation options, designing crash barriers), the assessors found she was “unable to convincingly demonstrate” key elements such as engaging in “new, advancing or improved techniques” or evaluating solutions “in the context of the whole project life cycle.” Similarly, for Attribute 4 (Health, Safety and Welfare), her examples were seen as standard practice rather than demonstrating leadership or contributing to improvements. The feedback repeatedly highlights a gap between describing involvement and evidencing personal, chartered-level influence and judgment across all seven attributes.
+
+A Real-World Example: Insufficient Evidence for a Core Attribute
+In his application for MICE at CEng level, Mr. Jones provided several project examples for the “Understanding and Practical Application of Engineering” attribute, including solving concrete blockage and controlling pile verticality. However, the Exemption and Recognition Panel (ERP) found the evidence insufficient. The feedback letter stated that while he described problems, he “have not explained how you solved the problem for those piles were found not satisfying the verticality requirements” and “have not included an example of independent engineering judgement.” The panel concluded he had not demonstrated how to solve problems “using a sound theoretical approach” or contributed to “the design and development of engineering solutions.” This illustrates a common pitfall: presenting a problem and a general outcome without detailing the specific engineering analysis and personal judgment applied to reach the solution.
+
+Ultimately, a successful Career Appraisal is one that leaves assessors with no doubt about your personal agency and chartered-level judgment, making your progression to the Professional Review an undeniable next step.`
+    },
+    {
+      stepNumber: 4,
+      title: "The Chartered Professional Review (CPR)",
+      description: "The Chartered Professional Review is the final assessment stage for CEng registration.",
+      content: `The Chartered Professional Review is the final assessment stage for CEng registration. Progressing to the CPR is entirely contingent upon a successful Career Appraisal, where you have already provided sufficient written evidence of your skills, knowledge, and experience. The CPR is the culmination of the entire registration process.
+
+While the specific format is detailed elsewhere, its position confirms it as the definitive evaluation of your suitability for Chartered status. It is the final stage where you must defend your written submission in person, demonstrating your professional stature and ability to articulate complex engineering concepts under the scrutiny of senior peers. This is where your paper-based evidence is brought to life.`
+    }
+  ],
+  "canadian-peng": [
+    {
+      stepNumber: 1,
+      title: "Foundational Readiness Check",
+      description: "This initial phase is a strategic checkpoint designed to ensure you meet the fundamental PEO requirements.",
+      content: `This initial phase is a strategic checkpoint designed to ensure you meet the fundamental PEO requirements before investing significant time and resources into the formal application. My advice here is to treat this step seriously. Verifying these core qualifications is the first and most critical part of your campaign for licensure.
+
+Crucially, modern PEO requirements have shifted. It’s no longer just about having the right experience, but about having it thoroughly documented and validated before you even begin the formal application. Based on the PEO process, here’s what you need to focus on:
+
+1. Academic Qualification: Possess a four-year engineering degree from an accredited university or have your academic qualifications assessed by PEO.
+
+2. Experience Qualification & Documentation: Accumulate at least 48 months of acceptable engineering work experience, which must be documented and validated through the Competency-Based Assessment (CBA) before submitting your formal application.`
+    },
+    {
+      stepNumber: 2,
+      title: "Core Application and Competency Assessment",
+      description: "The most substantial part of the journey, where you formally document and demonstrate your competencies.",
+      content: `This is the most substantial part of the journey, where you will formally document and demonstrate your academic and professional competencies to PEO. It requires meticulous preparation and a clear understanding of the standards you are expected to meet.
+
+The process begins with an initial application fee. For a Canadian graduate applying through PEO, this fee is approximately $360, which covers the opening of your file and the review of your university transcripts.
+
+Academic Assessment
+The first formal step after submitting your application is the review of your academic records. PEO assesses your educational background to ensure it meets the necessary standards for the profession.
+
+A Real-World Example: Academic Review
+After applicant Max O. submitted the required information, PEO conducted a review of his academic background. He later received an email titled “PEO Academic Requirements Notice of Determination,” which stated that the decision on his academic qualifications had been finalized and instructed him to log in to the PEO portal to view and download his official decision letter.
+
+Competency-Based Assessment (CBA)
+The Competency-Based Assessment (CBA) is a critical evaluation where you must demonstrate your skills across 34 specific competencies. The PEO process requires that the CBA be completed before you can take the ethics exam. The core of the CBA process involves several key tasks. Here’s what you need to focus on to build the strongest possible case:
+
+1. Understand the 34 Competencies: The competencies are grouped into seven distinct categories. PEO provides a comprehensive guide for applicants, and it is essential to review it thoroughly to understand the expectations for each competency.
+
+2. Draft Work Examples (SAO Format): For each competency, you must provide a specific work example using the “Situation, Action, Outcome” (SAO) format. The text is space-limited, with maximum character counts of 300 for the Situation, 1,650 for the Action, and 300 for the Outcome. It is mandatory to use the pronoun “I” to clearly describe your personal contributions, even when working as part of a team. To make your examples stand out, focus on innovation, staff responsibilities, and budgetary control. Always ask yourself, “Why is this evidence of P.Eng. competency?” to ensure your statements are impactful.
+
+3. Select Validators: Validators are crucial to your application. They must hold a P.Eng. licence, be familiar with your work, and ideally be a direct line manager, as this strengthens your application. For experience gained internationally, PEO may accept a senior practitioner, such as a Chartered Engineer (CEng), as a validator.
+
+4. Complete a Self-Assessment: You must score yourself for each of the 34 competencies based on your provided examples.
+
+5. Align with Validators: Before final submission, send your completed report to your validators for feedback. This is not a step to be taken lightly. A mismatch between your self-assessment and your validator’s score is a primary reason for an application to be deferred. A pre-submission alignment meeting is highly recommended.
+
+A Real-World Example: Validator Contact
+After Max O. completed his CBA and identified his validators, PEO sent a formal notification to him. The email, titled “Validators contacted,” confirmed that his chosen validators had been contacted on that date and that it was now his responsibility as the applicant to ensure they provide their responses to PEO.
+Once your CBA is complete and your validators have provided their assessments, your application is ready for formal submission and review.`
+    },
+    {
+      stepNumber: 3,
+      title: "Formal Examination and Final Review",
+      description: "This phase represents the final hurdles in the licensing process.",
+      content: `This phase represents the final hurdles in the licensing process. It involves PEO’s formal assessment of your documented experience and requires you to successfully complete the National Professional Practice Exam (NPPE), which tests your knowledge of ethics and professional practice in Canada.
+
+Experience Assessment Submission & Review
+After you and your validators have completed the CBA, the entire application is submitted for a completeness review. If everything is in order, your file is forwarded for a formal experience assessment.
+
+A Real-World Example: Moving to Experience Assessment
+An email from PEO titled “Forwarded to Experience Assessment” confirmed to Max O. that his application had passed the preliminary review and had been moved to the Experience Assessment Department. The email also provided an estimated timeline for this review, stating that the queue was currently at 16-18 weeks.
+
+National Professional Practice Exam (NPPE)
+Once your CBA and experience records have been accepted, you must register for and pass the National Professional Practice Exam (NPPE).
+Key characteristics of the NPPE include:
+
+• Format: The exam consists of 110 multiple-choice questions.
+• Duration: It is a 2.5-hour, closed-book exam administered online with a proctor.
+• Content: The exam is based on the official NPPE syllabus, which is divided into six major topics. Pay close attention to Ethics and Professional Practice, as they constitute a significant portion of the questions.
+• Preparation: While official textbooks are available, they are often considered optional. Many applicants use structured preparation courses, such as the NPPE Fast Track, which provide step-by-step lessons, practice questions, and study guides to help candidates prepare efficiently.
+• Exam Strategy: Success on the NPPE involves two key tasks: understanding the core concepts and mastering the exam mindset. The questions are often lengthy, so practicing how to read quickly and identify the core issue is critical.
+
+A Real-World Example: NPPE Registration
+PEO communicates upcoming exam dates to eligible applicants. In his case, Max O received an email detailing the 2024 exam schedule. The instructions were clear: he had to register for his preferred session through the official portal, which manages the exam administration.`
+    },
+    {
+      stepNumber: 4,
+      title: "Licensure and Professional Obligations",
+      description: "This final phase marks the culmination of your efforts.",
+      content: `This final phase marks the culmination of your efforts. It covers the official granting of your P.Eng. license by the registrar and the receipt of the professional tools—your certificate and stamp—that signify your new status.
+
+Final Approval and Registration
+After all requirements are satisfied—including the experience assessment and the NPPE—the registrar provides final approval. At this point, you will be required to pay the licensing and annual fees. The final registration step, which covers the cost of your professional seal, certificate, and induction ceremony, is approximately $300.
+
+Receiving Your Certificate and Stamp/Seal
+This is the final, tangible step where you receive your official credentials as a newly licensed Professional Engineer.
+
+A Real-World Example: Finalizing Your Credentials
+• Name Confirmation: PEO sends an email titled “Your Name in the PEO Database” to confirm exactly how the engineer’s name will appear on the official certificate and stamp. This provides a final opportunity to request corrections to ensure all details are accurate.
+• Certificate and Stamp Delivery: An email exchange with the subject “PEO Licence Certificate Presentation Ceremony” clarified the delivery process. The stamp/seal is mailed directly to the new member by the PEO Licence and Registration department. The physical certificate is often handled separately by the local PEO chapter, especially if the new member has pre-registered to attend a presentation ceremony.
+
+With your professional stamp and seal in hand, you are officially a licensed Professional Engineer in Ontario, authorized to practice engineering and take on the responsibilities that come with the designation.
+
+The Lifelong Journey of a P.Eng.
+The path to achieving a P.Eng. licence is a rigorous and demanding one, but it is an exceptionally rewarding journey. The designation is a significant career milestone that confirms your expertise and opens doors to new levels of opportunity, leadership, and professional responsibility.
+Earning the licence is not the end of your development, but rather the beginning of a commitment to lifelong learning. Maintaining your P.Eng. status requires continuous professional development, ensuring you not only uphold but advance the standards of a profession dedicated to public trust and technical excellence. Welcome to the journey.`
+    }
+  ]
+};
+
+const StepSchema = new mongoose.Schema({
+  stepNumber: { type: Number, required: true },
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  content: { type: String },
+});
+
+const ServicePage = mongoose.models.ServicePage || mongoose.model("ServicePage", new mongoose.Schema({
+  pageId: { type: String, required: true, unique: true },
+  stepByStepProcess: [StepSchema],
+}, { strict: false })); // Use strict: false to update just the array without needing the full schema
+
+async function updateDB() {
+  try {
+    await mongoose.connect(MONGODB_URI!);
+    console.log("Connected to DB.");
+
+    for (const [key, phases] of Object.entries(phasesData)) {
+      const result = await ServicePage.updateOne(
+        { pageId: key },
+        { $set: { stepByStepProcess: phases } }
+      );
+      console.log("Updated " + key + ": matched " + result.matchedCount + ", modified " + result.modifiedCount);
+    }
+
+    console.log("All phases securely updated in MongoDB!");
+    process.exit(0);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+}
+
+updateDB();

@@ -11,7 +11,7 @@ const TRUST_ORGS = [
   { name: "IET", full: "Institution of Engineering & Technology" },
   { name: "ICE", full: "Institution of Civil Engineers" },
   { name: "IMechE", full: "Institution of Mechanical Engineers" },
-  { name: "NCEES", full: "National Council of Examiners for Engineering" },
+  { name: "NCEES", full: "National Council of Examiners for Engineering and Surveying" },
   { name: "PEO", full: "Professional Engineers Ontario" },
 ];
 
