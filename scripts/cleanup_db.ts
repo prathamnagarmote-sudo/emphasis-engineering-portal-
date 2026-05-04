@@ -1,5 +1,5 @@
-import connectToDatabase from '../lib/mongodb';
-import ServicePage from '../models/ServicePage';
+import connectToDatabase from '../src/lib/mongodb';
+import ServicePage from '../src/models/Service';
 
 async function cleanup() {
   try {
