@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import {
   Check, ArrowLeft, ArrowRight, Briefcase, Building2, Code2, Target, Award,
-  X, ChevronDown, Shield, Calendar, BookOpen, Star, Clock, Users, Zap,
+  X, ChevronDown, Shield, Calendar, BookOpen, Star, Clock, Users, Zap, CheckCircle
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useCurrency } from '@/context/CurrencyContext';
