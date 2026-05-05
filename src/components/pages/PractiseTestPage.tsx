@@ -34,6 +34,7 @@ interface PracticeTest {
   questions: Question[];
   duration: number;
   isFree?: boolean;
+  passPercentage?: number;
 }
 
 interface ExamState {
