@@ -241,7 +241,7 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
     if (!course) return;
 
     if (!session?.user) {
-      router.push("/login");
+      router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`);
       return;
     }
 

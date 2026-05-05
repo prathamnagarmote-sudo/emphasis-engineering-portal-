@@ -34,11 +34,18 @@ export async function POST(req: Request) {
       payment_method_types: ['card'],
       line_items,
       mode: 'payment',
-      locale: 'en',
+      locale: 'en-CA',
       submit_type: 'pay',
       success_url: `${process.env.NEXTAUTH_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}${hasService ? '&has_service=true' : ''}`,
       cancel_url: `${process.env.NEXTAUTH_URL}/cart`,
       customer_email: session.user.email as string,
+      payment_intent_data: {
+        metadata: {
+          userId: (session.user as any).id,
+          itemIds: JSON.stringify(items.map((i: any) => i.id)),
+          hasService: hasService ? 'true' : 'false',
+        }
+      },
       metadata: {
         userId: (session.user as any).id,
         itemIds: JSON.stringify(items.map((i: any) => i.id)),

@@ -3,6 +3,8 @@
 import { FC, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { Trash2, ShoppingBag, ArrowRight, CreditCard, Shield, Tag } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useCurrency } from '@/context/CurrencyContext';
@@ -11,6 +13,8 @@ import Button from '@/components/ui/Button';
 const Cart: FC = () => {
   const { items, removeFromCart, clearCart, totalPrice, purchaseItem } = useCart();
   const { formatPrice, currency, convertPrice } = useCurrency();
+  const router = useRouter();
+  const { data: session } = useSession();
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
@@ -22,6 +26,12 @@ const Cart: FC = () => {
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
+
+    if (!session?.user) {
+      router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+
     setIsCheckingOut(true);
 
     try {

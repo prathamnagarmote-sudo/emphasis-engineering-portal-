@@ -173,6 +173,11 @@ const CourseCard: FC<{ course: Course; index: number; onPreview: (c: Course) => 
     e?.stopPropagation();
     if (purchased) return;
     
+    if (!session?.user) {
+      router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+
     setIsBuying(true);
     try {
       const response = await fetch('/api/checkout', {

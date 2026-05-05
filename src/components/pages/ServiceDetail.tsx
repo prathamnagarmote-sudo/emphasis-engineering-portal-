@@ -643,8 +643,8 @@ const ServiceDetail: FC = () => {
                         whileTap={{ scale: 0.97 }}
                         disabled={isBuying === pkg.id}
                         onClick={async () => {
-                          if (!session) {
-                            router.push(`/login?callbackUrl=${window.location.pathname}`);
+                          if (!session?.user) {
+                            router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`);
                             return;
                           }
                           try {

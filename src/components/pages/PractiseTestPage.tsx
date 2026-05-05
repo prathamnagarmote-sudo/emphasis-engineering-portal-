@@ -277,8 +277,8 @@ const PracticeTests: FC = () => {
 
   const handlePurchase = async () => {
     if (!currentTest) return;
-    if (!session) {
-      router.push(`/login?callbackUrl=${window.location.pathname}`);
+    if (!session?.user) {
+      router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`);
       return;
     }
 
