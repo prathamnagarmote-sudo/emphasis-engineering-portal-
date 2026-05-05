@@ -66,7 +66,7 @@ const HOW_IT_WORKS = [
   {
     icon: <Trophy className="w-6 h-6" />,
     title: "Get Licensed",
-    description: "Walk into your professional review with confidence. 95% first-attempt pass rate.",
+    description: "Walk into your professional review with confidence. 100% first-attempt pass rate.",
   },
 ];
 
@@ -491,7 +491,7 @@ const MentorVideoSection: FC = () => {
             {[
               { icon: <Lightbulb className="w-5 h-5" />, title: "Insider Knowledge", desc: "Built by a CEng who has sat on professional review panels" },
               { icon: <Layers className="w-5 h-5" />, title: "Structured System", desc: "Step-by-step frameworks, not generic advice" },
-              { icon: <BarChart className="w-5 h-5" />, title: "Proven Results", desc: "95% first-attempt pass rate across all programmes" },
+              { icon: <BarChart className="w-5 h-5" />, title: "Proven Results", desc: "100% first-attempt pass rate across all programmes" },
             ].map((pt, i) => (
               <motion.div
                 key={i}
@@ -698,7 +698,7 @@ const RoadmapSection: FC = () => {
               <div className="mt-6 pt-5 border-t border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <TrendingUp className="w-4 h-4 text-green-500" />
-                  95% pass rate on first attempt
+                  100% pass rate on first attempt
                 </div>
                 <Link href="#courses">
                   <motion.div

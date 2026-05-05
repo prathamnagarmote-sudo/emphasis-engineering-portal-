@@ -110,7 +110,7 @@ export const companyStats = [
   { label: "Students Enrolled", value: "50,000+", icon: "Users" },
   { label: "Courses Available", value: "200+", icon: "BookOpen" },
   { label: "Expert Instructors", value: "50+", icon: "GraduationCap" },
-  { label: "Job Placements", value: "95%", icon: "TrendingUp" }
+  { label: "Job Placements", value: "100%", icon: "TrendingUp" }
 ];
 
 export const founderInfo = {

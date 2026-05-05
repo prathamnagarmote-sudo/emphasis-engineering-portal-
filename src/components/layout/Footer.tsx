@@ -87,7 +87,7 @@ const SOCIAL = [
   { Icon: XIcon,     href: "https://x.com/EmphasisEngr",                                     label: "X" },
 ];
 
-const TRUST_BADGES = ["IET", "IMechE", "ICE", "NCEES", "Engineers Canada"];
+const TRUST_BADGES = ["IET", "IMechE", "ICE", "NCEES", "PEO"];
 
 
 // ─── Mobile accordion group ────────────────────────────────────────────────────

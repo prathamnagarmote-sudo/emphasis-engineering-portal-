@@ -64,7 +64,7 @@ const COURSE_BENEFITS = [
   { icon: <Award className="w-5 h-5" />, title: "Expert-Led Training", desc: "Learn from licensed professional engineers" },
   { icon: <Target className="w-5 h-5" />, title: "Structured Pathway", desc: "Step-by-step competency frameworks" },
   { icon: <CheckCircle className="w-5 h-5" />, title: "Mock Reviews", desc: "Practice professional review sessions" },
-  { icon: <TrendingUp className="w-5 h-5" />, title: "95% Pass Rate", desc: "Proven first-attempt success" },
+  { icon: <TrendingUp className="w-5 h-5" />, title: "100% Pass Rate", desc: "Proven first-attempt success" },
 ];
 
 const TESTIMONIALS = [

@@ -111,12 +111,6 @@ const ACCREDITATION_BODIES: AccreditationBody[] = [
     flag: "https://flagcdn.com/us.svg",
   },
   {
-    abbr: "Engineers Canada",
-    full: "National Engineering Regulatory Body",
-    region: "Canada",
-    flag: "https://flagcdn.com/ca.svg",
-  },
-  {
     abbr: "PEO",
     full: "Professional Engineers Ontario",
     region: "Canada",

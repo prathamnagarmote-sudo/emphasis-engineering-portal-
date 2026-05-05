@@ -637,7 +637,7 @@ const RoadmapSection: FC = () => {
               <div className="mt-6 pt-5 border-t border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <TrendingUp className="w-4 h-4 text-green-500" />
-                  95% pass rate following this sequence
+                  100% pass rate following this sequence
                 </div>
                 <Link href="#tests">
                   <motion.div
