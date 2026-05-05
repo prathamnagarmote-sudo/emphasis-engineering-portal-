@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle, Calendar, ArrowRight, Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
@@ -12,7 +13,25 @@ function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const hasService = searchParams.get("has_service") === "true";
+  const { update } = useSession();
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(true);
+
+  useEffect(() => {
+    // Refresh session to get latest purchasedContent from DB
+    const refreshSession = async () => {
+      try {
+        await update();
+        console.log("Session updated after success");
+      } catch (e) {
+        console.error("Failed to update session", e);
+      } finally {
+        setRefreshing(false);
+      }
+    };
+    
+    refreshSession();
+  }, [update]);
 
   useEffect(() => {
     if (!sessionId) {

@@ -12,24 +12,23 @@ export async function POST(req: Request) {
 
   let event;
 
-    if (!webhookSecret) {
-      console.error('❌ Stripe Webhook Error: STRIPE_WEBHOOK_SECRET is not set in environment variables.');
-      return NextResponse.json({ error: 'Webhook configuration error' }, { status: 500 });
-    }
+  if (!webhookSecret) {
+    console.error('❌ Stripe Webhook Error: STRIPE_WEBHOOK_SECRET is not set.');
+    return NextResponse.json({ error: 'Webhook configuration error' }, { status: 500 });
+  }
 
-    if (!signature) {
-      console.error('❌ Stripe Webhook Error: Missing stripe-signature header.');
-      return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
-    }
+  if (!signature) {
+    console.error('❌ Stripe Webhook Error: Missing stripe-signature header.');
+    return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
+  }
 
-    try {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-    } catch (err: any) {
+  try {
+    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+  } catch (err: any) {
     console.error(`❌ Webhook Error: ${err.message}`);
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
-  // Handle the event
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const metadata = session.metadata;
@@ -40,12 +39,9 @@ export async function POST(req: Request) {
 
       try {
         await connectToDatabase();
-        
-        // Update user's purchased content
         await User.findByIdAndUpdate(userId, {
           $addToSet: { purchasedContent: { $each: itemIds } }
         });
-
         console.log(`✅ Webhook: Updated purchasedContent for user ${userId}:`, itemIds);
       } catch (dbErr) {
         console.error('❌ Webhook: Database update failed:', dbErr);
