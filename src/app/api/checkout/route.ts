@@ -34,7 +34,7 @@ export async function POST(req: Request) {
       payment_method_types: ['card'],
       line_items,
       mode: 'payment',
-      locale: 'en-CA',
+      locale: 'en',
       submit_type: 'pay',
       success_url: `${process.env.NEXTAUTH_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}${hasService ? '&has_service=true' : ''}`,
       cancel_url: `${process.env.NEXTAUTH_URL}/cart`,
