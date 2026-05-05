@@ -16,6 +16,7 @@ import { signOut, useSession } from "next-auth/react";
 export default function AdminDashboard() {
   const { data: session } = useSession();
   const [users, setUsers] = useState<any[]>([]);
+  const [logs, setLogs] = useState<any[]>([]);
   const [dbData, setDbData] = useState<{ courses: any[], tests: any[], services: any[] }>({ courses: [], tests: [], services: [] });
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -38,16 +39,22 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [resUsers, resCourses, resTests, resServices] = await Promise.all([
+        const [resUsers, resCourses, resTests, resServices, resLogs] = await Promise.all([
           fetch("/api/admin/users"),
           fetch("/api/courses"),
           fetch("/api/practice-tests"),
-          fetch("/api/services")
+          fetch("/api/services"),
+          fetch("/api/admin/logs")
         ]);
 
         if (resUsers.ok) {
           const data = await resUsers.json();
           setUsers(data.users || []);
+        }
+
+        if (resLogs.ok) {
+          const data = await resLogs.json();
+          setLogs(data.logs || []);
         }
 
         const [courses, tests, services] = await Promise.all([
@@ -120,8 +127,6 @@ export default function AdminDashboard() {
 
     users.forEach(user => {
       if (!user) return;
-      // Filter out non-target countries
-      if (user.country === "India" || user.country === "UAE" || user.country === "Dubai" || user.country === "United Arab Emirates") return;
 
       if (user.purchasedContent && Array.isArray(user.purchasedContent)) {
         user.purchasedContent.forEach((id: string) => {
@@ -135,9 +140,14 @@ export default function AdminDashboard() {
               if (lowerId.includes('imech') || lowerId.includes('iet') || lowerId.includes('ice')) country = "United Kingdom";
               else if (lowerId.includes('peng')) country = "Canada";
               else if (lowerId.includes('pe') || lowerId.includes('ncees')) country = "United States";
+              else country = "Other";
             }
 
-            // Only track revenue for our 3 main markets
+            // Ensure country exists in stats
+            if (country && !stats[country]) {
+              stats[country] = { total: 0, courses: {} };
+            }
+
             if (country && stats[country]) {
               stats[country].total += (product.price || 0);
               const title = product.title || "Unknown Product";
@@ -227,46 +237,82 @@ export default function AdminDashboard() {
               ))}
             </div>
 
-            {/* Revenue by Country (Excluding India) */}
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-xl font-bold text-gray-900 font-display">Target Market Analytics</h2>
-                  <p className="text-xs text-teal-600 font-bold mt-1">UK, CANADA & US ONLY (ALL OTHERS REMOVED)</p>
+            {/* System Health & Logs */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Revenue Analytics (from before) */}
+              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 font-display">Global Market Analytics</h2>
+                    <p className="text-xs text-teal-600 font-bold mt-1">ALL REGIONS AND REVENUE STREAMS</p>
+                  </div>
+                  <div className="px-3 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded-full uppercase tracking-wider">Live Sales Data</div>
                 </div>
-                <div className="px-3 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded-full uppercase tracking-wider">Live Sales Data</div>
+
+                <div className="grid grid-cols-1 gap-4">
+                  {Object.entries(revenueByCountry).slice(0, 4).map(([country, data]) => (
+                    <div key={country} className="p-4 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-primary" />
+                        <span className="text-sm font-bold text-gray-900">{country}</span>
+                      </div>
+                      <span className="text-lg font-black text-primary">${data.total.toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {Object.entries(revenueByCountry).map(([country, data]) => (
-                  <div key={country} className="p-5 rounded-2xl bg-gray-50 border border-gray-100 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-sm font-bold text-gray-900">{country}</span>
-                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                      </div>
-                      <div className="space-y-2">
-                        {Object.entries(data.courses).length === 0 ? (
-                           <div className="text-[10px] text-gray-400 italic py-2">No sales yet</div>
-                        ) : (
-                          Object.entries(data.courses).slice(0, 3).map(([title, rev]) => (
-                            <div key={title} className="flex justify-between items-center text-[10px]">
-                              <span className="text-gray-500 truncate mr-2">{title}</span>
-                              <span className="font-medium text-gray-900">${rev}</span>
-                            </div>
-                          ))
-                        )}
-                        {Object.keys(data.courses).length > 3 && (
-                          <div className="text-[9px] text-gray-400 italic">+{Object.keys(data.courses).length - 3} more...</div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="mt-6 pt-4 border-t border-gray-200">
-                      <div className="text-[10px] uppercase text-gray-400 font-bold tracking-wider mb-1">Total Revenue</div>
-                      <div className="text-2xl font-black text-primary">${data.total.toLocaleString()}</div>
-                    </div>
+              {/* Real-time Webhook Logs */}
+              <div className="bg-[#061F33] rounded-3xl shadow-xl p-8 text-white">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                    <h2 className="text-xl font-bold font-display">Stripe Webhook Health</h2>
                   </div>
-                ))}
+                  <button 
+                    onClick={async () => {
+                      const res = await fetch('/api/admin/logs');
+                      const data = await res.json();
+                      setLogs(data.logs || []);
+                    }}
+                    className="text-[10px] uppercase tracking-widest font-bold text-primary hover:text-white transition-colors"
+                  >
+                    Refresh Logs
+                  </button>
+                </div>
+
+                <div className="space-y-3 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+                  {logs.length === 0 ? (
+                    <div className="text-gray-500 text-sm italic py-4">No events recorded yet.</div>
+                  ) : (
+                    logs.map((log: any, idx: number) => (
+                      <div key={idx} className={`p-3 rounded-xl border ${
+                        log.type === 'error' ? 'bg-red-500/10 border-red-500/20' : 
+                        log.type === 'webhook' ? 'bg-green-500/10 border-green-500/20' : 
+                        'bg-white/5 border-white/10'
+                      }`}>
+                        <div className="flex justify-between items-start mb-1">
+                          <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                            log.type === 'error' ? 'text-red-400' : 'text-primary'
+                          }`}>
+                            {log.message}
+                          </span>
+                          <span className="text-[9px] text-gray-500">
+                            {new Date(log.createdAt).toLocaleTimeString()}
+                          </span>
+                        </div>
+                        {log.details && (
+                          <div className="text-[9px] text-gray-400 font-mono truncate">
+                            {JSON.stringify(log.details)}
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+                <p className="text-[9px] text-gray-500 mt-4 italic">
+                  Monitoring incoming signals from Stripe API. Errors indicate configuration issues in Vercel.
+                </p>
               </div>
             </div>
 
@@ -323,21 +369,89 @@ export default function AdminDashboard() {
                           </td>
                           <td className="px-6 py-4">
                             {(!user.purchasedContent || user.purchasedContent.length === 0) ? (
-                              <span className="text-gray-400 italic">No purchases</span>
+                              <div className="space-y-2">
+                                <span className="text-gray-400 italic">No purchases</span>
+                                <div className="flex gap-2">
+                                  <input 
+                                    id={`grant-${user._id}`}
+                                    type="text" 
+                                    placeholder="Course ID (e.g. imech-101)" 
+                                    className="text-[10px] px-2 py-1 border rounded w-32"
+                                  />
+                                  <button 
+                                    onClick={async () => {
+                                      const idInput = document.getElementById(`grant-${user._id}`) as HTMLInputElement;
+                                      const contentId = idInput.value;
+                                      if (!contentId) return;
+                                      try {
+                                        const res = await fetch('/api/admin/grant-access', {
+                                          method: 'POST',
+                                          headers: { 'Content-Type': 'application/json' },
+                                          body: JSON.stringify({ userId: user._id, contentId })
+                                        });
+                                        if (res.ok) {
+                                          alert("Access granted!");
+                                          window.location.reload();
+                                        } else {
+                                          alert("Failed to grant access.");
+                                        }
+                                      } catch (e) {
+                                        console.error(e);
+                                      }
+                                    }}
+                                    className="text-[10px] bg-primary text-white px-2 py-1 rounded hover:bg-primary/90"
+                                  >
+                                    Grant
+                                  </button>
+                                </div>
+                              </div>
                             ) : (
-                              <div className="space-y-1">
-                                {user.purchasedContent.map((id: string) => {
-                                  if (!id) return null;
-                                  const product = productDictionary[id];
-                                  return product ? (
-                                    <div key={id} className="text-xs">
-                                      <span className="font-medium text-gray-900">{product.title}</span>
-                                      <span className="text-green-600 ml-2">${product.price}</span>
-                                    </div>
-                                  ) : (
-                                    <div key={id} className="text-xs text-gray-400">Unknown Product ({id})</div>
-                                  )
-                                })}
+                              <div className="space-y-2">
+                                <div className="space-y-1">
+                                  {user.purchasedContent.map((id: string) => {
+                                    if (!id) return null;
+                                    const product = productDictionary[id];
+                                    return product ? (
+                                      <div key={id} className="text-xs">
+                                        <span className="font-medium text-gray-900">{product.title}</span>
+                                        <span className="text-green-600 ml-2">${product.price}</span>
+                                      </div>
+                                    ) : (
+                                      <div key={id} className="text-xs text-gray-400">Unknown Product ({id})</div>
+                                    )
+                                  })}
+                                </div>
+                                <div className="flex gap-2 pt-2 border-t border-gray-50">
+                                  <input 
+                                    id={`grant-${user._id}`}
+                                    type="text" 
+                                    placeholder="Add more..." 
+                                    className="text-[10px] px-2 py-1 border rounded w-24"
+                                  />
+                                  <button 
+                                    onClick={async () => {
+                                      const idInput = document.getElementById(`grant-${user._id}`) as HTMLInputElement;
+                                      const contentId = idInput.value;
+                                      if (!contentId) return;
+                                      try {
+                                        const res = await fetch('/api/admin/grant-access', {
+                                          method: 'POST',
+                                          headers: { 'Content-Type': 'application/json' },
+                                          body: JSON.stringify({ userId: user._id, contentId })
+                                        });
+                                        if (res.ok) {
+                                          alert("Access granted!");
+                                          window.location.reload();
+                                        }
+                                      } catch (e) {
+                                        console.error(e);
+                                      }
+                                    }}
+                                    className="text-[10px] bg-primary/10 text-primary px-2 py-1 rounded hover:bg-primary hover:text-white"
+                                  >
+                                    Add
+                                  </button>
+                                </div>
                               </div>
                             )}
                           </td>
