@@ -42,8 +42,8 @@ const StepDetailModal: FC<{
       exit={{ opacity: 0 }}
     >
       {/* Backdrop with enhanced blur */}
-      <motion.div 
-        className="absolute inset-0 bg-[#040D18]/80 backdrop-blur-md" 
+      <motion.div
+        className="absolute inset-0 bg-[#040D18]/80 backdrop-blur-md"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         onClick={onClose}
@@ -100,8 +100,8 @@ const StepDetailModal: FC<{
               // Detect bullet points
               if (p.startsWith('•') || p.startsWith('-')) {
                 return (
-                  <motion.div 
-                    key={i} 
+                  <motion.div
+                    key={i}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
@@ -117,8 +117,8 @@ const StepDetailModal: FC<{
               // Detect numbered items
               if (/^\d+\./.test(p)) {
                 return (
-                  <motion.div 
-                    key={i} 
+                  <motion.div
+                    key={i}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
@@ -163,24 +163,23 @@ const StepDetailModal: FC<{
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex items-center gap-1">
               {[...Array(total)].map((_, i) => (
-                <div 
-                  key={i} 
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i + 1 === phase.step ? 'w-6 bg-primary' : 'w-1.5 bg-gray-200'
-                  }`}
+                <div
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${i + 1 === phase.step ? 'w-6 bg-primary' : 'w-1.5 bg-gray-200'
+                    }`}
                 />
               ))}
             </div>
-            
+
             <button
               onClick={phase.step >= total ? onClose : () => onNav(1)}
               className="flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm text-white shadow-lg transition-all hover:scale-105 active:scale-95"
-              style={{ 
+              style={{
                 background: 'linear-gradient(135deg, #3F9FA3, #2d7a7d)',
                 boxShadow: '0 8px 20px rgba(63,159,163,0.3)'
               }}
             >
-              {phase.step >= total ? 'Finish' : 'Next Step'} 
+              {phase.step >= total ? 'Finish' : 'Next Step'}
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -235,11 +234,11 @@ const ServiceDetail: FC = () => {
   const { isPurchased, addToCart, removeFromCart, isInCart } = useCart();
   const { formatPrice, currency, convertPrice } = useCurrency();
   const { data: session } = useSession();
-  
+
   const scheduledIds = useMemo(() => {
     return (session?.user as any)?.scheduledServiceIds || [];
   }, [session]);
-  
+
   const [service, setService] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activePhase, setActivePhase] = useState<number | null>(null);
@@ -376,7 +375,7 @@ const ServiceDetail: FC = () => {
                 src={service.image || "https://images.unsplash.com/photo-1454165833767-02a522111d67?w=800&q=80"}
                 alt={service.title}
                 className="w-full max-w-md rounded-2xl object-cover aspect-[4/3] shadow-2xl"
-                style={{ 
+                style={{
                   boxShadow: '0 32px 80px rgba(0,0,0,0.5)',
                   border: '1px solid rgba(255,255,255,0.1)'
                 }}
@@ -602,15 +601,15 @@ const ServiceDetail: FC = () => {
                     {isPurchased(pkg.id) ? (
                       <div className="w-full">
                         {scheduledIds.includes(pkg.id) ? (
-                           <div className="w-full py-4 rounded-xl font-bold text-sm bg-green-100 text-green-700 flex items-center justify-center gap-2 border border-green-200">
-                             <CheckCircle className="w-4 h-4" />
-                             Scheduled
-                           </div>
+                          <div className="w-full py-4 rounded-xl font-bold text-sm bg-green-100 text-green-700 flex items-center justify-center gap-2 border border-green-200">
+                            <CheckCircle className="w-4 h-4" />
+                            Scheduled
+                          </div>
                         ) : (
-                          <a 
-                            href={pkg.calendlyUrl || "https://cal.com/emphasis-engineering-cbfkch/30min"} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
+                          <a
+                            href={pkg.calendlyUrl || "https://cal.com/emphasis-engineering-cbfkch/30min"}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="w-full"
                             onClick={async () => {
                               try {
@@ -649,7 +648,7 @@ const ServiceDetail: FC = () => {
                           }
                           try {
                             setIsBuying(pkg.id);
-                            
+
                             const response = await fetch('/api/checkout', {
                               method: 'POST',
                               headers: { 'Content-Type': 'application/json' },

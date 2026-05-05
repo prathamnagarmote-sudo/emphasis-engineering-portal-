@@ -84,7 +84,7 @@ const PracticeTests: FC = () => {
     window.addEventListener('pageshow', handlePageShow);
     return () => window.removeEventListener('pageshow', handlePageShow);
   }, []);
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentTest, setCurrentTest] = useState<PracticeTest | null>(null);
@@ -145,7 +145,7 @@ const PracticeTests: FC = () => {
   // Load persistence and auto-start if progress exists
   useEffect(() => {
     if (!currentTest) return;
-    
+
     const saved = localStorage.getItem(`test_progress_${testIdSafe}`);
     if (saved) {
       try {
@@ -171,11 +171,11 @@ const PracticeTests: FC = () => {
   useEffect(() => {
     if (isStarted && !isSubmitted) {
       // Save state
-      const stateToSave = { 
-        currentQuestion, 
-        answers, 
-        markedQuestions: Array.from(markedQuestions), 
-        timeLeft 
+      const stateToSave = {
+        currentQuestion,
+        answers,
+        markedQuestions: Array.from(markedQuestions),
+        timeLeft
       };
       localStorage.setItem(`test_progress_${testIdSafe}`, JSON.stringify(stateToSave));
 
@@ -186,7 +186,7 @@ const PracticeTests: FC = () => {
         return e.returnValue;
       };
       window.addEventListener('beforeunload', handleBeforeUnload);
-      
+
       // Attempt to prevent browser back navigation
       window.history.pushState(null, '', window.location.href);
       const handlePopState = () => {
@@ -213,13 +213,13 @@ const PracticeTests: FC = () => {
           clearInterval(timer);
           return { ...prev, timeLeft: 0, isSubmitted: true };
         }
-        
+
         // Reminders
         const newTime = prev.timeLeft - 1;
         if (newTime === 600) setReminder("10 Minutes Remaining");
         if (newTime === 60) setReminder("1 Minute Remaining");
         if (newTime === 10) setReminder("10 Seconds Remaining - Submit Now!");
-        
+
         return { ...prev, timeLeft: newTime };
       });
     }, 1000);
@@ -356,7 +356,7 @@ const PracticeTests: FC = () => {
           items: [{
             id: currentTest.testId,
             title: currentTest.title,
-            price: convertPrice(currentTest.price || 49), 
+            price: convertPrice(currentTest.price || 49),
             type: 'practice-test'
           }],
           currency: currency.code
@@ -587,27 +587,26 @@ const PracticeTests: FC = () => {
       </AnimatePresence>
 
       {/* Timer Bar */}
-      <motion.div 
-        animate={timeLeft <= 10 ? { 
+      <motion.div
+        animate={timeLeft <= 10 ? {
           scale: [1, 1.02, 1],
           backgroundColor: ["#dc2626", "#ef4444", "#dc2626"],
         } : {}}
         transition={{ duration: 0.5, repeat: Infinity }}
-        className={`fixed top-20 left-0 right-0 z-40 py-3 transition-all duration-500 ${
-          timeLeft <= 10 
-            ? 'bg-red-600 shadow-[0_0_40px_rgba(220,38,38,0.6)]' 
+        className={`fixed top-20 left-0 right-0 z-40 py-3 transition-all duration-500 ${timeLeft <= 10
+            ? 'bg-red-600 shadow-[0_0_40px_rgba(220,38,38,0.6)]'
             : timeLeft <= 60
               ? 'bg-red-500'
               : 'bg-secondary'
-        }`}
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
-              <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 transition-all duration-300 ${timeLeft < 60 ? 'border-red-500/50 bg-red-500/10' : 'border-white/20 bg-white/10'} ${timeLeft < 10 ? 'animate-pulse scale-105' : ''}`}>
-                <Clock className={`w-5 h-5 ${timeLeft < 60 ? 'text-red-400' : 'text-primary'}`} />
-                <span className={`font-mono text-xl font-bold ${timeLeft < 60 ? 'text-red-400' : 'text-white'}`}>
-                  {formatTime(timeLeft)}
-                </span>
-              </div>
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 transition-all duration-300 ${timeLeft < 60 ? 'border-red-500/50 bg-red-500/10' : 'border-white/20 bg-white/10'} ${timeLeft < 10 ? 'animate-pulse scale-105' : ''}`}>
+            <Clock className={`w-5 h-5 ${timeLeft < 60 ? 'text-red-400' : 'text-primary'}`} />
+            <span className={`font-mono text-xl font-bold ${timeLeft < 60 ? 'text-red-400' : 'text-white'}`}>
+              {formatTime(timeLeft)}
+            </span>
+          </div>
           <div className="text-white">
             Question {currentQuestion + 1} of {practiceQuestions.length}
           </div>
@@ -754,11 +753,11 @@ const PracticeTests: FC = () => {
                   const startIdx = phaseIndex * 110;
                   const endIdx = Math.min(startIdx + 110, practiceQuestions.length);
                   const phaseQuestions = practiceQuestions.slice(startIdx, endIdx);
-                  
+
                   // Calculate phase progress
                   const phaseAnswered = phaseQuestions.filter((_, idx) => answers[startIdx + idx] !== undefined).length;
                   const phaseProgress = (phaseAnswered / phaseQuestions.length) * 100;
-                  
+
                   const isOpen = activePhase === phaseIndex;
 
                   return (

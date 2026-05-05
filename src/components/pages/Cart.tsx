@@ -222,9 +222,9 @@ const Cart: FC = () => {
                 </div>
               </div>
 
-              <Button 
-                onClick={handleCheckout} 
-                className="w-full" 
+              <Button
+                onClick={handleCheckout}
+                className="w-full"
                 size="lg"
                 disabled={isCheckingOut}
               >

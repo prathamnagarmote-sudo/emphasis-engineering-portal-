@@ -196,7 +196,7 @@ const TestCard: FC<{ test: PracticeTest; index: number }> = ({ test, index }) =>
             className="w-7 h-7 rounded-full object-cover border-2 border-primary/20"
           />
           <span className="text-xs text-gray-500 font-medium">
-            {test.instructor || 'Expert Instructor'}
+            {test.instructor || 'Emphasis Engineering'}
           </span>
         </div>
 
@@ -222,7 +222,7 @@ const TestCard: FC<{ test: PracticeTest; index: number }> = ({ test, index }) =>
         <div className="bg-gray-50 rounded-2xl p-4 mb-4">
           <p className="text-xs font-semibold text-secondary mb-2 uppercase tracking-wide">What's included</p>
           <ul className="space-y-1.5">
-            {['Unlimited attempts', 'Instant feedback', 'Detailed explanations', 'Progress tracking'].map((item) => (
+            {['Real exam simulation', 'Instant feedback', 'Detailed explanations', 'Progress tracking'].map((item) => (
               <li key={item} className="flex items-center gap-2 text-xs text-gray-600">
                 <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" /> {item}
               </li>

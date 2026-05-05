@@ -174,7 +174,7 @@ const CourseCard: FC<{ course: Course; index: number; onPreview: (c: Course) => 
   const handlePurchase = async (e?: React.MouseEvent) => {
     e?.stopPropagation();
     if (purchased) return;
-    
+
     if (!session?.user) {
       router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`);
       return;
@@ -815,7 +815,7 @@ const Courses: FC = () => {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [activeVideo, setActiveVideo] = useState(0);
   const { isPurchased } = useCart();
-  
+
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
