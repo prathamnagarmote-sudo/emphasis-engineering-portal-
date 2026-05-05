@@ -31,7 +31,8 @@ export default function AchievementPopup() {
   // Time in milliseconds to wait before showing again (15 minutes)
   const REAPPEAR_DELAY = 15 * 60 * 1000;
   const pathname = usePathname();
-  const STORAGE_KEY = "achievement_popup_dismissed_forever";
+  const STORAGE_KEY = "achievement_popup_last_dismissed";
+  const SUPPRESSION_TIME = 24 * 60 * 60 * 1000; // 24 hours
 
   useEffect(() => {
     setMounted(true);
@@ -47,11 +48,12 @@ export default function AchievementPopup() {
           setAchievements(data);
           
           // Check if we should show the popup
-          const dismissed = localStorage.getItem(STORAGE_KEY);
+          const lastDismissed = localStorage.getItem(STORAGE_KEY);
+          const now = Date.now();
           
-          if (!dismissed) {
+          if (!lastDismissed || now - parseInt(lastDismissed) > SUPPRESSION_TIME) {
             // Wait slightly after load to show popup
-            const timer = setTimeout(() => setVisible(true), 3000); // 3 seconds delay for better UX
+            const timer = setTimeout(() => setVisible(true), 3000); 
             return () => clearTimeout(timer);
           }
         }
@@ -72,7 +74,7 @@ export default function AchievementPopup() {
 
   const closePopup = () => {
     setVisible(false);
-    localStorage.setItem(STORAGE_KEY, "true");
+    localStorage.setItem(STORAGE_KEY, Date.now().toString());
   };
 
   const navigate = (dir: 1 | -1) => {
@@ -109,7 +111,7 @@ export default function AchievementPopup() {
             className="fixed inset-0 z-[201] flex items-center justify-center p-4 pointer-events-none"
           >
             <div
-              className="relative w-full max-w-[95%] sm:max-w-lg pointer-events-auto overflow-hidden rounded-[20px] sm:rounded-[36px] shadow-[0_40px_100px_rgba(0,0,0,0.6)] border border-white/10"
+              className="relative w-full max-w-[92%] sm:max-w-lg pointer-events-auto overflow-hidden rounded-[24px] sm:rounded-[36px] shadow-[0_40px_100px_rgba(0,0,0,0.6)] border border-white/10 mx-auto"
               style={{ background: "linear-gradient(160deg, #061F33 0%, #0a3050 50%, #061F33 100%)" }}
             >
               {/* Confetti */}
@@ -137,7 +139,7 @@ export default function AchievementPopup() {
               </button>
 
               {/* Header badge */}
-              <div className="px-10 pt-10 pb-4 text-center relative z-10">
+              <div className="px-6 sm:px-10 pt-8 sm:pt-10 pb-4 text-center relative z-10">
                 <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#3F9FA3]/20 border border-[#3F9FA3]/30 mb-4 shadow-lg shadow-[#3F9FA3]/10">
                   <Award className="w-4 h-4 text-[#3F9FA3]" />
                   <span className="text-[#3F9FA3] text-xs font-bold uppercase tracking-[0.2em]">
@@ -153,7 +155,7 @@ export default function AchievementPopup() {
               </div>
 
               {/* Card slide */}
-              <div className="relative overflow-hidden min-h-[300px]">
+              <div className="relative overflow-hidden min-h-[260px] sm:min-h-[300px]">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={ach.id}
@@ -161,10 +163,10 @@ export default function AchievementPopup() {
                     animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                     exit={{ opacity: 0, scale: 1.05, filter: "blur(4px)" }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
-                    className="px-10 py-2 relative z-10 flex flex-col items-center justify-center h-full"
+                    className="px-6 sm:px-10 py-2 relative z-10 flex flex-col items-center justify-center h-full"
                   >
                     {/* Photo */}
-                    <div className="flex justify-center mb-6">
+                    <div className="flex justify-center mb-4 sm:mb-6">
                       <div className="relative group">
                         {/* Glow behind photo */}
                         <div 
@@ -222,10 +224,10 @@ export default function AchievementPopup() {
 
               {/* Navigation (Only show if multiple) */}
               {achievements.length > 1 && (
-                <div className="flex items-center justify-between px-8 pb-8 pt-2 relative z-10">
+                <div className="flex items-center justify-between px-6 sm:px-8 pb-6 sm:pb-8 pt-2 relative z-10">
                   <button
                     onClick={() => navigate(-1)}
-                    className="w-12 h-12 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
                   >
                     <ChevronLeft className="w-5 h-5 text-white/70" />
                   </button>
@@ -247,7 +249,7 @@ export default function AchievementPopup() {
 
                   <button
                     onClick={() => navigate(1)}
-                    className="w-12 h-12 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
                   >
                     <ChevronRight className="w-5 h-5 text-white/70" />
                   </button>
@@ -255,7 +257,7 @@ export default function AchievementPopup() {
               )}
 
               {/* Footer */}
-              <div className="border-t border-white/10 bg-black/20 px-8 py-5 flex items-center justify-between relative z-10 backdrop-blur-md">
+              <div className="border-t border-white/10 bg-black/20 px-6 sm:px-8 py-4 sm:py-5 flex items-center justify-between relative z-10 backdrop-blur-md">
                 <p className="text-[#3F9FA3] text-sm font-bold tracking-wider uppercase text-opacity-80">
                   Emphasis Engineering
                 </p>

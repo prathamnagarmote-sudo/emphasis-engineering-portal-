@@ -140,26 +140,28 @@ const PracticeTests: FC = () => {
 
   const { currentQuestion, answers, markedQuestions, timeLeft, isSubmitted } = examState;
 
-  // Load persistence
+  // Load persistence and auto-start if progress exists
   useEffect(() => {
-    if (isStarted && !isSubmitted && currentTest) {
-      const saved = localStorage.getItem(`test_progress_${testIdSafe}`);
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          setExamState(prev => ({
-            ...prev,
-            currentQuestion: parsed.currentQuestion || 0,
-            answers: parsed.answers || {},
-            markedQuestions: new Set(parsed.markedQuestions || []),
-            timeLeft: parsed.timeLeft || prev.timeLeft
-          }));
-        } catch (e) {
-          console.error("Failed to parse saved test progress", e);
-        }
+    if (!currentTest) return;
+    
+    const saved = localStorage.getItem(`test_progress_${testIdSafe}`);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setExamState(prev => ({
+          ...prev,
+          currentQuestion: parsed.currentQuestion || 0,
+          answers: parsed.answers || {},
+          markedQuestions: new Set(parsed.markedQuestions || []),
+          timeLeft: parsed.timeLeft !== undefined ? parsed.timeLeft : prev.timeLeft
+        }));
+        // Automatically start the test to the saved state
+        setIsStarted(true);
+      } catch (e) {
+        console.error("Failed to parse saved test progress", e);
       }
     }
-  }, [isStarted, currentTest, testIdSafe]);
+  }, [currentTest, testIdSafe]);
 
   // Save persistence & Prevent leave
   useEffect(() => {
@@ -180,9 +182,22 @@ const PracticeTests: FC = () => {
         return e.returnValue;
       };
       window.addEventListener('beforeunload', handleBeforeUnload);
-      return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+      
+      // Attempt to prevent browser back navigation
+      window.history.pushState(null, '', window.location.href);
+      const handlePopState = () => {
+        if (window.confirm("You have an active test session. Please submit before leaving. Stay on page?")) {
+          window.history.pushState(null, '', window.location.href);
+        }
+      };
+      window.addEventListener('popstate', handlePopState);
+
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+        window.removeEventListener('popstate', handlePopState);
+      };
     }
-  }, [isStarted, isSubmitted, currentQuestion, answers, timeLeft, testIdSafe]);
+  }, [isStarted, isSubmitted, currentQuestion, answers, markedQuestions, timeLeft, testIdSafe]);
 
   // Timer
   useEffect(() => {
@@ -400,7 +415,7 @@ const PracticeTests: FC = () => {
                     <div className="text-gray-500 text-sm">Minutes</div>
                   </div>
                   <div className="bg-gray-50 rounded-xl p-4">
-                    <div className="font-display text-2xl font-bold text-secondary">60%</div>
+                    <div className="font-display text-2xl font-bold text-secondary">{currentTest?.passPercentage || 65}%</div>
                     <div className="text-gray-500 text-sm">Pass Score</div>
                   </div>
                 </div>
@@ -444,7 +459,8 @@ const PracticeTests: FC = () => {
   if (isSubmitted) {
     const score = calculateScore();
     const percentage = (score / practiceQuestions.length) * 100;
-    const passed = percentage >= 60;
+    const passThreshold = currentTest?.passPercentage || 65;
+    const passed = percentage >= passThreshold;
 
     return (
       <div className="pt-20 min-h-screen bg-gray-50">

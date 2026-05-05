@@ -3,10 +3,10 @@ import { Question } from "@/types";
 export const practiceTests = [
   {
     id: "ethics-test",
-    title: "Professional Ethics & Engineering Practice Test",
-    description: "Test your knowledge of engineering ethics, professional responsibility, law, and real-world decision-making scenarios.",
+    title: "NPPE Practice Exam – National Professional Practice Examination",
+    description: "Master the NPPE with our comprehensive simulation. Featuring 100+ high-fidelity questions covering engineering law, professional ethics, and practice. Includes detailed explanations and competency feedback to ensure you pass on your first attempt.",
     image: "https://res.cloudinary.com/dwk1cnlw2/image/upload/v1775733026/NPPE-IMAGE-test-1_nsukpy.webp",
-    category: "Ethics",
+    category: "NPPE Preparation",
     duration: 30,
     questions: 100,
     instructor: "Industry Experts",
@@ -14,7 +14,8 @@ export const practiceTests = [
     rating: 4.8,
     reviews: 2847,
     price: 49,
-    originalPrice: 99
+    originalPrice: 99,
+    passPercentage: 65
   },
   {
     id: "free-test-1",
