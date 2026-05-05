@@ -18,23 +18,15 @@ export async function POST(req: Request) {
 
     await connectToDatabase();
     
-    const user = await User.findOne({ email: session.user.email });
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
+    // Add to scheduledServiceIds if not already there
+    await User.findOneAndUpdate(
+      { email: session.user.email },
+      { $addToSet: { scheduledServiceIds: serviceId } }
+    );
 
-    if (!user.scheduledServiceIds) {
-      user.scheduledServiceIds = [];
-    }
-
-    if (!user.scheduledServiceIds.includes(serviceId)) {
-      user.scheduledServiceIds.push(serviceId);
-      await user.save();
-    }
-
-    return NextResponse.json({ success: true, scheduledServiceIds: user.scheduledServiceIds });
+    return NextResponse.json({ success: true });
   } catch (err: any) {
-    console.error('Schedule Service Error:', err);
+    console.error('Schedule Error:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

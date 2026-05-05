@@ -13,6 +13,8 @@ import { useCurrency } from '@/context/CurrencyContext';
 import { Lock } from 'lucide-react';
 import Link from 'next/link';
 
+// Time in milliseconds to wait before showing again (15 minutes)
+const REAPPEAR_DELAY = 15 * 60 * 1000;
 const EXAM_DURATION = 600; // 10 minutes in seconds
 
 interface Question {
@@ -73,7 +75,7 @@ const PracticeTests: FC = () => {
   const { data: session } = useSession();
   const { isPurchased, purchaseItem } = useCart();
   const { currency, convertPrice } = useCurrency();
-  const [isBuying, setIsBuying] = useState(false);
+  const [isBuying, setIsBuying] = useState<string | boolean>(false);
 
   useEffect(() => {
     const handlePageShow = () => setIsBuying(false);
@@ -379,7 +381,7 @@ const PracticeTests: FC = () => {
                     <p className="text-gray-600 text-sm mb-4">
                       Purchase this test to unlock unlimited attempts and detailed explanations.
                     </p>
-                    <Button onClick={handlePurchase} disabled={isBuying} size="lg" className="w-full">
+                    <Button onClick={handlePurchase} disabled={!!isBuying} size="lg" className="w-full">
                       {isBuying ? "Processing..." : "Buy Now to Unlock"}
                     </Button>
                   </div>
@@ -465,7 +467,7 @@ const PracticeTests: FC = () => {
                           <XCircle className="w-5 h-5 text-red-600 mt-0.5" />
                         )}
                         <div className="flex-1">
-                          <p className="text-secondary font-semibold mb-2">{q.question}</p>
+                          <p className="text-secondary font-medium mb-2">{q.question}</p>
                           <p className="text-sm text-gray-600">
                             Your answer: <span className={isCorrect ? 'text-green-600' : 'text-red-600'}>
                               {answers[idx] !== undefined ? q.options[answers[idx]] : 'Not answered'}
@@ -534,12 +536,12 @@ const PracticeTests: FC = () => {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-white">
-            <Clock className={`w-5 h-5 ${timeLeft <= 10 ? 'animate-pulse' : ''}`} />
-            <span className={`font-mono text-xl font-bold ${timeLeft <= 10 ? 'animate-pulse' : ''}`}>
-              {formatTime(timeLeft)}
-            </span>
-          </div>
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 transition-all duration-300 ${timeLeft < 60 ? 'border-red-500/50 bg-red-500/10' : 'border-white/20 bg-white/10'} ${timeLeft < 10 ? 'animate-pulse scale-105' : ''}`}>
+                <Clock className={`w-5 h-5 ${timeLeft < 60 ? 'text-red-400' : 'text-primary'}`} />
+                <span className={`font-mono text-xl font-bold ${timeLeft < 60 ? 'text-red-400' : 'text-white'}`}>
+                  {formatTime(timeLeft)}
+                </span>
+              </div>
           <div className="text-white">
             Question {currentQuestion + 1} of {practiceQuestions.length}
           </div>
@@ -580,7 +582,7 @@ const PracticeTests: FC = () => {
                 </button>
               </div>
 
-              <h2 className="font-display text-xl md:text-2xl font-medium text-secondary mb-8 leading-relaxed">
+              <h2 className="font-display text-base md:text-lg font-medium text-secondary mb-8 leading-relaxed">
                 {question.question}
               </h2>
 

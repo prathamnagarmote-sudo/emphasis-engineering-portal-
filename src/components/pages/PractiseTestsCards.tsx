@@ -19,7 +19,7 @@ import PageHero from '@/components/ui/PageHero';
 /* ─── Data ─── */
 const FEATURES = [
   { icon: <Timer className="w-5 h-5" />, title: "Timed Conditions", desc: "Simulate real exam pressure with countdown timers" },
-  { icon: <Brain className="w-5 h-5" />, title: "AI Feedback", desc: "Instant explanations for every answer" },
+  { icon: <Brain className="w-5 h-5" />, title: "Instant Feedback", desc: "Detailed explanations for every answer" },
   { icon: <Target className="w-5 h-5" />, title: "Competency Mapped", desc: "Questions aligned to licensing body frameworks" },
   { icon: <Trophy className="w-5 h-5" />, title: "Progress Tracking", desc: "Track improvement across multiple attempts" },
 ];
@@ -221,7 +221,7 @@ const TestCard: FC<{ test: PracticeTest; index: number }> = ({ test, index }) =>
         <div className="bg-gray-50 rounded-2xl p-4 mb-4">
           <p className="text-xs font-semibold text-secondary mb-2 uppercase tracking-wide">What's included</p>
           <ul className="space-y-1.5">
-            {['Unlimited attempts', 'Instant AI feedback', 'Detailed explanations', 'Progress tracking'].map((item) => (
+            {['Unlimited attempts', 'Instant feedback', 'Detailed explanations', 'Progress tracking'].map((item) => (
               <li key={item} className="flex items-center gap-2 text-xs text-gray-600">
                 <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" /> {item}
               </li>

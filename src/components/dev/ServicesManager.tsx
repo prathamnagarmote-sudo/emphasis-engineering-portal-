@@ -167,8 +167,8 @@ export default function ServicesManager({ headers }: { headers: any }) {
                 <div className="grid grid-cols-2 gap-4">
                   <div><label className="block text-[10px] text-gray-500 uppercase mb-1">Service ID</label><input value={pkg.serviceId} onChange={e => updatePackage(idx, "serviceId", e.target.value)} className={inputClass} /></div>
                   <div><label className="block text-[10px] text-gray-500 uppercase mb-1">Title</label><input value={pkg.title} onChange={e => updatePackage(idx, "title", e.target.value)} className={inputClass} /></div>
-                  <div><label className="block text-[10px] text-gray-500 uppercase mb-1">Price (£)</label><input type="number" value={pkg.price} onChange={e => updatePackage(idx, "price", Number(e.target.value))} className={inputClass} /></div>
-                  <div><label className="block text-[10px] text-gray-500 uppercase mb-1">Original Price (£)</label><input type="number" value={pkg.originalPrice || ""} onChange={e => updatePackage(idx, "originalPrice", Number(e.target.value))} className={inputClass} placeholder="Leave empty if no discount" /></div>
+                  <div><label className="block text-[10px] text-gray-500 uppercase mb-1">Price (CAD)</label><input type="number" value={pkg.price} onChange={e => updatePackage(idx, "price", Number(e.target.value))} className={inputClass} /></div>
+                  <div><label className="block text-[10px] text-gray-500 uppercase mb-1">Original Price (CAD)</label><input type="number" value={pkg.originalPrice || ""} onChange={e => updatePackage(idx, "originalPrice", Number(e.target.value))} className={inputClass} placeholder="Leave empty if no discount" /></div>
                   <div><label className="block text-[10px] text-gray-500 uppercase mb-1">Calendly URL</label><input value={pkg.calendlyUrl} onChange={e => updatePackage(idx, "calendlyUrl", e.target.value)} className={inputClass} placeholder="https://calendly.com/..." /></div>
                   <div className="flex items-end pb-2">
                     <label className="flex items-center gap-2 cursor-pointer">

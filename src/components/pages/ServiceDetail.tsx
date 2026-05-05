@@ -569,8 +569,8 @@ const ServiceDetail: FC = () => {
                   )}
 
                   {/* Purchased badge */}
-                  {session?.user && (session.user as any).purchasedContent?.includes(pkg.id) && (
-                    <div className="absolute top-5 left-5 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full flex items-center gap-1">
+                  {session?.user && session.user.purchasedContent?.includes(pkg.id) && (
+                    <div className="absolute top-5 left-5 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full flex items-center gap-1 shadow-lg z-20">
                       <CheckCircle className="w-3 h-3" /> Purchased
                     </div>
                   )}
@@ -595,9 +595,9 @@ const ServiceDetail: FC = () => {
 
                   {/* CTAs */}
                   <div className="flex flex-col gap-3">
-                    {session?.user && (session.user as any).purchasedContent?.includes(pkg.id) ? (
+                    {session?.user && session.user.purchasedContent?.includes(pkg.id) ? (
                       <div className="w-full">
-                        {(session.user as any).scheduledServiceIds?.includes(pkg.id) ? (
+                        {session.user.scheduledServiceIds?.includes(pkg.id) ? (
                            <div className="w-full py-4 rounded-xl font-bold text-sm bg-green-100 text-green-700 flex items-center justify-center gap-2 border border-green-200">
                              <CheckCircle className="w-4 h-4" />
                              Scheduled
@@ -615,7 +615,8 @@ const ServiceDetail: FC = () => {
                                   headers: { 'Content-Type': 'application/json' },
                                   body: JSON.stringify({ serviceId: pkg.id })
                                 });
-                                // Optionally refresh session or just let it update on next load
+                                // Force a session update or just rely on state
+                                router.refresh();
                               } catch (e) {
                                 console.error("Failed to mark as scheduled", e);
                               }
@@ -638,6 +639,10 @@ const ServiceDetail: FC = () => {
                         whileTap={{ scale: 0.97 }}
                         disabled={isBuying === pkg.id}
                         onClick={async () => {
+                          if (!session) {
+                            router.push(`/login?callbackUrl=${window.location.pathname}`);
+                            return;
+                          }
                           try {
                             setIsBuying(pkg.id);
                             
@@ -684,7 +689,7 @@ const ServiceDetail: FC = () => {
                       </motion.button>
                     )}
 
-                    {!(session?.user && (session.user as any).purchasedContent?.includes(pkg.id)) && (
+                    {!(session?.user && session.user.purchasedContent?.includes(pkg.id)) && (
                       <motion.button
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}

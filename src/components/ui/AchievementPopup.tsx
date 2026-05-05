@@ -27,8 +27,8 @@ export default function AchievementPopup() {
   const [autoPlay, setAutoPlay] = useState(true);
   const [mounted, setMounted] = useState(false);
 
-  // Time in milliseconds to wait before showing again (2 minutes)
-  const REAPPEAR_DELAY = 2 * 60 * 1000;
+  // Time in milliseconds to wait before showing again (15 minutes)
+  const REAPPEAR_DELAY = 15 * 60 * 1000;
   const STORAGE_KEY = "achievement_popup_last_seen";
 
   useEffect(() => {
@@ -108,7 +108,7 @@ export default function AchievementPopup() {
             className="fixed inset-0 z-[201] flex items-center justify-center p-4 pointer-events-none"
           >
             <div
-              className="relative w-full max-w-lg pointer-events-auto overflow-hidden rounded-[36px] shadow-[0_40px_100px_rgba(0,0,0,0.6)] border border-white/10"
+              className="relative w-full max-w-[90%] sm:max-w-lg pointer-events-auto overflow-hidden rounded-[24px] sm:rounded-[36px] shadow-[0_40px_100px_rgba(0,0,0,0.6)] border border-white/10"
               style={{ background: "linear-gradient(160deg, #061F33 0%, #0a3050 50%, #061F33 100%)" }}
             >
               {/* Confetti */}
@@ -145,10 +145,10 @@ export default function AchievementPopup() {
                   <span className="w-1.5 h-1.5 rounded-full bg-[#3F9FA3] animate-pulse" />
                 </div>
 
-                <h2 className="text-white text-3xl font-extrabold leading-tight mb-2 tracking-tight">
+                <h2 className="text-white text-xl sm:text-3xl font-extrabold leading-tight mb-2 tracking-tight">
                   🎉 Congratulations!
                 </h2>
-                <p className="text-gray-300 text-sm font-medium">Our engineers keep raising the bar globally.</p>
+                <p className="text-gray-300 text-xs sm:text-sm font-medium">Our engineers keep raising the bar globally.</p>
               </div>
 
               {/* Card slide */}
@@ -199,8 +199,8 @@ export default function AchievementPopup() {
                     </div>
 
                     {/* Text */}
-                    <div className="text-center w-full">
-                      <h3 className="text-2xl font-black text-white mb-1.5 drop-shadow-md">{ach.name}</h3>
+                    <div className="text-center w-full px-4">
+                      <h3 className="text-lg sm:text-2xl font-black text-white mb-1.5 drop-shadow-md">{ach.name}</h3>
                       <div className="flex flex-wrap items-center justify-center gap-2 mb-4 bg-white/5 inline-flex px-4 py-1.5 rounded-full border border-white/5">
                         <span
                           className="text-sm font-black tracking-wide"
@@ -209,9 +209,9 @@ export default function AchievementPopup() {
                           {ach.credential}
                         </span>
                         <span className="text-gray-500">•</span>
-                        <span className="text-gray-300 text-sm font-medium">{ach.location}</span>
+                        <span className="text-gray-300 text-xs sm:text-sm font-medium">{ach.location}</span>
                       </div>
-                      <p className="text-gray-300 text-[15px] leading-relaxed max-w-sm mx-auto font-medium">
+                      <p className="text-gray-300 text-xs sm:text-[15px] leading-relaxed max-w-sm mx-auto font-medium line-clamp-3 sm:line-clamp-none">
                         "{ach.detail}"
                       </p>
                     </div>
