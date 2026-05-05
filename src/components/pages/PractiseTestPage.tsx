@@ -94,6 +94,7 @@ const PracticeTests: FC = () => {
   });
   const [activePhase, setActivePhase] = useState(0);
   const [attempts, setAttempts] = useState(0);
+  const [reminder, setReminder] = useState<string | null>(null);
 
   const practiceQuestions = currentTest?.questions || [];
   const testIdSafe = testIdFromUrl || "default-test";
@@ -147,12 +148,27 @@ const PracticeTests: FC = () => {
           clearInterval(timer);
           return { ...prev, timeLeft: 0, isSubmitted: true };
         }
-        return { ...prev, timeLeft: prev.timeLeft - 1 };
+        
+        // Reminders
+        const newTime = prev.timeLeft - 1;
+        if (newTime === 600) setReminder("10 Minutes Remaining");
+        if (newTime === 60) setReminder("1 Minute Remaining");
+        if (newTime === 10) setReminder("10 Seconds Remaining - Submit Now!");
+        
+        return { ...prev, timeLeft: newTime };
       });
     }, 1000);
 
     return () => clearInterval(timer);
   }, [isStarted, isSubmitted]);
+
+  // Clear reminder after 3 seconds
+  useEffect(() => {
+    if (reminder) {
+      const timeout = setTimeout(() => setReminder(null), 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [reminder]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -487,8 +503,36 @@ const PracticeTests: FC = () => {
 
   return (
     <div className="pt-20 min-h-screen bg-gray-100">
+      {/* Reminder Notification */}
+      <AnimatePresence>
+        {reminder && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, x: '-50%' }}
+            animate={{ opacity: 1, y: 50, x: '-50%' }}
+            exit={{ opacity: 0, y: -50, x: '-50%' }}
+            className="fixed top-24 left-1/2 z-[100] bg-secondary text-white px-6 py-3 rounded-full shadow-2xl border border-primary/20 flex items-center gap-3 backdrop-blur-md"
+          >
+            <AlertCircle className="w-5 h-5 text-primary animate-pulse" />
+            <span className="font-bold tracking-wide uppercase text-sm">{reminder}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Timer Bar */}
-      <div className={`fixed top-20 left-0 right-0 z-40 py-3 ${timeLeft <= 10 ? 'bg-red-600' : 'bg-secondary'}`}>
+      <motion.div 
+        animate={timeLeft <= 10 ? { 
+          scale: [1, 1.02, 1],
+          backgroundColor: ["#dc2626", "#ef4444", "#dc2626"],
+        } : {}}
+        transition={{ duration: 0.5, repeat: Infinity }}
+        className={`fixed top-20 left-0 right-0 z-40 py-3 transition-all duration-500 ${
+          timeLeft <= 10 
+            ? 'bg-red-600 shadow-[0_0_40px_rgba(220,38,38,0.6)]' 
+            : timeLeft <= 60
+              ? 'bg-red-500'
+              : 'bg-secondary'
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center gap-2 text-white">
             <Clock className={`w-5 h-5 ${timeLeft <= 10 ? 'animate-pulse' : ''}`} />
@@ -508,7 +552,7 @@ const PracticeTests: FC = () => {
             Submit Exam
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       <div className="max-w-7xl mx-auto px-5 py-25">
         <div className="grid lg:grid-cols-12 gap-8">
@@ -536,7 +580,7 @@ const PracticeTests: FC = () => {
                 </button>
               </div>
 
-              <h2 className="font-display text-xl md:text-2xl font-semibold text-secondary mb-8">
+              <h2 className="font-display text-xl md:text-2xl font-medium text-secondary mb-8 leading-relaxed">
                 {question.question}
               </h2>
 
