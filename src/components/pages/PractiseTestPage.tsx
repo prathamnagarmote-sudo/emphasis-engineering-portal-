@@ -195,7 +195,7 @@ const PracticeTests: FC = () => {
         : Math.min(practiceQuestions.length - 1, prev.currentQuestion + 1);
 
       // Auto-open the correct phase accordion
-      const newPhase = Math.floor(nextQ / 100);
+      const newPhase = Math.floor(nextQ / 110);
       if (newPhase !== activePhase) setActivePhase(newPhase);
 
       return {
@@ -638,26 +638,47 @@ const PracticeTests: FC = () => {
               </h3>
 
               <div className="space-y-3 mb-6 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                {Array.from({ length: Math.ceil(practiceQuestions.length / 100) }).map((_, phaseIndex) => {
-                  const startIdx = phaseIndex * 100;
-                  const endIdx = Math.min(startIdx + 100, practiceQuestions.length);
+                {Array.from({ length: Math.ceil(practiceQuestions.length / 110) }).map((_, phaseIndex) => {
+                  const startIdx = phaseIndex * 110;
+                  const endIdx = Math.min(startIdx + 110, practiceQuestions.length);
                   const phaseQuestions = practiceQuestions.slice(startIdx, endIdx);
+                  
+                  // Calculate phase progress
+                  const phaseAnswered = phaseQuestions.filter((_, idx) => answers[startIdx + idx] !== undefined).length;
+                  const phaseProgress = (phaseAnswered / phaseQuestions.length) * 100;
+                  
                   const isOpen = activePhase === phaseIndex;
 
                   return (
                     <div key={phaseIndex} className="border border-gray-200 rounded-xl overflow-hidden">
                       <button
                         onClick={() => setActivePhase(isOpen ? -1 : phaseIndex)}
-                        className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition-colors"
+                        className="w-full p-3 bg-gray-50 hover:bg-gray-100 transition-colors"
                       >
-                        <span className="font-semibold text-sm text-secondary">
-                          Phase {phaseIndex + 1} (Q{startIdx + 1} - Q{endIdx})
-                        </span>
-                        <motion.div animate={{ rotate: isOpen ? 180 : 0 }}>
-                          <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </motion.div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-semibold text-sm text-secondary">
+                            Phase {phaseIndex + 1} (Q{startIdx + 1} - Q{endIdx})
+                          </span>
+                          <motion.div animate={{ rotate: isOpen ? 180 : 0 }}>
+                            <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </motion.div>
+                        </div>
+                        
+                        {/* Phase Progress Bar */}
+                        <div className="w-full space-y-1">
+                          <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-primary transition-all duration-300"
+                              style={{ width: `${phaseProgress}%` }}
+                            />
+                          </div>
+                          <div className="flex justify-between text-[10px] text-gray-500 font-medium">
+                            <span>{phaseAnswered} of {phaseQuestions.length} answered</span>
+                            <span>{Math.round(phaseProgress)}%</span>
+                          </div>
+                        </div>
                       </button>
 
                       <AnimatePresence>
@@ -668,7 +689,7 @@ const PracticeTests: FC = () => {
                             exit={{ height: 0 }}
                             className="overflow-hidden bg-white"
                           >
-                            <div className="p-4 grid grid-cols-8 gap-2.5">
+                            <div className="p-4 grid grid-cols-7 gap-2">
                               {phaseQuestions.map((_, idx) => {
                                 const globalIndex = startIdx + idx;
                                 const status = getQuestionStatus(globalIndex);

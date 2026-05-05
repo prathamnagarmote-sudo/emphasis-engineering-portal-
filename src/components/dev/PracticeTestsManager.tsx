@@ -25,6 +25,7 @@ export default function PracticeTestsManager({ headers, uploadFile }: { headers:
   const [csvText, setCsvText] = useState("");
   const [importing, setImporting] = useState(false);
   const [expandedQ, setExpandedQ] = useState<number | null>(null);
+  const [activeDevPhase, setActiveDevPhase] = useState(0);
   const csvRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const excelRef = useRef<HTMLInputElement>(null);
@@ -303,32 +304,56 @@ export default function PracticeTestsManager({ headers, uploadFile }: { headers:
               </div>
             </div>
 
+            {/* Phase Selection for Dev Panel */}
+            {editing.questions.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-4 bg-white/5 p-3 rounded-xl border border-white/5">
+                {Array.from({ length: Math.ceil(editing.questions.length / 110) }).map((_, pIdx) => (
+                  <button
+                    key={pIdx}
+                    onClick={() => setActiveDevPhase(pIdx)}
+                    className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
+                      activeDevPhase === pIdx 
+                        ? "bg-[#3F9FA3] text-white" 
+                        : "bg-white/5 text-gray-500 hover:bg-white/10"
+                    }`}
+                  >
+                    Phase {pIdx + 1}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {/* Question List */}
             <div className="space-y-2">
-              {editing.questions.map((q, idx) => (
-                <div key={idx} className="bg-[#111827] rounded-xl border border-white/5 overflow-hidden">
-                  <div className="flex items-center gap-3 p-3 cursor-pointer" onClick={() => setExpandedQ(expandedQ === idx ? null : idx)}>
-                    {expandedQ === idx ? <ChevronUp className="w-3 h-3 text-gray-500" /> : <ChevronDown className="w-3 h-3 text-gray-500" />}
-                    <span className="text-[#3F9FA3] text-xs font-bold w-8">Q{idx + 1}</span>
-                    <span className="text-white text-xs truncate flex-1">{q.question || "Empty question"}</span>
-                    <button onClick={e => { e.stopPropagation(); removeQuestion(idx); }} className="p-1 text-gray-500 hover:text-red-400"><X className="w-3 h-3" /></button>
-                  </div>
-                  {expandedQ === idx && (
-                    <div className="px-4 pb-4 space-y-3">
-                      <textarea value={q.question} onChange={e => updateQuestion(idx, "question", e.target.value)} rows={2} className={inputClass + " resize-none text-xs"} placeholder="Question text" />
-                      <div className="grid grid-cols-2 gap-2">
-                        {q.options.map((opt, oIdx) => (
-                          <div key={oIdx} className="flex items-center gap-2">
-                            <input type="radio" name={`q${idx}`} checked={q.correctAnswer === oIdx} onChange={() => updateQuestion(idx, "correctAnswer", oIdx)} className="accent-[#3F9FA3]" />
-                            <input value={opt} onChange={e => updateOption(idx, oIdx, e.target.value)} className="flex-1 px-3 py-1.5 bg-[#0a0f1a] border border-white/10 rounded-lg text-white text-xs focus:outline-none" placeholder={`Option ${String.fromCharCode(65 + oIdx)}`} />
-                          </div>
-                        ))}
+              {editing.questions
+                .slice(activeDevPhase * 110, (activeDevPhase + 1) * 110)
+                .map((q, idx) => {
+                  const globalIdx = activeDevPhase * 110 + idx;
+                  return (
+                    <div key={globalIdx} className="bg-[#111827] rounded-xl border border-white/5 overflow-hidden">
+                      <div className="flex items-center gap-3 p-3 cursor-pointer" onClick={() => setExpandedQ(expandedQ === globalIdx ? null : globalIdx)}>
+                        {expandedQ === globalIdx ? <ChevronUp className="w-3 h-3 text-gray-500" /> : <ChevronDown className="w-3 h-3 text-gray-500" />}
+                        <span className="text-[#3F9FA3] text-xs font-bold w-8">Q{globalIdx + 1}</span>
+                        <span className="text-white text-xs truncate flex-1">{q.question || "Empty question"}</span>
+                        <button onClick={e => { e.stopPropagation(); removeQuestion(globalIdx); }} className="p-1 text-gray-500 hover:text-red-400"><X className="w-3 h-3" /></button>
                       </div>
-                      <textarea value={q.explanation || ""} onChange={e => updateQuestion(idx, "explanation", e.target.value)} rows={2} className={inputClass + " resize-none text-xs"} placeholder="Explanation (shown after answering)" />
+                      {expandedQ === globalIdx && (
+                        <div className="px-4 pb-4 space-y-3">
+                          <textarea value={q.question} onChange={e => updateQuestion(globalIdx, "question", e.target.value)} rows={2} className={inputClass + " resize-none text-xs"} placeholder="Question text" />
+                          <div className="grid grid-cols-2 gap-2">
+                            {q.options.map((opt, oIdx) => (
+                              <div key={oIdx} className="flex items-center gap-2">
+                                <input type="radio" name={`q${globalIdx}`} checked={q.correctAnswer === oIdx} onChange={() => updateQuestion(globalIdx, "correctAnswer", oIdx)} className="accent-[#3F9FA3]" />
+                                <input value={opt} onChange={e => updateOption(globalIdx, oIdx, e.target.value)} className="flex-1 px-3 py-1.5 bg-[#0a0f1a] border border-white/10 rounded-lg text-white text-xs focus:outline-none" placeholder={`Option ${String.fromCharCode(65 + oIdx)}`} />
+                              </div>
+                            ))}
+                          </div>
+                          <textarea value={q.explanation || ""} onChange={e => updateQuestion(globalIdx, "explanation", e.target.value)} rows={2} className={inputClass + " resize-none text-xs"} placeholder="Explanation (shown after answering)" />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              ))}
+                  );
+                })}
             </div>
             <button onClick={addQuestion} className="w-full py-3 bg-[#3F9FA3]/5 text-[#3F9FA3] rounded-xl text-sm font-bold hover:bg-[#3F9FA3]/10 flex items-center justify-center gap-2"><Plus className="w-4 h-4" /> Add Question Manually</button>
           </div>
