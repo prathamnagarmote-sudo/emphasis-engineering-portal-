@@ -138,6 +138,8 @@ const PracticeTests: FC = () => {
     fetchTestData();
   }, [testIdFromUrl]);
 
+  const { currentQuestion, answers, markedQuestions, timeLeft, isSubmitted } = examState;
+
   // Load persistence
   useEffect(() => {
     if (isStarted && !isSubmitted && currentTest) {
@@ -181,8 +183,6 @@ const PracticeTests: FC = () => {
       return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }
   }, [isStarted, isSubmitted, currentQuestion, answers, timeLeft, testIdSafe]);
-
-  const { currentQuestion, answers, markedQuestions, timeLeft, isSubmitted } = examState;
 
   // Timer
   useEffect(() => {
