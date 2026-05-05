@@ -517,7 +517,7 @@ const MentorVideoSection: FC = () => {
             transition={{ delay: 0.45, duration: 0.4 }}
             className="absolute -bottom-5 -left-5 bg-white px-5 py-4 rounded-2xl shadow-2xl"
           >
-            <div className="text-2xl font-bold text-primary">5,000+</div>
+            <div className="text-2xl font-bold text-primary">1,000+</div>
             <div className="text-gray-500 text-xs mt-0.5">Questions available</div>
           </motion.div>
 

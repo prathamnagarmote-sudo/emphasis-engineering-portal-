@@ -244,10 +244,13 @@ const Navbar: FC = () => {
             {navLinks.map((link) =>
               link.name === "Services" ? (
                 <div key="services" className="relative">
-                  <button
+                  <Link
+                    href="/services"
                     onMouseEnter={() => setIsServicesOpen(true)}
                     onMouseLeave={() => setIsServicesOpen(false)}
-                    className="flex items-center gap-1 text-gray-700 hover:text-primary text-sm font-medium transition-all whitespace-nowrap"
+                    className={`flex items-center gap-1 text-sm font-medium transition-all whitespace-nowrap ${
+                      pathname === '/services' ? 'text-primary' : 'text-gray-700 hover:text-primary'
+                    }`}
                   >
                     Services
                     <ChevronDown
@@ -255,7 +258,7 @@ const Navbar: FC = () => {
                         isServicesOpen ? "rotate-180" : ""
                       }`}
                     />
-                  </button>
+                  </Link>
 
                   <AnimatePresence>
                     {isServicesOpen && (
