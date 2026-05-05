@@ -138,6 +138,50 @@ const PracticeTests: FC = () => {
     fetchTestData();
   }, [testIdFromUrl]);
 
+  // Load persistence
+  useEffect(() => {
+    if (isStarted && !isSubmitted && currentTest) {
+      const saved = localStorage.getItem(`test_progress_${testIdSafe}`);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setExamState(prev => ({
+            ...prev,
+            currentQuestion: parsed.currentQuestion || 0,
+            answers: parsed.answers || {},
+            markedQuestions: new Set(parsed.markedQuestions || []),
+            timeLeft: parsed.timeLeft || prev.timeLeft
+          }));
+        } catch (e) {
+          console.error("Failed to parse saved test progress", e);
+        }
+      }
+    }
+  }, [isStarted, currentTest, testIdSafe]);
+
+  // Save persistence & Prevent leave
+  useEffect(() => {
+    if (isStarted && !isSubmitted) {
+      // Save state
+      const stateToSave = { 
+        currentQuestion, 
+        answers, 
+        markedQuestions: Array.from(markedQuestions), 
+        timeLeft 
+      };
+      localStorage.setItem(`test_progress_${testIdSafe}`, JSON.stringify(stateToSave));
+
+      // Prevent leave
+      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        e.preventDefault();
+        e.returnValue = 'Please submit your test before leaving. Your progress is saved, but you should finish it now.';
+        return e.returnValue;
+      };
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+  }, [isStarted, isSubmitted, currentQuestion, answers, timeLeft, testIdSafe]);
+
   const { currentQuestion, answers, markedQuestions, timeLeft, isSubmitted } = examState;
 
   // Timer
@@ -226,6 +270,8 @@ const PracticeTests: FC = () => {
   const handleSubmit = () => {
     if (window.confirm("Are you sure you want to submit the test? You won't be able to change your answers after this.")) {
       setExamState((prev) => ({ ...prev, isSubmitted: true }));
+      localStorage.removeItem(`test_progress_${testIdSafe}`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       incrementAttempts();
     }
   };
@@ -701,7 +747,7 @@ const PracticeTests: FC = () => {
                         onClick={() => setActivePhase(isOpen ? -1 : phaseIndex)}
                         className="w-full p-3 bg-gray-50 hover:bg-gray-100 transition-colors"
                       >
-                        <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center justify-between">
                           <span className="font-semibold text-sm text-secondary">
                             Phase {phaseIndex + 1} (Q{startIdx + 1} - Q{endIdx})
                           </span>
@@ -710,20 +756,6 @@ const PracticeTests: FC = () => {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
                           </motion.div>
-                        </div>
-                        
-                        {/* Phase Progress Bar */}
-                        <div className="w-full space-y-1">
-                          <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-primary transition-all duration-300"
-                              style={{ width: `${phaseProgress}%` }}
-                            />
-                          </div>
-                          <div className="flex justify-between text-[10px] text-gray-500 font-medium">
-                            <span>{phaseAnswered} of {phaseQuestions.length} answered</span>
-                            <span>{Math.round(phaseProgress)}%</span>
-                          </div>
                         </div>
                       </button>
 

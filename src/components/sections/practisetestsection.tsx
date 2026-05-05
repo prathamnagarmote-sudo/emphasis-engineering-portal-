@@ -15,7 +15,7 @@ const FEATURES = [
 const STATS_CARDS = [
   { icon: Timer, label: "Avg. Time", value: "2.4h", color: "from-blue-500 to-cyan-500", pos: "top-4 left-4" },
   { icon: TrendingUp, label: "Improvement", value: "+34%", color: "from-emerald-500 to-teal-500", pos: "top-4 right-4" },
-  { icon: Award, label: "Pass Rate", value: "95%", color: "from-amber-500 to-orange-500", pos: "bottom-4 left-4" },
+  { icon: Award, label: "Pass Rate", value: "100%", color: "from-amber-500 to-orange-500", pos: "bottom-4 left-4" },
   { icon: Zap, label: "Instant Feedback", value: "Real-time", color: "from-violet-500 to-purple-500", pos: "bottom-4 right-4" },
 ];
 
@@ -103,7 +103,7 @@ const PracticeTestsSection: FC = () => {
           </h2>
 
           <p className="text-gray-400 mt-6 text-lg max-w-2xl mx-auto leading-relaxed">
-            Industry-standard simulation platform trusted by 45,000+ engineers preparing 
+            Industry-standard simulation platform trusted by 2,000+ engineers preparing 
             for licensing exams worldwide
           </p>
         </motion.div>
@@ -152,8 +152,8 @@ const PracticeTestsSection: FC = () => {
             >
               {[
                 { label: "Questions", value: "1,000+" },
-                { label: "Students", value: "45K+" },
-                { label: "Countries", value: "50+" },
+                { label: "Students", value: "2K+" },
+                { label: "Countries", value: "10+" },
               ].map((s, i) => (
                 <div key={i} className="text-center">
                   <div className="text-2xl font-bold bg-gradient-to-r from-primary to-teal-400 bg-clip-text text-transparent">
