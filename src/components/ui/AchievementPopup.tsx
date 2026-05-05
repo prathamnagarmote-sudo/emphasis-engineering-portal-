@@ -108,7 +108,7 @@ export default function AchievementPopup() {
             className="fixed inset-0 z-[201] flex items-center justify-center p-4 pointer-events-none"
           >
             <div
-              className="relative w-full max-w-[90%] sm:max-w-lg pointer-events-auto overflow-hidden rounded-[24px] sm:rounded-[36px] shadow-[0_40px_100px_rgba(0,0,0,0.6)] border border-white/10"
+              className="relative w-full max-w-[95%] sm:max-w-lg pointer-events-auto overflow-hidden rounded-[20px] sm:rounded-[36px] shadow-[0_40px_100px_rgba(0,0,0,0.6)] border border-white/10"
               style={{ background: "linear-gradient(160deg, #061F33 0%, #0a3050 50%, #061F33 100%)" }}
             >
               {/* Confetti */}
@@ -145,10 +145,10 @@ export default function AchievementPopup() {
                   <span className="w-1.5 h-1.5 rounded-full bg-[#3F9FA3] animate-pulse" />
                 </div>
 
-                <h2 className="text-white text-xl sm:text-3xl font-extrabold leading-tight mb-2 tracking-tight">
+                <h2 className="text-white text-lg sm:text-3xl font-extrabold leading-tight mb-1 tracking-tight">
                   🎉 Congratulations!
                 </h2>
-                <p className="text-gray-300 text-xs sm:text-sm font-medium">Our engineers keep raising the bar globally.</p>
+                <p className="text-gray-300 text-[10px] sm:text-sm font-medium">Our engineers keep raising the bar globally.</p>
               </div>
 
               {/* Card slide */}
@@ -173,9 +173,9 @@ export default function AchievementPopup() {
                         
                         {/* Standard Circle */}
                         <div
-                          className="w-36 h-36 rounded-full overflow-hidden relative z-10"
+                          className="w-24 h-24 sm:w-36 sm:h-36 rounded-full overflow-hidden relative z-10"
                           style={{ 
-                            border: `4px solid ${ach.color || '#3F9FA3'}`,
+                            border: `3px solid ${ach.color || '#3F9FA3'}`,
                             boxShadow: `0 8px 32px ${ach.color || '#3F9FA3'}50`
                           }}
                         >

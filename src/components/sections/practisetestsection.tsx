@@ -16,7 +16,7 @@ const STATS_CARDS = [
   { icon: Timer, label: "Avg. Time", value: "2.4h", color: "from-blue-500 to-cyan-500", pos: "top-4 left-4" },
   { icon: TrendingUp, label: "Improvement", value: "+34%", color: "from-emerald-500 to-teal-500", pos: "top-4 right-4" },
   { icon: Award, label: "Pass Rate", value: "95%", color: "from-amber-500 to-orange-500", pos: "bottom-4 left-4" },
-  { icon: Zap, label: "AI Feedback", value: "Real-time", color: "from-violet-500 to-purple-500", pos: "bottom-4 right-4" },
+  { icon: Zap, label: "Instant Feedback", value: "Real-time", color: "from-violet-500 to-purple-500", pos: "bottom-4 right-4" },
 ];
 
 const EXAM_QUESTIONS = [
@@ -92,8 +92,7 @@ const PracticeTestsSection: FC = () => {
           className="text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/40 bg-primary/10 text-primary text-xs font-semibold tracking-widest uppercase mb-6">
-            <Zap className="w-3 h-3" />
-            AI-Powered Assessment
+            Detailed Assessment
           </div>
           
           <h2 className="text-5xl md:text-6xl font-bold text-white leading-tight max-w-3xl mx-auto">

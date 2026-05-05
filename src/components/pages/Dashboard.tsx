@@ -18,7 +18,9 @@ import {
   Trophy,
   Play,
   Loader2,
-  Calendar
+  Calendar,
+  CheckCircle,
+  Check
 } from "lucide-react";
 import Link from "next/link";
 
@@ -73,17 +75,21 @@ export default function Dashboard() {
     return (session?.user as any)?.purchasedContent || [];
   }, [session]);
 
+  const scheduledIds = useMemo(() => {
+    return (session?.user as any)?.scheduledServiceIds || [];
+  }, [session]);
+
   const myContent = useMemo(() => {
     const allContent = [
       ...dbData.courses.map(c => ({ ...c, type: 'course', image: c.thumbnail, id: c.id || c._id })),
       ...dbData.tests.map(p => ({ ...p, type: 'test', image: p.image, id: p.id || p.testId || p._id })),
-      ...dbData.services.flatMap(s => (s.packages || []).map((pkg: any) => ({
+      ...dbData.services.flatMap(s => (s.services || []).map((pkg: any) => ({
         ...s,
-        id: pkg.id, // Use package ID for matching
+        id: pkg.serviceId || pkg.id, // Use serviceId for matching
         title: `${s.title} – ${pkg.title}`,
         type: 'service',
         image: s.image,
-        calendlyUrl: pkg.calendlyUrl || s.calendlyLink || "https://cal.com/emphasis-engineering-cbfkch/30min"
+        calendlyUrl: pkg.calendlyUrl || "https://cal.com/emphasis-engineering-cbfkch/30min"
       })))
     ];
     return allContent.filter(c => purchasedIds.includes(c.id));
@@ -226,7 +232,7 @@ export default function Dashboard() {
                             
                             {content.type === 'service' ? (
                               <div className="w-full">
-                                {session?.user?.scheduledServiceIds?.includes(content.id) ? (
+                                {scheduledIds.includes(content.id) ? (
                                   <div className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg font-semibold text-sm border border-green-200">
                                     <CheckCircle className="w-4 h-4" />
                                     Scheduled

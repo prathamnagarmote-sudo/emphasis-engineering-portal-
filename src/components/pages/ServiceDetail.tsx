@@ -232,9 +232,13 @@ const FAQItem: FC<{ q: string; a: string; index: number }> = ({ q, a, index }) =
 const ServiceDetail: FC = () => {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { addToCart, removeFromCart, isInCart, purchaseItem } = useCart();
+  const { isPurchased, addToCart, removeFromCart, isInCart } = useCart();
   const { formatPrice, currency, convertPrice } = useCurrency();
   const { data: session } = useSession();
+  
+  const scheduledIds = useMemo(() => {
+    return (session?.user as any)?.scheduledServiceIds || [];
+  }, [session]);
   
   const [service, setService] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -569,7 +573,7 @@ const ServiceDetail: FC = () => {
                   )}
 
                   {/* Purchased badge */}
-                  {session?.user && session.user.purchasedContent?.includes(pkg.id) && (
+                  {isPurchased(pkg.id) && (
                     <div className="absolute top-5 left-5 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full flex items-center gap-1 shadow-lg z-20">
                       <CheckCircle className="w-3 h-3" /> Purchased
                     </div>
@@ -595,9 +599,9 @@ const ServiceDetail: FC = () => {
 
                   {/* CTAs */}
                   <div className="flex flex-col gap-3">
-                    {session?.user && session.user.purchasedContent?.includes(pkg.id) ? (
+                    {isPurchased(pkg.id) ? (
                       <div className="w-full">
-                        {session.user.scheduledServiceIds?.includes(pkg.id) ? (
+                        {scheduledIds.includes(pkg.id) ? (
                            <div className="w-full py-4 rounded-xl font-bold text-sm bg-green-100 text-green-700 flex items-center justify-center gap-2 border border-green-200">
                              <CheckCircle className="w-4 h-4" />
                              Scheduled
