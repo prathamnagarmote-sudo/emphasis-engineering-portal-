@@ -4,6 +4,7 @@ import { FC, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import {
   Star, Clock, Users, Play, Lock, Check, ShoppingCart,
   ArrowRight, Shield, ChevronDown, BookOpen, Award, Zap,
@@ -154,6 +155,7 @@ const CourseCard: FC<{ course: Course; index: number; onPreview: (c: Course) => 
   course, index, onPreview,
 }) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const { isPurchased, addToCart, isInCart, removeFromCart } = useCart();
   const { formatPrice, currency, convertPrice } = useCurrency();
   const purchased = isPurchased(course.id);
