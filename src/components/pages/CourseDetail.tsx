@@ -138,13 +138,13 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
 
   useEffect(() => {
     if (course) {
-      const all = course.curriculum?.flatMap((section: any) => section.lessons) || [];
+      const all = course.curriculum?.flatMap((section: any) => section.lessons) || (course.videos || []);
       const firstFreeIndex = all.findIndex((lesson: any) => lesson.free);
       setSelectedLessonIndex(firstFreeIndex >= 0 ? firstFreeIndex : 0);
     }
   }, [course?.id]);
 
-  const sections = course?.curriculum || [];
+  const sections = course?.curriculum || (course?.videos ? [{ section: "Course Content", lessons: course.videos.map((v: any, i: number) => ({ ...v, id: v.id || `${course.id}-l${i+1}` })) }] : []);
   const allLessons = sections.flatMap((section: any) => section.lessons);
   const totalVideos = allLessons.length;
   const freePreview = allLessons.find((lesson: any) => lesson.free) || allLessons[0];

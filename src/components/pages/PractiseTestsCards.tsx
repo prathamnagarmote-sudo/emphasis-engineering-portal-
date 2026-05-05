@@ -96,7 +96,7 @@ const TESTIMONIALS = [
 ];
 
 const FAQS = [
-  { q: "How many times can I attempt a test?", a: "Unlimited attempts - retake as many times as you need until you're confident." },
+  { q: "How many times can I attempt a test?", a: "2 Comprehensive Attempts - designed to simulate real exam conditions and track your progress." },
   { q: "Are the questions exam-standard?", a: "Yes. Every question is written by licensed professional engineers and reviewed against real licensing body frameworks." },
   { q: "Do I get explanations for wrong answers?", a: "Absolutely. Every question includes a detailed explanation so you learn, not just score." },
   { q: "Can I access tests on mobile?", a: "Yes - fully responsive on all devices including tablets and smartphones." },
@@ -501,8 +501,8 @@ const MentorVideoSection: FC = () => {
                       alt="Dr. Maxwell"
                     />
                     <div>
-                      <div className="text-white font-semibold text-sm">Maxwell Oyom</div>
-                      <div className="text-gray-400 text-xs"> Lead Instructor</div>
+                      <div className="text-white font-semibold text-sm">Dr. Maxwell Oyom</div>
+                      <div className="text-gray-400 text-xs">Emphasis Engineering</div>
                     </div>
                   </div>
                 </div>

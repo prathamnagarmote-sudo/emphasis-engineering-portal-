@@ -7,8 +7,8 @@ import { Users, BookOpen, GraduationCap, TrendingUp } from 'lucide-react';
 const stats = [
   { icon: Users, value: 20000, suffix: '+', label: 'Students Enrolled' },
   { icon: BookOpen, value: 200, suffix: '+', label: 'Courses Available' },
-  { icon: GraduationCap, value: 50, suffix: '+', label: 'Expert Instructors' },
-  { icon: TrendingUp, value: 95, suffix: '%', label: 'Success Rate' },
+  { icon: GraduationCap, value: 50, suffix: '+', label: 'Emphasis Engineering Team' },
+  { icon: TrendingUp, value: 100, suffix: '%', label: 'Success Rate' },
 ];
 
 const AnimatedCounter: FC<{ target: number; suffix: string; duration?: number }> = ({
