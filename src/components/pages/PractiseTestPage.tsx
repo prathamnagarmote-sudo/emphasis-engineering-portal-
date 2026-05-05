@@ -35,6 +35,7 @@ interface PracticeTest {
   duration: number;
   isFree?: boolean;
   passPercentage?: number;
+  price?: number;
 }
 
 interface ExamState {

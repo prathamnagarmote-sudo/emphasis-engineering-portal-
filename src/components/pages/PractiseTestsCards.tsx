@@ -129,6 +129,7 @@ interface PracticeTest {
   price: number;
   originalPrice?: number;
   isFree?: boolean;
+  passPercentage?: number;
 }
 
 /* ═══════════════════════════════════════
