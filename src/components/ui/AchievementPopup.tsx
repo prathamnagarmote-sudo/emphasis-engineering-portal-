@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, Award } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 /* ── Confetti particle ────────────────────────────────────────────── */
 const ConfettiParticle = ({ delay, color }: { delay: number; color: string }) => {
@@ -29,11 +30,12 @@ export default function AchievementPopup() {
 
   // Time in milliseconds to wait before showing again (15 minutes)
   const REAPPEAR_DELAY = 15 * 60 * 1000;
-  const STORAGE_KEY = "achievement_popup_last_seen";
+  const pathname = usePathname();
+  const STORAGE_KEY = "achievement_popup_dismissed_forever";
 
   useEffect(() => {
     setMounted(true);
-    
+    if (pathname !== '/') return;
     // Fetch dynamic achievements
     const fetchAchievements = async () => {
       try {
@@ -45,12 +47,11 @@ export default function AchievementPopup() {
           setAchievements(data);
           
           // Check if we should show the popup
-          const lastSeen = localStorage.getItem(STORAGE_KEY);
-          const now = Date.now();
+          const dismissed = localStorage.getItem(STORAGE_KEY);
           
-          if (!lastSeen || now - parseInt(lastSeen) > REAPPEAR_DELAY) {
+          if (!dismissed) {
             // Wait slightly after load to show popup
-            const timer = setTimeout(() => setVisible(true), 1500);
+            const timer = setTimeout(() => setVisible(true), 3000); // 3 seconds delay for better UX
             return () => clearTimeout(timer);
           }
         }
@@ -71,7 +72,7 @@ export default function AchievementPopup() {
 
   const closePopup = () => {
     setVisible(false);
-    localStorage.setItem(STORAGE_KEY, Date.now().toString());
+    localStorage.setItem(STORAGE_KEY, "true");
   };
 
   const navigate = (dir: 1 | -1) => {

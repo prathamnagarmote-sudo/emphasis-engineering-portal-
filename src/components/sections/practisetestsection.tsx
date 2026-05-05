@@ -103,7 +103,7 @@ const PracticeTestsSection: FC = () => {
           </h2>
 
           <p className="text-gray-400 mt-6 text-lg max-w-2xl mx-auto leading-relaxed">
-            Industry-standard simulation platform trusted by 10,000+ engineers preparing 
+            Industry-standard simulation platform trusted by 45,000+ engineers preparing 
             for licensing exams worldwide
           </p>
         </motion.div>
@@ -151,9 +151,9 @@ const PracticeTestsSection: FC = () => {
               className="grid grid-cols-3 gap-4 p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 backdrop-blur-xl"
             >
               {[
-                { label: "Questions", value: "5,000+" },
-                { label: "Students", value: "10K+" },
-                { label: "Countries", value: "45+" },
+                { label: "Questions", value: "1,000+" },
+                { label: "Students", value: "45K+" },
+                { label: "Countries", value: "50+" },
               ].map((s, i) => (
                 <div key={i} className="text-center">
                   <div className="text-2xl font-bold bg-gradient-to-r from-primary to-teal-400 bg-clip-text text-transparent">
@@ -209,8 +209,8 @@ const PracticeTestsSection: FC = () => {
                       <BookOpen className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <div className="text-white font-semibold">PE Structural Exam</div>
-                      <div className="text-gray-500 text-xs">Morning Session</div>
+                      <div className="text-white font-semibold">Ethics & Engineering Practice</div>
+                      <div className="text-gray-500 text-xs">Professional Practice Exam</div>
                     </div>
                   </div>
                   
@@ -279,7 +279,7 @@ const PracticeTestsSection: FC = () => {
                     {/* Progress stats */}
                     <div className="grid grid-cols-3 gap-4">
                       {[
-                        { label: "Answered", value: "98/120", color: "text-green-400" },
+                        { label: "Answered", value: "98/100", color: "text-green-400" },
                         { label: "Correct", value: "80", color: "text-primary" },
                         { label: "Time Left", value: "42m", color: "text-amber-400" },
                       ].map((stat, i) => (
