@@ -9,9 +9,10 @@ interface PracticeTest {
   category: string; duration: number; questionsCount: number; instructor?: string;
   level: string; rating?: number; reviews?: number; price: number;
   originalPrice?: number; isFree: boolean; questions: Question[];
+  passPercentage?: number;
 }
 
-const EMPTY: PracticeTest = { testId: "", title: "", description: "", category: "Ethics", duration: 30, questionsCount: 0, level: "Intermediate", price: 0, isFree: false, questions: [] };
+const EMPTY: PracticeTest = { testId: "", title: "", description: "", category: "Ethics", duration: 30, questionsCount: 0, level: "Intermediate", price: 0, isFree: false, questions: [], passPercentage: 65 };
 const inputClass = "w-full px-4 py-2.5 bg-[#0a0f1a] border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-[#3F9FA3]";
 
 export default function PracticeTestsManager({ headers, uploadFile }: { headers: any; uploadFile?: (file: File) => Promise<string | null> }) {
@@ -232,6 +233,7 @@ export default function PracticeTestsManager({ headers, uploadFile }: { headers:
             <div><label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Duration (min)</label><input type="number" value={editing.duration} onChange={e => setEditing({ ...editing, duration: Number(e.target.value) })} className={inputClass} /></div>
             <div><label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Level</label><input value={editing.level} onChange={e => setEditing({ ...editing, level: e.target.value })} className={inputClass} /></div>
             <div><label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Price (CAD)</label><input type="number" value={editing.price} onChange={e => setEditing({ ...editing, price: Number(e.target.value) })} className={inputClass} /></div>
+            <div><label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Pass Score (%)</label><input type="number" value={editing.passPercentage || 65} onChange={e => setEditing({ ...editing, passPercentage: Number(e.target.value) })} className={inputClass} /></div>
             <div className="flex items-end"><label className="flex items-center gap-3"><input type="checkbox" checked={editing.isFree} onChange={e => setEditing({ ...editing, isFree: e.target.checked })} className="w-4 h-4 accent-[#3F9FA3]" /><span className="text-sm text-gray-400">Free Test</span></label></div>
 
             <div className="col-span-2">

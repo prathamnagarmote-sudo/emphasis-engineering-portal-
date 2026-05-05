@@ -156,13 +156,15 @@ const PracticeTests: FC = () => {
           markedQuestions: new Set(parsed.markedQuestions || []),
           timeLeft: parsed.timeLeft !== undefined ? parsed.timeLeft : prev.timeLeft
         }));
-        // Automatically start the test to the saved state
-        setIsStarted(true);
+        // Automatically start the test to the saved state ONLY if they have access
+        if (currentTest.isFree || isPurchased(testIdSafe)) {
+          setIsStarted(true);
+        }
       } catch (e) {
         console.error("Failed to parse saved test progress", e);
       }
     }
-  }, [currentTest, testIdSafe]);
+  }, [currentTest, testIdSafe, isPurchased]);
 
   // Save persistence & Prevent leave
   useEffect(() => {
@@ -353,7 +355,7 @@ const PracticeTests: FC = () => {
           items: [{
             id: currentTest.testId,
             title: currentTest.title,
-            price: convertPrice(currentTest.isFree ? 0 : 25), // Fallback price if not specified
+            price: convertPrice(currentTest.price || 49), 
             type: 'practice-test'
           }],
           currency: currency.code
