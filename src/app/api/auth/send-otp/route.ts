@@ -34,12 +34,14 @@ export async function POST(req: Request) {
           Authorization: `Bearer ${resendApiKey}`,
         },
         body: JSON.stringify({
-          from: "Emphasis Engineering <onboarding@resend.dev>", // Using Resend default for better compatibility
+          from: "Emphasis Engineering <verify@emphasisengineering.com>", 
           to: email,
           subject: "Your Verification Code – Emphasis Engineering",
           html: `
             <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #f9fafb; border-radius: 16px;">
-              <img src="https://res.cloudinary.com/dwk1cnlw2/image/upload/v1775721626/logo-nobackground-500_prbht7.png" style="height: 48px; margin-bottom: 24px;" />
+              <div style="margin-bottom: 24px;">
+                <span style="font-size: 24px; font-weight: 800; color: #061F33;">Emphasis<span style="color: #3F9FA3;">Engineering</span></span>
+              </div>
               <h2 style="color: #0f172a; font-size: 22px; margin: 0 0 8px;">Your verification code</h2>
               <p style="color: #64748b; font-size: 15px; margin: 0 0 24px;">Enter this code to verify your email address. It expires in 10 minutes.</p>
               <div style="background: #061F33; color: white; font-size: 36px; font-weight: 700; letter-spacing: 8px; text-align: center; padding: 24px; border-radius: 12px; margin-bottom: 24px;">
@@ -54,6 +56,8 @@ export async function POST(req: Request) {
       if (!resendRes.ok) {
         const errorData = await resendRes.json();
         console.error("Resend API Error:", errorData);
+        // Fallback: If it's a domain verification issue, we'll still log to console for the admin
+        console.log(`[AUTH FALLBACK] Resend failed. OTP for ${email}: ${otp}`);
       } else {
         console.log("Email sent successfully via Resend");
       }
