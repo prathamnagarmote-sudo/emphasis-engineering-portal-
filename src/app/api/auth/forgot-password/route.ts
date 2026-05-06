@@ -40,7 +40,7 @@ export async function POST(req: Request) {
           Authorization: `Bearer ${resendApiKey}`,
         },
         body: JSON.stringify({
-          from: "Emphasis Engineering <noreply@emphasisengineering.com>",
+          from: "Emphasis Engineering <verify@emphasisengineering.com>",
           to: email,
           subject: "Password Reset Code – Emphasis Engineering",
           html: `

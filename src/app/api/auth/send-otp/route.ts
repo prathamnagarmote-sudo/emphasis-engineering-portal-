@@ -34,7 +34,7 @@ export async function POST(req: Request) {
           Authorization: `Bearer ${resendApiKey}`,
         },
         body: JSON.stringify({
-          from: "Emphasis Engineering <verify@send.emphasisengineering.com>", 
+          from: "Emphasis Engineering <verify@emphasisengineering.com>", 
           to: email,
           subject: "Your Verification Code – Emphasis Engineering",
           html: `
@@ -56,8 +56,11 @@ export async function POST(req: Request) {
       if (!resendRes.ok) {
         const errorData = await resendRes.json();
         console.error("Resend API Error:", errorData);
-        // Fallback: If it's a domain verification issue, we'll still log to console for the admin
-        console.log(`[AUTH FALLBACK] Resend failed. OTP for ${email}: ${otp}`);
+        return NextResponse.json({ 
+          message: "Email service error", 
+          debug: errorData.message || "Unknown Resend error",
+          code: errorData.name
+        }, { status: 400 });
       } else {
         console.log("Email sent successfully via Resend");
       }
