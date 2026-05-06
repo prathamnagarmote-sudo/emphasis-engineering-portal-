@@ -111,11 +111,6 @@ const OtpStep = ({ email, onVerified, onBack }: { email: string; onVerified: () 
         ))}
       </div>
       {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
-      
-      {/* Dev Mode Hint */}
-      <div className="bg-blue-50 text-blue-700 text-xs p-3 rounded-lg text-center mb-4 border border-blue-100">
-        <span className="font-semibold">Dev Note:</span> If Resend API Key is not set in `.env.local`, check your terminal console for the 6-digit OTP code!
-      </div>
 
       <motion.button onClick={handleVerify} disabled={isLoading}
         whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}

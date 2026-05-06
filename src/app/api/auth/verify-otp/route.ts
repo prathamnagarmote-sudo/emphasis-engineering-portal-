@@ -16,17 +16,12 @@ export async function POST(req: Request) {
     // Find the OTP in the database
     const record = await Otp.findOne({ email });
 
-    // DEMO BYPASS: Allow '000000' for live demo purposes
-    if (otp === "000000") {
-      console.log(`[DEMO] Bypassing OTP for ${email}`);
-    } else {
-      if (!record) {
-        return NextResponse.json({ message: "OTP not found or expired. Please request a new one." }, { status: 400 });
-      }
+    if (!record) {
+      return NextResponse.json({ message: "OTP not found or expired. Please request a new one." }, { status: 400 });
+    }
 
-      if (record.code !== otp) {
-        return NextResponse.json({ message: "Invalid OTP. Please check your email and try again." }, { status: 400 });
-      }
+    if (record.code !== otp) {
+      return NextResponse.json({ message: "Invalid OTP. Please check your email and try again." }, { status: 400 });
     }
 
     // OTP valid - mark user as verified in DB
