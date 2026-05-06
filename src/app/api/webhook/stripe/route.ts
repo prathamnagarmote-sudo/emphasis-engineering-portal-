@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import connectToDatabase from '@/lib/mongodb';
 import User from '@/models/User';
+import ServiceBooking from '@/models/ServiceBooking';
 import Log from '@/models/Log';
 import { headers } from 'next/headers';
 
@@ -46,6 +47,7 @@ export async function POST(req: Request) {
 
       if (metadata && metadata.itemIds) {
         const itemIds = JSON.parse(metadata.itemIds);
+        const itemDetails = metadata.itemDetails ? JSON.parse(metadata.itemDetails) : [];
         const userId = metadata.userId;
 
         let user;
@@ -58,9 +60,22 @@ export async function POST(req: Request) {
         }
 
         if (user) {
+          // Grant general access
           await User.findByIdAndUpdate(user._id, {
             $addToSet: { purchasedContent: { $each: itemIds } }
           });
+
+          // Handle Service Bookings
+          for (const item of itemDetails) {
+            if (item.type === 'service') {
+              await ServiceBooking.create({
+                userId: user._id,
+                serviceId: item.id,
+                serviceTitle: item.title,
+                status: 'pending'
+              });
+            }
+          }
           
           await Log.create({ 
             type: 'webhook', 

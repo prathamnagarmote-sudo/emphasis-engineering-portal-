@@ -44,12 +44,14 @@ export async function POST(req: Request) {
         metadata: {
           userId: (session.user as any).id,
           itemIds: JSON.stringify(items.map((i: any) => i.id)),
+          itemDetails: JSON.stringify(items.map((i: any) => ({ id: i.id, type: i.type, title: i.title }))),
           hasService: hasService ? 'true' : 'false',
         }
       },
       metadata: {
         userId: (session.user as any).id,
         itemIds: JSON.stringify(items.map((i: any) => i.id)),
+        itemDetails: JSON.stringify(items.map((i: any) => ({ id: i.id, type: i.type, title: i.title }))),
         hasService: hasService ? 'true' : 'false',
       },
     });

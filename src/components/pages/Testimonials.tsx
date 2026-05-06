@@ -590,48 +590,16 @@ const Testimonials: FC = () => {
             className="relative"
           >
             <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-video bg-gray-900">
-              <img
-                src="https://res.cloudinary.com/dwk1cnlw2/image/upload/f_auto,q_auto,w_800/v1776348873/photo-1581092160607-ee22621dd758_sdbfrr.jpg"
-                alt="Video testimonial"
-                className="w-full h-full object-cover brightness-50"
+              <video 
+                src="https://res.cloudinary.com/dwk1cnlw2/video/upload/v1778093353/EE_Testimonial_YT_1_asbaqn.mp4"
+                className="w-full h-full object-cover"
+                autoPlay
+                muted
+                loop
+                controls
+                playsInline
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#061F33]/60 via-transparent to-transparent" />
-
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                className="absolute inset-0 m-auto w-20 h-20 rounded-full bg-primary flex items-center justify-center shadow-2xl shadow-primary/50"
-              >
-                <span className="absolute inset-0 rounded-full bg-primary/40 animate-ping" />
-                <Play className="w-8 h-8 text-white ml-1 relative z-10" />
-              </motion.button>
-
-              <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md rounded-2xl p-4">
-                <div className="flex items-center gap-3">
-                  <img
-                    src="https://res.cloudinary.com/dwk1cnlw2/image/upload/f_auto,q_auto,w_80/v1776348635/Chartered-Engineer-2.jpg_jrvafx.webp"
-                    className="w-10 h-10 rounded-full border-2 border-primary"
-                    alt="Engineer"
-                  />
-                  <div>
-                    <div className="text-secondary font-bold text-sm">James Okonkwo, CEng</div>
-                    <div className="text-gray-500 text-xs">IMechE Chartered Engineer - UK</div>
-                  </div>
-                </div>
-              </div>
             </div>
-
-            {/* Floating badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-              className="absolute -top-6 -right-6 bg-white px-5 py-4 rounded-2xl shadow-2xl"
-            >
-              <div className="text-2xl font-bold text-green-600">100%</div>
-              <div className="text-gray-500 text-xs">Pass rate</div>
-            </motion.div>
           </motion.div>
         </div>
       </section>

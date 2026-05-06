@@ -27,8 +27,8 @@ export async function POST(req: Request) {
     // OTP valid - mark user as verified in DB
     await User.findOneAndUpdate({ email }, { isVerified: true });
 
-    // Clean up used OTP
-    await Otp.deleteOne({ email });
+    // Clean up used OTP (Commented out - let the final action handle deletion)
+    // await Otp.deleteOne({ email });
 
     return NextResponse.json({ message: "Email verified successfully" }, { status: 200 });
   } catch (error) {

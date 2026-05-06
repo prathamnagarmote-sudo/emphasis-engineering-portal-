@@ -380,7 +380,7 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
                 />
                 <div>
                   <p className="text-white font-semibold">{course.instructor}</p>
-                  <p className="text-gray-400 text-sm">CEng, FIET - Lead Instructor</p>
+                  <p className="text-gray-400 text-sm">CEng, MIET - Lead Instructor</p>
                 </div>
               </motion.div>
             </motion.div>

@@ -11,8 +11,6 @@ import {
   Gamepad2, 
   Bookmark, 
   ShoppingCart, 
-  MessageCircleQuestion, 
-  Settings, 
   LogOut,
   BookOpen,
   Trophy,
@@ -20,40 +18,45 @@ import {
   Loader2,
   Calendar,
   CheckCircle,
-  Check
+  Check,
+  Search,
+  Mail,
+  ShieldCheck,
+  Send,
+  AlertCircle
 } from "lucide-react";
 import Link from "next/link";
+import ServiceIntakeForm from "@/components/forms/ServiceIntakeForm";
 
 const SIDEBAR_ITEMS = [
   { icon: LayoutDashboard, label: "Dashboard", id: "dashboard", active: true },
   { icon: User, label: "My Profile", id: "profile" },
-  { icon: GraduationCap, label: "Enrolled Courses", id: "enrolled" },
-  { icon: Star, label: "Reviews", id: "reviews" },
-  { icon: Gamepad2, label: "My Quiz Attempts", id: "quizzes" },
-  { icon: Bookmark, label: "Wishlist", id: "wishlist" },
   { icon: ShoppingCart, label: "Order History", id: "orders" },
-  { icon: MessageCircleQuestion, label: "Question & Answer", id: "qa" },
 ];
 
 export default function Dashboard() {
   const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [dbData, setDbData] = useState<{ courses: any[], tests: any[], services: any[] }>({ courses: [], tests: [], services: [] });
+  const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedBooking, setSelectedBooking] = useState<any>(null);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [resCourses, resTests, resServices] = await Promise.all([
+        const [resCourses, resTests, resServices, resBookings] = await Promise.all([
           fetch("/api/courses"),
           fetch("/api/practice-tests"),
-          fetch("/api/services")
+          fetch("/api/services"),
+          fetch("/api/services/booking")
         ]);
 
-        const [courses, tests, services] = await Promise.all([
+        const [courses, tests, services, bookingsData] = await Promise.all([
           resCourses.json(),
           resTests.json(),
-          resServices.json()
+          resServices.json(),
+          resBookings.json()
         ]);
 
         setDbData({ 
@@ -61,6 +64,7 @@ export default function Dashboard() {
           tests: Array.isArray(tests) ? tests : [], 
           services: Array.isArray(services) ? services : [] 
         });
+        setBookings(Array.isArray(bookingsData) ? bookingsData : []);
       } catch (error) {
         console.error("Dashboard fetch error:", error);
       } finally {
@@ -75,25 +79,30 @@ export default function Dashboard() {
     return (session?.user as any)?.purchasedContent || [];
   }, [session]);
 
-  const scheduledIds = useMemo(() => {
-    return (session?.user as any)?.scheduledServiceIds || [];
-  }, [session]);
-
   const myContent = useMemo(() => {
-    const allContent = [
-      ...dbData.courses.map(c => ({ ...c, type: 'course', image: c.thumbnail, id: c.id || c._id })),
-      ...dbData.tests.map(p => ({ ...p, type: 'test', image: p.image, id: p.id || p.testId || p._id })),
-      ...dbData.services.flatMap(s => (s.services || []).map((pkg: any) => ({
-        ...s,
-        id: pkg.serviceId || pkg.id, // Use serviceId for matching
-        title: `${s.title} – ${pkg.title}`,
-        type: 'service',
-        image: s.image,
-        calendlyUrl: pkg.calendlyUrl || "https://cal.com/emphasis-engineering-cbfkch/30min"
-      })))
+    // Courses and Tests (Access based)
+    const baseContent = [
+      ...dbData.courses.filter(c => purchasedIds.includes(c.id || c._id)).map(c => ({ ...c, type: 'course', image: c.thumbnail, id: c.id || c._id })),
+      ...dbData.tests.filter(p => purchasedIds.includes(p.id || p.testId || p._id)).map(p => ({ ...p, type: 'test', image: p.image, id: p.id || p.testId || p._id })),
     ];
-    return allContent.filter(c => purchasedIds.includes(c.id));
-  }, [purchasedIds, dbData]);
+
+    // Services (Each booking is a separate entry)
+    const serviceEntries = bookings.map(booking => {
+      const parentService = dbData.services.find(s => s.services?.some((pkg: any) => (pkg.serviceId || pkg.id) === booking.serviceId));
+      return {
+        ...booking,
+        id: booking._id,
+        serviceId: booking.serviceId,
+        title: booking.serviceTitle,
+        type: 'service',
+        image: parentService?.image || "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800",
+        description: `Purchased on ${new Date(booking.createdAt).toLocaleDateString()}`,
+        isScheduled: !!booking.formData?.name
+      };
+    });
+
+    return [...baseContent, ...serviceEntries];
+  }, [purchasedIds, dbData, bookings]);
 
   const enrolledCount = myContent.filter(c => c.type === 'course').length;
   const testCount = myContent.filter(c => c.type === 'test').length;
@@ -132,12 +141,6 @@ export default function Dashboard() {
             </div>
             
             <div className="border-t border-gray-100 py-2">
-              <button
-                className="w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-[#3F9FA3] transition-colors"
-              >
-                <Settings className="w-5 h-5" />
-                Settings
-              </button>
               <button
                 onClick={() => signOut({ callbackUrl: '/' })}
                 className="w-full flex items-center gap-3 px-6 py-3.5 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-red-500 transition-colors"
@@ -227,39 +230,24 @@ export default function Dashboard() {
                           
                           <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
                             <span className="text-sm text-gray-500 font-medium">
-                              Purchased & Unlocked
+                              {content.type === 'service' && content.isScheduled ? "Meeting Scheduled" : "Purchased & Unlocked"}
                             </span>
                             
                             {content.type === 'service' ? (
-                              <div className="w-full">
-                                {scheduledIds.includes(content.id) ? (
-                                  <div className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg font-semibold text-sm border border-green-200">
+                              <div className="flex gap-2">
+                                {content.isScheduled ? (
+                                  <div className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-lg font-semibold text-sm border border-green-200">
                                     <CheckCircle className="w-4 h-4" />
-                                    Scheduled
+                                    Details Provided
                                   </div>
                                 ) : (
-                                  <a 
-                                    href={content.calendlyUrl || "https://cal.com/emphasis-engineering-cbfkch/30min"} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    onClick={async () => {
-                                      try {
-                                        await fetch('/api/purchase/schedule', {
-                                          method: 'POST',
-                                          headers: { 'Content-Type': 'application/json' },
-                                          body: JSON.stringify({ serviceId: content.id })
-                                        });
-                                        window.location.reload();
-                                      } catch (e) {
-                                        console.error("Failed to mark as scheduled", e);
-                                      }
-                                    }}
+                                  <button 
+                                    onClick={() => setSelectedBooking(content)}
+                                    className="flex items-center gap-2 px-4 py-2 bg-purple-600/10 text-purple-600 hover:bg-purple-600 hover:text-white rounded-lg font-semibold transition-colors text-sm"
                                   >
-                                    <button className="flex items-center gap-2 px-4 py-2 bg-purple-600/10 text-purple-600 hover:bg-purple-600 hover:text-white rounded-lg font-semibold transition-colors text-sm">
-                                      <Calendar className="w-4 h-4" />
-                                      Schedule Meeting
-                                    </button>
-                                  </a>
+                                    <Calendar className="w-4 h-4" />
+                                    Schedule Meeting
+                                  </button>
                                 )}
                               </div>
                             ) : (
@@ -283,20 +271,256 @@ export default function Dashboard() {
 
             </div>
           )}
-          
-          {activeTab !== "dashboard" && (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex items-center justify-center min-h-[400px]">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <LayoutDashboard className="w-8 h-8 text-gray-400" />
+
+          {activeTab === "orders" && (
+            <div className="space-y-8">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 font-display mb-2">Order History</h1>
+                <p className="text-gray-500">Track all your purchases and invoices here.</p>
+              </div>
+
+              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead className="bg-gray-50 border-b border-gray-100">
+                      <tr>
+                        <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-widest">Item Details</th>
+                        <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-widest">Date</th>
+                        <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-widest">Type</th>
+                        <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-widest">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {myContent.length === 0 ? (
+                        <tr>
+                          <td colSpan={4} className="px-8 py-20 text-center text-gray-500 italic">
+                            No orders found.
+                          </td>
+                        </tr>
+                      ) : (
+                        myContent.map((item, idx) => (
+                          <tr key={idx} className="hover:bg-gray-50/50 transition-colors">
+                            <td className="px-8 py-6">
+                              <div className="font-bold text-gray-900">{item.title}</div>
+                              <div className="text-xs text-gray-400 mt-1">Order ID: #{item.id?.toString().slice(-8).toUpperCase()}</div>
+                            </td>
+                            <td className="px-8 py-6 text-sm text-gray-600">
+                              {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "Recently Purchased"}
+                            </td>
+                            <td className="px-8 py-6">
+                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                                item.type === 'course' ? 'bg-primary/10 text-primary' : 
+                                item.type === 'test' ? 'bg-amber-100 text-amber-700' : 
+                                'bg-purple-100 text-purple-700'
+                              }`}>
+                                {item.type}
+                              </span>
+                            </td>
+                            <td className="px-8 py-6">
+                              <div className="flex items-center gap-2 text-green-600 font-bold text-sm">
+                                <CheckCircle className="w-4 h-4" />
+                                Completed
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 mb-2">Coming Soon</h2>
-                <p className="text-gray-500">This section is currently under development.</p>
+              </div>
+            </div>
+          )}
+          {activeTab === "profile" && (
+            <div className="max-w-2xl mx-auto space-y-8">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 font-display mb-2">My Profile</h1>
+                <p className="text-gray-500">Manage your personal information and account security.</p>
+              </div>
+
+              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-8 space-y-8">
+                  {/* Name Section */}
+                  <div className="space-y-4">
+                    <label className="block text-xs font-black text-gray-400 uppercase tracking-widest">Full Name</label>
+                    <div className="flex gap-4">
+                      <div className="relative flex-1">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <input 
+                          type="text" 
+                          id="profile-name"
+                          defaultValue={session?.user?.name || ""}
+                          className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none font-bold text-gray-900"
+                        />
+                      </div>
+                      <button 
+                        onClick={async () => {
+                          const name = (document.getElementById('profile-name') as HTMLInputElement).value;
+                          try {
+                            const res = await fetch('/api/user/profile/update', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ name })
+                            });
+                            if (res.ok) alert("Name updated!");
+                          } catch (e) { console.error(e); }
+                        }}
+                        className="px-8 py-4 bg-primary text-[#061F33] font-bold rounded-2xl hover:scale-105 transition-all shadow-lg shadow-primary/10"
+                      >
+                        Update
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Email Section */}
+                  <div className="space-y-4 pt-8 border-t border-gray-50">
+                    <label className="block text-xs font-black text-gray-400 uppercase tracking-widest">Email Address</label>
+                    <div className="space-y-4">
+                      <div className="relative">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <input 
+                          disabled
+                          type="email" 
+                          value={session?.user?.email || ""}
+                          className="w-full pl-12 pr-4 py-4 bg-gray-100 border border-gray-100 rounded-2xl text-gray-400 font-medium"
+                        />
+                      </div>
+                      
+                      <div id="email-update-flow" className="hidden space-y-4">
+                        <div className="relative">
+                          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+                          <input 
+                            type="email" 
+                            id="new-email"
+                            placeholder="New Email Address"
+                            className="w-full pl-12 pr-4 py-4 bg-white border border-primary/20 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none font-bold"
+                          />
+                        </div>
+                        <div id="otp-input-area" className="hidden flex gap-4">
+                          <div className="relative flex-1">
+                            <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+                            <input 
+                              type="text" 
+                              id="email-otp"
+                              placeholder="Enter 6-digit OTP"
+                              maxLength={6}
+                              className="w-full pl-12 pr-4 py-4 bg-white border border-primary/20 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none font-bold tracking-[0.5em]"
+                            />
+                          </div>
+                          <button 
+                            id="verify-email-btn"
+                            className="px-8 py-4 bg-secondary text-white font-bold rounded-2xl"
+                          >
+                            Verify & Save
+                          </button>
+                        </div>
+                        <button 
+                          id="send-otp-btn"
+                          className="w-full py-4 bg-primary text-[#061F33] font-bold rounded-2xl flex items-center justify-center gap-2"
+                        >
+                          <Send className="w-4 h-4" /> Send Verification Code
+                        </button>
+                      </div>
+
+                      <button 
+                        id="start-email-change"
+                        onClick={() => {
+                          document.getElementById('email-update-flow')?.classList.remove('hidden');
+                          document.getElementById('start-email-change')?.classList.add('hidden');
+                        }}
+                        className="text-primary font-bold text-sm flex items-center gap-2 hover:underline"
+                      >
+                        <ShieldCheck className="w-4 h-4" /> Change Email Address
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Safety Banner */}
+              <div className="bg-amber-50 border border-amber-100 rounded-2xl p-6 flex items-start gap-4">
+                <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-sm font-bold text-amber-900">Security Note</h4>
+                  <p className="text-xs text-amber-700 mt-1 leading-relaxed">
+                    Changing your email will update your login credentials. You will need to use your new email address for all future logins.
+                  </p>
+                </div>
               </div>
             </div>
           )}
         </main>
       </div>
+
+      {/* Profile Script Logic */}
+      <script dangerouslySetInnerHTML={{ __html: `
+        document.addEventListener('click', async (e) => {
+          if (e.target.id === 'send-otp-btn' || e.target.closest('#send-otp-btn')) {
+            const email = document.getElementById('new-email').value;
+            if (!email) return alert("Please enter new email");
+            
+            try {
+              const res = await fetch('/api/auth/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+              });
+              if (res.ok) {
+                document.getElementById('otp-input-area').classList.remove('hidden');
+                document.getElementById('send-otp-btn').classList.add('hidden');
+                alert("OTP sent to " + email);
+              }
+            } catch (err) { console.error(err); }
+          }
+
+          if (e.target.id === 'verify-email-btn') {
+            const email = document.getElementById('new-email').value;
+            const otp = document.getElementById('email-otp').value;
+            try {
+              const res = await fetch('/api/user/profile/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp })
+              });
+              if (res.ok) {
+                alert("Email updated successfully! Please login again.");
+                window.location.reload();
+              } else {
+                const data = await res.json();
+                alert(data.message || "Update failed");
+              }
+            } catch (err) { console.error(err); }
+          }
+        });
+      ` }} />
+
+      {/* Booking Modal */}
+      {selectedBooking && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden"
+          >
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+              <h3 className="text-xl font-bold text-gray-900">Schedule Your Session</h3>
+              <button onClick={() => setSelectedBooking(null)} className="text-gray-400 hover:text-gray-600 p-2">
+                <Check className="w-6 h-6 rotate-45" />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto max-h-[80vh]">
+              <ServiceIntakeForm 
+                bookingId={selectedBooking._id} 
+                serviceTitle={selectedBooking.title} 
+                onSuccess={() => {
+                  setSelectedBooking(null);
+                  window.location.reload();
+                }} 
+              />
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

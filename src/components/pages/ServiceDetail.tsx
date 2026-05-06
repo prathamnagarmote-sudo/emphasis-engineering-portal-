@@ -598,120 +598,78 @@ const ServiceDetail: FC = () => {
 
                   {/* CTAs */}
                   <div className="flex flex-col gap-3">
-                    {isPurchased(pkg.id) ? (
-                      <div className="w-full">
-                        {scheduledIds.includes(pkg.id) ? (
-                          <div className="w-full py-4 rounded-xl font-bold text-sm bg-green-100 text-green-700 flex items-center justify-center gap-2 border border-green-200">
-                            <CheckCircle className="w-4 h-4" />
-                            Scheduled
-                          </div>
-                        ) : (
-                          <a
-                            href={pkg.calendlyUrl || "https://cal.com/emphasis-engineering-cbfkch/30min"}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full"
-                            onClick={async () => {
-                              try {
-                                await fetch('/api/purchase/schedule', {
-                                  method: 'POST',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify({ serviceId: pkg.id })
-                                });
-                                // Force a session update or just rely on state
-                                router.refresh();
-                              } catch (e) {
-                                console.error("Failed to mark as scheduled", e);
-                              }
-                            }}
-                          >
-                            <motion.button
-                              whileHover={{ scale: 1.03 }}
-                              whileTap={{ scale: 0.97 }}
-                              className="w-full py-4 rounded-xl font-bold text-sm bg-purple-600 text-white shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2"
-                            >
-                              <Calendar className="w-4 h-4" />
-                              Schedule Now
-                            </motion.button>
-                          </a>
-                        )}
-                      </div>
-                    ) : (
-                      <motion.button
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        disabled={isBuying === pkg.id}
-                        onClick={async () => {
-                          if (!session?.user) {
-                            router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`);
-                            return;
-                          }
-                          try {
-                            setIsBuying(pkg.id);
+                    <motion.button
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      disabled={isBuying === pkg.id}
+                      onClick={async () => {
+                        if (!session?.user) {
+                          router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`);
+                          return;
+                        }
+                        try {
+                          setIsBuying(pkg.id);
 
-                            const response = await fetch('/api/checkout', {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({
-                                items: [{
-                                  id: pkg.id,
-                                  title: `${service.title} – ${pkg.title}`,
-                                  price: convertPrice(pkg.price),
-                                  type: 'service'
-                                }],
-                                currency: currency.code
-                              }),
-                            });
+                          const response = await fetch('/api/checkout', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              items: [{
+                                id: pkg.id,
+                                title: `${service.title} – ${pkg.title}`,
+                                price: convertPrice(pkg.price),
+                                type: 'service'
+                              }],
+                              currency: currency.code
+                            }),
+                          });
 
-                            const data = await response.json();
-                            if (data.url) {
-                              window.location.href = data.url;
-                            } else {
-                              throw new Error(data.error || 'Failed to create checkout session');
-                            }
-                          } catch (err: any) {
-                            alert(err.message);
-                          } finally {
-                            setIsBuying(null);
-                          }
-                        }}
-                        className={`w-full py-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${isPopular
-                          ? 'text-white'
-                          : 'bg-secondary text-white hover:bg-secondary/90'
-                          }`}
-                        style={isPopular ? { background: 'linear-gradient(135deg, #3F9FA3, #2d7a7d)', boxShadow: '0 4px 16px rgba(63,159,163,0.3)' } : {}}
-                      >
-                        {isBuying === pkg.id ? (
-                          <>
-                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            Processing...
-                          </>
-                        ) : (
-                          "Buy Now"
-                        )}
-                      </motion.button>
-                    )}
-
-                    {!(session?.user && session.user.purchasedContent?.includes(pkg.id)) && (
-                      <motion.button
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        disabled={isBuying === pkg.id}
-                        onClick={() => {
-                          if (inCart) {
-                            handleRemoveFromCart(pkg.id);
+                          const data = await response.json();
+                          if (data.url) {
+                            window.location.href = data.url;
                           } else {
-                            handleAddToCart(pkg.id, pkg.title, pkg.price);
+                            throw new Error(data.error || 'Failed to create checkout session');
                           }
-                        }}
-                        className={`w-full py-4 rounded-xl text-sm font-bold border-2 transition-all ${inCart
-                          ? 'border-red-200 bg-red-50 text-red-500 hover:border-red-400 hover:bg-red-100'
-                          : 'border-gray-200 text-gray-600 hover:border-primary hover:text-primary hover:bg-primary/5'
-                          }`}
-                      >
-                        {inCart ? '✕ Remove from Cart' : 'Add to Cart'}
-                      </motion.button>
-                    )}
+                        } catch (err: any) {
+                          alert(err.message);
+                        } finally {
+                          setIsBuying(null);
+                        }
+                      }}
+                      className={`w-full py-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${isPopular
+                        ? 'text-white'
+                        : 'bg-secondary text-white hover:bg-secondary/90'
+                        }`}
+                      style={isPopular ? { background: 'linear-gradient(135deg, #3F9FA3, #2d7a7d)', boxShadow: '0 4px 16px rgba(63,159,163,0.3)' } : {}}
+                    >
+                      {isBuying === pkg.id ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        isPurchased(pkg.id) ? "Buy Again" : "Buy Now"
+                      )}
+                    </motion.button>
+
+                    <motion.button
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      disabled={isBuying === pkg.id}
+                      onClick={() => {
+                        if (inCart) {
+                          handleRemoveFromCart(pkg.id);
+                        } else {
+                          handleAddToCart(pkg.id, pkg.title, pkg.price);
+                        }
+                      }}
+                      className={`w-full py-4 rounded-xl text-sm font-bold border-2 transition-all ${inCart
+                        ? 'border-red-200 bg-red-50 text-red-500 hover:border-red-400 hover:bg-red-100'
+                        : 'border-gray-200 text-gray-600 hover:border-primary hover:text-primary hover:bg-primary/5'
+                        }`}
+                    >
+                      {inCart ? '✕ Remove from Cart' : 'Add to Cart'}
+                    </motion.button>
                   </div>
                 </motion.div>
               );
@@ -805,17 +763,6 @@ const ServiceDetail: FC = () => {
                   Book Free Consultation <ArrowRight className="w-5 h-5" />
                 </motion.div>
               </Link>
-              {service.calendlyLink && (
-                <a href={service.calendlyLink} target="_blank" rel="noopener noreferrer">
-                  <motion.div
-                    whileHover={{ scale: 1.04, y: -2 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-medium text-white border border-white/20 hover:border-white/40 hover:bg-white/10 transition-all"
-                  >
-                    <Calendar className="w-5 h-5" /> Schedule via Calendly
-                  </motion.div>
-                </a>
-              )}
             </div>
 
             {/* Social proof mini strip */}
