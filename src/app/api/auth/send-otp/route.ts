@@ -34,7 +34,7 @@ export async function POST(req: Request) {
           Authorization: `Bearer ${resendApiKey}`,
         },
         body: JSON.stringify({
-          from: "Emphasis Engineering <verify@emphasisengineering.com>", 
+          from: "Emphasis Engineering <verify@send.emphasisengineering.com>", 
           to: email,
           subject: "Your Verification Code – Emphasis Engineering",
           html: `
