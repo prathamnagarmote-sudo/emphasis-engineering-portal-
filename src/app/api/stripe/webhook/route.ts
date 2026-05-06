@@ -7,6 +7,13 @@ import { headers } from 'next/headers';
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+export async function GET() {
+  return NextResponse.json({ 
+    status: 'active', 
+    message: 'Emphasis Engineering Stripe Webhook is operational. Use POST for actual events.' 
+  });
+}
+
 export async function POST(req: Request) {
   const body = await req.text();
   const signature = (await headers()).get('stripe-signature') as string;
