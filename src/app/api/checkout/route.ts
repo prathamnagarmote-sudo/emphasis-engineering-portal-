@@ -11,6 +11,7 @@ export async function POST(req: Request) {
     }
 
     const { items, currency = 'cad' } = await req.json();
+    const origin = req.headers.get('origin') || process.env.NEXTAUTH_URL;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: 'No items in checkout' }, { status: 400 });
@@ -36,8 +37,8 @@ export async function POST(req: Request) {
       mode: 'payment',
       locale: 'en',
       submit_type: 'pay',
-      success_url: `${process.env.NEXTAUTH_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}${hasService ? '&has_service=true' : ''}`,
-      cancel_url: `${process.env.NEXTAUTH_URL}/cart`,
+      success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}${hasService ? '&has_service=true' : ''}`,
+      cancel_url: `${origin}/cart`,
       customer_email: session.user.email as string,
       payment_intent_data: {
         metadata: {
