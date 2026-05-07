@@ -595,7 +595,7 @@ Non-accredited degrees are assessed individually.`
       {
         id: "ip-standard",
         title: "Standard Prep",
-        price: 349,
+        price: 600,
         features: [
           "10 mock interviews",
           "Structured feedback reports",

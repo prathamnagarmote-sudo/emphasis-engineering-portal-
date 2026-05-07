@@ -48,12 +48,188 @@ const countryCodes = [
   { code: '+91', country: 'India' },
   { code: '+971', country: 'UAE' },
   { code: '+966', country: 'Saudi Arabia' },
+  { code: '+974', country: 'Qatar' },
+  { code: '+965', country: 'Kuwait' },
+  { code: '+968', country: 'Oman' },
+  { code: '+973', country: 'Bahrain' },
   { code: '+234', country: 'Nigeria' },
   { code: '+92', country: 'Pakistan' },
   { code: '+880', country: 'Bangladesh' },
   { code: '+61', country: 'Australia' },
   { code: '+65', country: 'Singapore' },
+  { code: '+60', country: 'Malaysia' },
+  { code: '+27', country: 'South Africa' },
+  { code: '+20', country: 'Egypt' },
+  { code: '+962', country: 'Jordan' },
   { code: '+49', country: 'Germany' },
+  { code: '+33', country: 'France' },
+  { code: '+353', country: 'Ireland' },
+  { code: '+82', country: 'South Korea' },
+  { code: '+81', country: 'Japan' },
+  { code: '+34', country: 'Spain' },
+  { code: '+39', country: 'Italy' },
+  { code: '+31', country: 'Netherlands' },
+  { code: '+41', country: 'Switzerland' },
+  { code: '+46', country: 'Sweden' },
+  { code: '+47', country: 'Norway' },
+  { code: '+45', country: 'Denmark' },
+  { code: '+358', country: 'Finland' },
+  { code: '+64', country: 'New Zealand' },
+  { code: '+351', country: 'Portugal' },
+  { code: '+30', country: 'Greece' },
+  { code: '+32', country: 'Belgium' },
+  { code: '+43', country: 'Austria' },
+  { code: '+48', country: 'Poland' },
+  { code: '+420', country: 'Czech Republic' },
+  { code: '+36', country: 'Hungary' },
+  { code: '+40', country: 'Romania' },
+  { code: '+380', country: 'Ukraine' },
+  { code: '+352', country: 'Luxembourg' },
+  { code: '+423', country: 'Liechtenstein' },
+  { code: '+376', country: 'Andorra' },
+  { code: '+377', country: 'Monaco' },
+  { code: '+356', country: 'Malta' },
+  { code: '+357', country: 'Cyprus' },
+  { code: '+354', country: 'Iceland' },
+  { code: '+355', country: 'Albania' },
+  { code: '+389', country: 'North Macedonia' },
+  { code: '+382', country: 'Montenegro' },
+  { code: '+381', country: 'Serbia' },
+  { code: '+385', country: 'Croatia' },
+  { code: '+386', country: 'Slovenia' },
+  { code: '+387', country: 'Bosnia and Herzegovina' },
+  { code: '+370', country: 'Lithuania' },
+  { code: '+371', country: 'Latvia' },
+  { code: '+372', country: 'Estonia' },
+  { code: '+7', country: 'Russia' },
+  { code: '+375', country: 'Belarus' },
+  { code: '+373', country: 'Moldova' },
+  { code: '+995', country: 'Georgia' },
+  { code: '+374', country: 'Armenia' },
+  { code: '+994', country: 'Azerbaijan' },
+  { code: '+90', country: 'Turkey' },
+  { code: '+972', country: 'Israel' },
+  { code: '+961', country: 'Lebanon' },
+  { code: '+963', country: 'Syria' },
+  { code: '+964', country: 'Iraq' },
+  { code: '+967', country: 'Yemen' },
+  { code: '+98', country: 'Iran' },
+  { code: '+93', country: 'Afghanistan' },
+  { code: '+7', country: 'Kazakhstan' },
+  { code: '+998', country: 'Uzbekistan' },
+  { code: '+992', country: 'Tajikistan' },
+  { code: '+993', country: 'Turkmenistan' },
+  { code: '+996', country: 'Kyrgyzstan' },
+  { code: '+976', country: 'Mongolia' },
+  { code: '+86', country: 'China' },
+  { code: '+886', country: 'Taiwan' },
+  { code: '+852', country: 'Hong Kong' },
+  { code: '+853', country: 'Macau' },
+  { code: '+84', country: 'Vietnam' },
+  { code: '+66', country: 'Thailand' },
+  { code: '+63', country: 'Philippines' },
+  { code: '+62', country: 'Indonesia' },
+  { code: '+855', country: 'Cambodia' },
+  { code: '+856', country: 'Laos' },
+  { code: '+95', country: 'Myanmar' },
+  { code: '+673', country: 'Brunei' },
+  { code: '+670', country: 'East Timor' },
+  { code: '+94', country: 'Sri Lanka' },
+  { code: '+960', country: 'Maldives' },
+  { code: '+977', country: 'Nepal' },
+  { code: '+975', country: 'Bhutan' },
+  { code: '+212', country: 'Morocco' },
+  { code: '+213', country: 'Algeria' },
+  { code: '+216', country: 'Tunisia' },
+  { code: '+218', country: 'Libya' },
+  { code: '+249', country: 'Sudan' },
+  { code: '+251', country: 'Ethiopia' },
+  { code: '+254', country: 'Kenya' },
+  { code: '+255', country: 'Tanzania' },
+  { code: '+256', country: 'Uganda' },
+  { code: '+250', country: 'Rwanda' },
+  { code: '+257', country: 'Burundi' },
+  { code: '+252', country: 'Somalia' },
+  { code: '+253', country: 'Djibouti' },
+  { code: '+231', country: 'Liberia' },
+  { code: '+232', country: 'Sierra Leone' },
+  { code: '+233', country: 'Ghana' },
+  { code: '+225', country: 'Ivory Coast' },
+  { code: '+221', country: 'Senegal' },
+  { code: '+220', country: 'Gambia' },
+  { code: '+224', country: 'Guinea' },
+  { code: '+245', country: 'Guinea-Bissau' },
+  { code: '+223', country: 'Mali' },
+  { code: '+226', country: 'Burkina Faso' },
+  { code: '+227', country: 'Niger' },
+  { code: '+235', country: 'Chad' },
+  { code: '+236', country: 'Central African Republic' },
+  { code: '+237', country: 'Cameroon' },
+  { code: '+241', country: 'Gabon' },
+  { code: '+242', country: 'Congo' },
+  { code: '+243', country: 'DR Congo' },
+  { code: '+240', country: 'Equatorial Guinea' },
+  { code: '+239', country: 'Sao Tome and Principe' },
+  { code: '+244', country: 'Angola' },
+  { code: '+260', country: 'Zambia' },
+  { code: '+263', country: 'Zimbabwe' },
+  { code: '+264', country: 'Namibia' },
+  { code: '+267', country: 'Botswana' },
+  { code: '+266', country: 'Lesotho' },
+  { code: '+268', country: 'Eswatini' },
+  { code: '+265', country: 'Malawi' },
+  { code: '+2Mozambique', country: '258' },
+  { code: '+261', country: 'Madagascar' },
+  { code: '+230', country: 'Mauritius' },
+  { code: '+248', country: 'Seychelles' },
+  { code: '+269', country: 'Comoros' },
+  { code: '+238', country: 'Cape Verde' },
+  { code: '+222', country: 'Mauritania' },
+  { code: '+211', country: 'South Sudan' },
+  { code: '+52', country: 'Mexico' },
+  { code: '+502', country: 'Guatemala' },
+  { code: '+503', country: 'El Salvador' },
+  { code: '+504', country: 'Honduras' },
+  { code: '+505', country: 'Nicaragua' },
+  { code: '+506', country: 'Costa Rica' },
+  { code: '+507', country: 'Panama' },
+  { code: '+53', country: 'Cuba' },
+  { code: '+509', country: 'Haiti' },
+  { code: '+1', country: 'Dominican Republic' },
+  { code: '+1', country: 'Jamaica' },
+  { code: '+1', country: 'Trinidad and Tobago' },
+  { code: '+1', country: 'Bahamas' },
+  { code: '+1', country: 'Barbados' },
+  { code: '+1', country: 'Saint Lucia' },
+  { code: '+1', country: 'Saint Vincent and the Grenadines' },
+  { code: '+1', country: 'Grenada' },
+  { code: '+1', country: 'Antigua and Barbuda' },
+  { code: '+1', country: 'Saint Kitts and Nevis' },
+  { code: '+501', country: 'Belize' },
+  { code: '+592', country: 'Guyana' },
+  { code: '+597', country: 'Suriname' },
+  { code: '+58', country: 'Venezuela' },
+  { code: '+57', country: 'Colombia' },
+  { code: '+593', country: 'Ecuador' },
+  { code: '+51', country: 'Peru' },
+  { code: '+591', country: 'Bolivia' },
+  { code: '+55', country: 'Brazil' },
+  { code: '+595', country: 'Paraguay' },
+  { code: '+598', country: 'Uruguay' },
+  { code: '+56', country: 'Chile' },
+  { code: '+54', country: 'Argentina' },
+  { code: '+679', country: 'Fiji' },
+  { code: '+6Papua New Guinea', country: '675' },
+  { code: '+6 Solomon Islands', country: '677' },
+  { code: '+6 Vanuatu', country: '678' },
+  { code: '+6 Samoa', country: '685' },
+  { code: '+6 Tonga', country: '676' },
+  { code: '+6 Kiribati', country: '686' },
+  { code: '+6 Tuvalu', country: '688' },
+  { code: '+6 Nauru', country: '674' },
+  { code: '+6 Marshall Islands', country: '692' },
+  { code: '+6 Palau', country: '680' },
+  { code: '+6 Micronesia', country: '691' },
 ].sort((a, b) => a.country.localeCompare(b.country));
 
 const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuccess }) => {
@@ -254,12 +430,12 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
                     <div className="flex flex-col gap-2">
                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Phone Number</label>
-                       <div className="relative flex">
+                       <div className="flex border border-gray-100 rounded-2xl bg-gray-50/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all overflow-hidden">
                         <select 
-                          className="px-3 py-4 bg-gray-50/50 border border-gray-100 rounded-l-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold text-[10px] appearance-none border-r-0 min-w-[80px]"
+                          className="px-3 py-4 bg-transparent border-r border-gray-100 outline-none font-bold text-[10px] appearance-none min-w-[90px] cursor-pointer"
                           value={formData.phonePrefix}
                           onChange={(e) => setFormData({ ...formData, phonePrefix: e.target.value })}
                         >
@@ -271,7 +447,7 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                           required
                           type="tel"
                           placeholder="Number"
-                          className="flex-1 px-4 py-4 bg-gray-50/50 border border-gray-100 rounded-r-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold text-sm"
+                          className="flex-1 px-4 py-4 bg-transparent outline-none font-semibold text-sm min-w-0"
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         />
@@ -279,9 +455,9 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                     </div>
                     <div className="flex flex-col gap-2">
                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">WhatsApp (Optional)</label>
-                       <div className="relative flex">
+                       <div className="flex border border-gray-100 rounded-2xl bg-gray-50/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all overflow-hidden">
                         <select 
-                          className="px-3 py-4 bg-gray-50/50 border border-gray-100 rounded-l-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold text-[10px] appearance-none border-r-0 min-w-[80px]"
+                          className="px-3 py-4 bg-transparent border-r border-gray-100 outline-none font-bold text-[10px] appearance-none min-w-[90px] cursor-pointer"
                           value={formData.whatsappPrefix}
                           onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
                         >
@@ -292,7 +468,7 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                         <input
                           type="tel"
                           placeholder="WhatsApp Number"
-                          className="flex-1 px-4 py-4 bg-gray-50/50 border border-gray-100 rounded-r-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold text-sm"
+                          className="flex-1 px-4 py-4 bg-transparent outline-none font-semibold text-sm min-w-0"
                           value={formData.whatsapp}
                           onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
                         />

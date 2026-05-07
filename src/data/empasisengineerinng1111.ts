@@ -291,7 +291,7 @@ export const services: Service[] = [
       {
         id: "ip-standard",
         title: "Standard Prep",
-        price: 349,
+        price: 600,
         features: ["10 mock interviews", "DSA practice", "Feedback reports", "Resource access"]
       },
       {
