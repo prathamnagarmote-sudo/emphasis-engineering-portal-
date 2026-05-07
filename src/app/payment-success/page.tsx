@@ -20,37 +20,77 @@ function PaymentSuccessContent() {
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    const init = async () => {
+    let interval: NodeJS.Timeout;
+    let attempts = 0;
+    const maxAttempts = 15; // 30 seconds total
+
+    const checkBooking = async () => {
       try {
+        attempts++;
+        // Refresh session to get latest purchased content
         await update();
+
         if (hasService) {
           const res = await fetch('/api/services/booking');
-          const data = await res.json();
-          const latestPending = data.find((b: any) => b.status === 'pending' && !b.formData?.name);
-          setPendingBooking(latestPending);
+          if (res.ok) {
+            const data = await res.json();
+            const latestPending = data.find((b: any) => b.status === 'pending' && !b.formData?.name);
+            
+            if (latestPending) {
+              setPendingBooking(latestPending);
+              setLoading(false);
+              return true; // Stop polling
+            }
+          }
+        } else {
+          setLoading(false);
+          return true; // Not a service, stop polling
         }
       } catch (e) {
-        console.error("Initialization error", e);
-      } finally {
+        console.error("Polling error", e);
+      }
+      
+      if (attempts >= maxAttempts) {
         setLoading(false);
+        return true;
+      }
+      return false;
+    };
+
+    const startPolling = async () => {
+      const found = await checkBooking();
+      if (!found && hasService) {
+        interval = setInterval(async () => {
+          const done = await checkBooking();
+          if (done) clearInterval(interval);
+        }, 2000);
       }
     };
-    
-    init();
+
+    startPolling();
 
     // Auto-redirect for non-service items only
     if (!hasService) {
       const timer = setTimeout(() => {
         router.push("/dashboard");
       }, 5000);
-      return () => clearTimeout(timer);
+      return () => {
+        if (interval) clearInterval(interval);
+        clearTimeout(timer);
+      };
     }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [hasService, update, router]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4 text-center">
+        <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
+        <h2 className="text-xl font-bold text-gray-900">Setting up your experience...</h2>
+        <p className="text-gray-500 mt-2">Just a moment while we process your access.</p>
       </div>
     );
   }

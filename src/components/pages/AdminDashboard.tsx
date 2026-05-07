@@ -404,11 +404,20 @@ export default function AdminDashboard() {
                                 {user.role}
                               </span>
                             </td>
-                            <td className="px-8 py-6 font-bold text-secondary">
-                              {user.purchasedContent?.length || 0} items
+                            <td className="px-8 py-6">
+                              <div className="space-y-1">
+                                <div className="font-bold text-secondary">{user.purchasedContent?.length || 0} items</div>
+                                {orders.filter(o => o.userId === user._id).slice(0, 1).map((o, i) => (
+                                  <div key={i} className="text-[10px] text-gray-400 font-medium">
+                                    Last: {new Date(o.createdAt).toLocaleDateString()}
+                                  </div>
+                                ))}
+                              </div>
                             </td>
-                            <td className="px-8 py-6 font-black text-primary">
-                              ${orders.filter(o => o.userId === user._id).reduce((acc, o) => acc + o.totalAmount, 0).toLocaleString()}
+                            <td className="px-8 py-6">
+                              <div className="font-black text-primary">
+                                ${orders.filter(o => o.userId === user._id).reduce((acc, o) => acc + o.totalAmount, 0).toLocaleString()}
+                              </div>
                             </td>
                             <td className="px-8 py-6 text-gray-500 font-medium">
                               {new Date(user.createdAt).toLocaleDateString()}

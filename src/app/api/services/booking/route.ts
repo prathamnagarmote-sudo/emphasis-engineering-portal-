@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import ServiceBooking from '@/models/ServiceBooking';
+import User from '@/models/User';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -116,16 +117,64 @@ export async function GET(req: Request) {
     }
 
     await connectToDatabase();
+    const userId = (session.user as any).id;
     const { searchParams } = new URL(req.url);
     const serviceId = searchParams.get('serviceId');
 
-    const query: any = { userId: (session.user as any).id };
+    // 1. Fetch current bookings
+    const query: any = { userId };
     if (serviceId) query.serviceId = serviceId;
+    let bookings = await ServiceBooking.find(query).sort({ createdAt: -1 });
 
-    const bookings = await ServiceBooking.find(query).sort({ createdAt: -1 });
+    // 2. SELF-HEALING LOGIC: 
+    // If no pending booking found but user has purchased services, 
+    // check if we need to create one.
+    const hasPendingWithoutData = bookings.some(b => b.status === 'pending' && !b.formData?.name);
+    
+    if (!hasPendingWithoutData) {
+      const user = await User.findById(userId);
+      if (user && user.purchasedContent && user.purchasedContent.length > 0) {
+        const { services } = await import('@/data/services');
+        
+        // Find all purchased items that are actually services
+        const purchasedServices = user.purchasedContent.filter((id: string) => {
+          // Check if this ID belongs to any service package
+          return services.some(s => 
+            s.id === id || (s.packages && s.packages.some(p => p.id === id))
+          );
+        });
+
+        for (const sId of purchasedServices) {
+          // Check if a booking already exists for this specific purchase
+          // Note: This allows multiple bookings if they purchased multiple services
+          const existingBooking = bookings.find(b => b.serviceId === sId);
+          
+          if (!existingBooking) {
+            // Find service title for the booking
+            let serviceTitle = 'Purchased Service';
+            const serviceMatch = services.find(s => 
+              s.id === sId || (s.packages && s.packages.some(p => p.id === sId))
+            );
+            if (serviceMatch) {
+              const pkgMatch = serviceMatch.packages?.find(p => p.id === sId);
+              serviceTitle = pkgMatch ? `${serviceMatch.title} - ${pkgMatch.title}` : serviceMatch.title;
+            }
+
+            const newBooking = await ServiceBooking.create({
+              userId,
+              serviceId: sId,
+              serviceTitle,
+              status: 'pending'
+            });
+            bookings.unshift(newBooking); // Add to the top of the list
+          }
+        }
+      }
+    }
 
     return NextResponse.json(bookings);
   } catch (error: any) {
+    console.error('Booking GET Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
