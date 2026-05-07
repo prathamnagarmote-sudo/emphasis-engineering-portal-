@@ -665,7 +665,7 @@ export default function AdminDashboard() {
                           <div className="flex justify-between items-start mb-3">
                             <div>
                               <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
-                                Order #{order._id.slice(-6)} • {new Date(order.createdAt).toLocaleDateString()}
+                                Order #{order._id.slice(-6)} • {new Date(order.createdAt).toLocaleDateString()} at {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </div>
                               <div className="space-y-1">
                                 {order.items.map((item: any, j: number) => (

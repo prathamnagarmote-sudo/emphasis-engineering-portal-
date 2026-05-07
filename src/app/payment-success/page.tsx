@@ -120,7 +120,8 @@ function PaymentSuccessContent() {
                       </Button>
                       <Button 
                         onClick={() => router.push("/dashboard")}
-                        className="w-full py-4 text-sm bg-white border-2 border-gray-100 text-gray-600 hover:bg-gray-50 hover:border-gray-200 shadow-none"
+                        variant="ghost"
+                        className="w-full py-4 text-sm border-2 border-gray-100 text-gray-500 hover:bg-gray-50 hover:border-gray-200 hover:text-gray-700 shadow-none bg-white"
                       >
                         Schedule Later
                       </Button>

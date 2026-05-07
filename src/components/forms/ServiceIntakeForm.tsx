@@ -96,8 +96,8 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (step < 3) {
-      setStep(step + 1);
+    if (step < 2) {
+      nextStep();
       return;
     }
     setLoading(true);
@@ -115,7 +115,7 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
         }),
       });
       if (res.ok) {
-        setStep(4); // Success step
+        setStep(3); // Success step
       }
     } catch (err) {
       console.error(err);
@@ -131,20 +131,14 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
         alert("Please fill in your name, email, and contact number before continuing.");
         return;
       }
+      setStep(2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    if (step === 2) {
-      if (!formData.city || !formData.country || !formData.timezone) {
-        alert("Location details and Timezone selection are required to proceed to the timeline step.");
-        return;
-      }
-    }
-    setStep(prev => prev + 1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const prevStep = () => setStep(prev => prev - 1);
 
-  if (step === 4) {
+  if (step === 3) {
     return (
       <motion.div 
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -200,9 +194,9 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
   return (
     <div className="w-full max-w-2xl mx-auto">
       {/* Progress Stepper */}
-      <div className="flex items-center justify-between mb-12 relative px-4">
+      <div className="flex items-center justify-between mb-12 relative px-4 max-w-sm mx-auto">
         <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-100 -translate-y-1/2 z-0" />
-        {[1, 2, 3].map((s) => (
+        {[1, 2].map((s) => (
           <div key={s} className="relative z-10 flex flex-col items-center gap-2">
             <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all duration-500 ${
               step >= s ? 'bg-primary text-white scale-110 shadow-lg shadow-primary/20' : 'bg-white text-gray-400 border-2 border-gray-100'
@@ -210,7 +204,7 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
               {step > s ? <CheckCircle className="w-6 h-6" /> : s}
             </div>
             <span className={`text-[10px] font-black uppercase tracking-widest ${step >= s ? 'text-primary' : 'text-gray-400'}`}>
-              {s === 1 ? 'Contact' : s === 2 ? 'Location' : 'Timeline'}
+              {s === 1 ? 'Contact' : 'Schedule'}
             </span>
           </div>
         ))}
@@ -260,12 +254,12 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="relative flex">
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary z-10" />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Phone Number</label>
+                       <div className="relative flex">
                         <select 
-                          className="pl-9 pr-2 py-4 bg-gray-50/50 border border-gray-100 rounded-l-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold text-xs appearance-none border-r-0"
+                          className="px-3 py-4 bg-gray-50/50 border border-gray-100 rounded-l-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold text-[10px] appearance-none border-r-0 min-w-[80px]"
                           value={formData.phonePrefix}
                           onChange={(e) => setFormData({ ...formData, phonePrefix: e.target.value })}
                         >
@@ -273,21 +267,21 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                             <option key={`${c.country}-${c.code}`} value={c.code}>{c.code} ({c.country})</option>
                           ))}
                         </select>
+                        <input
+                          required
+                          type="tel"
+                          placeholder="Number"
+                          className="flex-1 px-4 py-4 bg-gray-50/50 border border-gray-100 rounded-r-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold text-sm"
+                          value={formData.phone}
+                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        />
                       </div>
-                      <input
-                        required
-                        type="tel"
-                        placeholder="Phone Number"
-                        className="flex-1 px-4 py-4 bg-gray-50/50 border border-gray-100 rounded-r-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      />
                     </div>
-                    <div className="relative flex">
-                      <div className="relative">
-                        <MessageSquare className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-500 z-10" />
+                    <div className="flex flex-col gap-2">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">WhatsApp (Optional)</label>
+                       <div className="relative flex">
                         <select 
-                          className="pl-9 pr-2 py-4 bg-gray-50/50 border border-gray-100 rounded-l-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold text-xs appearance-none border-r-0"
+                          className="px-3 py-4 bg-gray-50/50 border border-gray-100 rounded-l-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold text-[10px] appearance-none border-r-0 min-w-[80px]"
                           value={formData.whatsappPrefix}
                           onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
                         >
@@ -295,15 +289,14 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                             <option key={`${c.country}-${c.code}-wa`} value={c.code}>{c.code} ({c.country})</option>
                           ))}
                         </select>
+                        <input
+                          type="tel"
+                          placeholder="WhatsApp Number"
+                          className="flex-1 px-4 py-4 bg-gray-50/50 border border-gray-100 rounded-r-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold text-sm"
+                          value={formData.whatsapp}
+                          onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+                        />
                       </div>
-                      <input
-                        required
-                        type="tel"
-                        placeholder="WhatsApp Number"
-                        className="flex-1 px-4 py-4 bg-gray-50/50 border border-gray-100 rounded-r-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold"
-                        value={formData.whatsapp}
-                        onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                      />
                     </div>
                   </div>
                 </div>
@@ -319,52 +312,49 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                 className="space-y-6"
               >
                 <div className="space-y-4">
-                  <h4 className="text-lg font-bold text-secondary">Location & Region</h4>
-                  <p className="text-xs text-gray-500">We use this to assign the most relevant regional expert.</p>
+                  <h4 className="text-lg font-bold text-secondary">Location & Availability</h4>
+                  <p className="text-xs text-gray-500">Assigning the right regional expert for your schedule.</p>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="relative">
-                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
-                    <input
-                      required
-                      type="text"
-                      placeholder="City"
-                      className="w-full pl-12 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold"
-                      value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    />
+                <div className="space-y-6">
+                  {/* Location Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="relative">
+                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+                      <input
+                        required
+                        type="text"
+                        placeholder="City"
+                        className="w-full pl-12 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold text-sm"
+                        value={formData.city}
+                        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                      />
+                    </div>
+                    <div className="relative">
+                      <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+                      <input
+                        required
+                        type="text"
+                        placeholder="Country"
+                        className="w-full pl-12 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold text-sm"
+                        value={formData.country}
+                        onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                      />
+                    </div>
                   </div>
 
-                  <div className="relative">
-                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
-                    <input
-                      required
-                      type="text"
-                      placeholder="Country"
-                      className="w-full pl-12 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold"
-                      value={formData.country}
-                      onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                    />
-                  </div>
-
+                  {/* Timezone */}
                   <div className="relative" ref={timezoneRef}>
                     <div 
                       onClick={() => setShowTimezoneList(!showTimezoneList)}
                       className="w-full pl-12 pr-10 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold cursor-pointer flex items-center justify-between"
                     >
                       <Globe className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${formData.timezone ? 'text-primary' : 'text-gray-400'}`} />
-                      <span className={formData.timezone ? 'text-secondary' : 'text-gray-400'}>
+                      <span className={`text-sm ${formData.timezone ? 'text-secondary' : 'text-gray-400'}`}>
                         {formData.timezone || 'Select Your Timezone *'}
                       </span>
                       <ChevronDown className={`w-4 h-4 transition-all ${showTimezoneList ? 'rotate-180 text-primary' : 'text-gray-400'}`} />
                     </div>
-                    {!formData.timezone && !showTimezoneList && (
-                      <p className="text-[10px] text-primary/60 font-bold mt-2 ml-4 flex items-center gap-1 animate-pulse">
-                        <ArrowRight className="w-3 h-3" /> Please select a timezone from the list
-                      </p>
-                    )}
-
                     <AnimatePresence>
                       {showTimezoneList && (
                         <motion.div 
@@ -394,7 +384,7 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                               }}
                               className="px-4 py-3 hover:bg-primary/5 cursor-pointer flex items-center justify-between group"
                             >
-                              <span className="text-sm font-semibold text-gray-600 group-hover:text-primary">{tz.label}</span>
+                              <span className="text-xs font-semibold text-gray-600 group-hover:text-primary">{tz.label}</span>
                               <span className="text-[10px] font-bold text-gray-300">{tz.offset}</span>
                             </div>
                           ))}
@@ -402,62 +392,57 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                       )}
                     </AnimatePresence>
                   </div>
-                </div>
-              </motion.div>
-            )}
 
-            {step === 3 && (
-              <motion.div
-                key="step3"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <div className="space-y-4">
-                  <h4 className="text-lg font-bold text-secondary">Preferred Timeline</h4>
-                  <p className="text-xs text-gray-500">Tell us when you'd like to start. Enter your city-wise availability.</p>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="relative">
-                      <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
-                      <input
-                        required
-                        type="date"
-                        className="w-full pl-10 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold text-sm"
-                        value={formData.preferredDate}
-                        onChange={(e) => setFormData({ ...formData, preferredDate: e.target.value })}
-                      />
+                  {/* Date & Time Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Preferred Date</label>
+                       <div className="relative">
+                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+                        <input
+                          required
+                          type="date"
+                          className="w-full pl-12 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold text-sm"
+                          value={formData.preferredDate}
+                          onChange={(e) => setFormData({ ...formData, preferredDate: e.target.value })}
+                        />
+                      </div>
                     </div>
+                    <div className="flex flex-col gap-2">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Preferred Time</label>
+                       <div className="relative">
+                        <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+                        <input
+                          required
+                          type="time"
+                          className="w-full pl-12 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold text-sm"
+                          value={formData.preferredTime}
+                          onChange={(e) => setFormData({ ...formData, preferredTime: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* City-wise timeline */}
+                  <div className="relative">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 block mb-2">Detailed Availability</label>
                     <div className="relative">
-                      <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
-                      <input
+                      <MessageSquare className="absolute left-4 top-5 w-4 h-4 text-primary" />
+                      <textarea
                         required
-                        type="time"
-                        className="w-full pl-10 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold text-sm"
-                        value={formData.preferredTime}
-                        onChange={(e) => setFormData({ ...formData, preferredTime: e.target.value })}
+                        placeholder="e.g. Kolkata 10 AM GMT+5:30"
+                        className="w-full pl-12 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold resize-none h-24 text-sm"
+                        value={formData.preferredTimeline}
+                        onChange={(e) => setFormData({ ...formData, preferredTimeline: e.target.value })}
                       />
                     </div>
                   </div>
 
-                  <div className="relative">
-                    <MapPin className="absolute left-4 top-5 w-4 h-4 text-primary" />
-                    <textarea
-                      required
-                      placeholder="Enter city-wise timeline (e.g. Kolkata 10 AM GMT+5:30)"
-                      className="w-full pl-12 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold resize-none h-24"
-                      value={formData.preferredTimeline}
-                      onChange={(e) => setFormData({ ...formData, preferredTimeline: e.target.value })}
-                    />
-                  </div>
-
+                  {/* Additional Details */}
                   <div className="relative">
                     <textarea
-                      placeholder="Additional details or special requirements..."
-                      className="w-full px-6 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold resize-none h-32"
+                      placeholder="Additional details (Optional)"
+                      className="w-full px-6 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold resize-none h-24 text-sm"
                       value={formData.additionalDetails}
                       onChange={(e) => setFormData({ ...formData, additionalDetails: e.target.value })}
                     />
@@ -478,7 +463,7 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                 Back
               </Button>
             )}
-            {step < 3 ? (
+            {step < 2 ? (
               <Button 
                 type="button" 
                 onClick={nextStep}
@@ -493,7 +478,7 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                 isLoading={loading}
                 className="flex-[2] shadow-xl shadow-primary/20"
               >
-                Schedule My Session
+                Schedule Session
                 <Send className="w-4 h-4 ml-2" />
               </Button>
             )}
