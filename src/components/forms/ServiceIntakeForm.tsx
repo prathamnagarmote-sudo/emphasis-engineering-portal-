@@ -270,12 +270,34 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
     tz.value.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleNext = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    
+    if (step === 1) {
+      if (!formData.name || !formData.email || !formData.phone) {
+        alert("Please fill in your name, email, and contact number before continuing.");
+        return;
+      }
+      setStep(2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (step < 2) {
-      nextStep();
+    
+    // Safety check: if somehow triggered on step 1, just move to step 2
+    if (step === 1) {
+      handleNext();
       return;
     }
+
+    // Step 2 validation
+    if (!formData.city || !formData.country || !formData.timezone || !formData.preferredDate || !formData.preferredTime || !formData.preferredTimeline) {
+      alert("Please fill in all required scheduling details.");
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await fetch('/api/services/booking', {
@@ -286,7 +308,7 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
           formData: {
             ...formData,
             phone: `${formData.phonePrefix} ${formData.phone}`,
-            whatsapp: `${formData.whatsappPrefix} ${formData.whatsapp}`
+            whatsapp: formData.whatsapp ? `${formData.whatsappPrefix} ${formData.whatsapp}` : ''
           } 
         }),
       });
@@ -298,17 +320,6 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
       alert('Failed to submit form. Please try again.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const nextStep = () => {
-    if (step === 1) {
-      if (!formData.name || !formData.email || !formData.phone) {
-        alert("Please fill in your name, email, and contact number before continuing.");
-        return;
-      }
-      setStep(2);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -639,17 +650,19 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                 Back
               </Button>
             )}
-            {step < 2 ? (
+            {step === 1 ? (
               <Button 
+                key="btn-next"
                 type="button" 
-                onClick={nextStep}
+                onClick={() => handleNext()}
                 className="flex-[2] shadow-xl shadow-primary/20"
               >
-                Continue
+                Continue to Scheduling
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             ) : (
               <Button 
+                key="btn-submit"
                 type="submit" 
                 isLoading={loading}
                 className="flex-[2] shadow-xl shadow-primary/20"
