@@ -38,7 +38,7 @@ function PaymentSuccessContent() {
     
     init();
 
-    // Auto-redirect for non-service items
+    // Auto-redirect for non-service items only
     if (!hasService) {
       const timer = setTimeout(() => {
         router.push("/dashboard");
@@ -85,11 +85,11 @@ function PaymentSuccessContent() {
         )}
 
         <h1 className="font-display text-4xl font-black text-[#061F33] mb-4">
-          {pendingBooking ? "Payment Confirmed!" : "Purchase Successful!"}
+          {hasService ? "Payment Confirmed!" : "Purchase Successful!"}
         </h1>
-        <p className={`text-gray-500 text-lg mb-10 leading-relaxed font-medium ${pendingBooking ? 'text-left' : 'max-w-md mx-auto'}`}>
-          {pendingBooking 
-            ? "Your payment was processed successfully. Please complete the short form below to finalize your session schedule."
+        <p className={`text-gray-500 text-lg mb-10 leading-relaxed font-medium ${hasService ? 'text-left' : 'max-w-md mx-auto'}`}>
+          {hasService 
+            ? "Success! You've taken a significant step toward a thriving engineering career. Let's get your expert consultation scheduled to map out your path forward."
             : "Thank you for choosing Emphasis Engineering. Your materials are now unlocked and ready in your dashboard."
           }
         </p>
@@ -100,32 +100,32 @@ function PaymentSuccessContent() {
               <div className="space-y-8">
                 {!showForm ? (
                   <div className="space-y-6">
-                    <div className="bg-primary/5 border border-primary/10 rounded-[32px] p-8 text-center">
-                      <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <Calendar className="w-8 h-8 text-primary" />
-                      </div>
-                      <h3 className="text-xl font-bold text-secondary mb-2">Ready to start {pendingBooking.serviceTitle}?</h3>
-                      <p className="text-sm text-gray-500 font-medium mb-6">
-                        You can schedule your meeting now by providing a few details, or you can do it later from your dashboard.
-                      </p>
-                      
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Button 
-                          onClick={() => setShowForm(true)}
-                          className="w-full py-4 text-sm"
-                          variant="primary"
-                        >
-                          <Calendar className="w-4 h-4 mr-2" />
-                          Schedule Meeting
-                        </Button>
-                        <Button 
-                          onClick={() => router.push("/dashboard")}
-                          className="w-full py-4 text-sm bg-white border-2 border-gray-100 text-gray-600 hover:bg-gray-50 hover:border-gray-200 shadow-none"
-                        >
-                          Schedule Later
-                        </Button>
-                      </div>
+                  <div className="bg-primary/5 border border-primary/10 rounded-[32px] p-8 text-center">
+                    <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <Calendar className="w-8 h-8 text-primary" />
                     </div>
+                    <h3 className="text-xl font-bold text-secondary mb-2">Ready to start?</h3>
+                    <p className="text-sm text-gray-500 font-medium mb-6">
+                      Schedule your meeting now to kickstart your journey, or handle it later from your dashboard.
+                    </p>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <Button 
+                        onClick={() => setShowForm(true)}
+                        className="w-full py-4 text-sm"
+                        variant="primary"
+                      >
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Schedule Now
+                      </Button>
+                      <Button 
+                        onClick={() => router.push("/dashboard")}
+                        className="w-full py-4 text-sm bg-white border-2 border-gray-100 text-gray-600 hover:bg-gray-50 hover:border-gray-200 shadow-none"
+                      >
+                        Schedule Later
+                      </Button>
+                    </div>
+                  </div>
                     
                     <div className="flex items-center justify-center gap-2 text-[10px] text-gray-300 font-bold uppercase tracking-widest">
                       <Clock className="w-3.5 h-3.5" />
@@ -151,6 +151,18 @@ function PaymentSuccessContent() {
                     />
                   </div>
                 )}
+              </div>
+            ) : hasService ? (
+              <div className="bg-white border border-gray-100 rounded-[32px] p-12 text-center">
+                <Loader2 className="w-10 h-10 text-primary animate-spin mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-secondary mb-2">Finalizing your purchase...</h3>
+                <p className="text-sm text-gray-400">Please wait while we set up your service booking. This usually takes a few seconds.</p>
+                <button 
+                  onClick={() => window.location.reload()}
+                  className="mt-6 text-xs font-bold text-primary hover:underline uppercase tracking-widest"
+                >
+                  Refresh Page
+                </button>
               </div>
             ) : (
               <div className="bg-green-50/50 border border-green-100 rounded-[32px] p-8 md:p-12 text-center">

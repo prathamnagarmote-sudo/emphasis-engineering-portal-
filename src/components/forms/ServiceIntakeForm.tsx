@@ -41,6 +41,21 @@ const timezones = [
   { label: 'Berlin, Germany (CET)', value: 'CET', offset: '+1:00' },
 ];
 
+const countryCodes = [
+  { code: '+44', country: 'UK' },
+  { code: '+1', country: 'USA' },
+  { code: '+1 ', country: 'Canada' },
+  { code: '+91', country: 'India' },
+  { code: '+971', country: 'UAE' },
+  { code: '+966', country: 'Saudi Arabia' },
+  { code: '+234', country: 'Nigeria' },
+  { code: '+92', country: 'Pakistan' },
+  { code: '+880', country: 'Bangladesh' },
+  { code: '+61', country: 'Australia' },
+  { code: '+65', country: 'Singapore' },
+  { code: '+49', country: 'Germany' },
+].sort((a, b) => a.country.localeCompare(b.country));
+
 const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuccess }) => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -51,7 +66,9 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phonePrefix: '+44',
     phone: '',
+    whatsappPrefix: '+44',
     whatsapp: '',
     city: '',
     country: '',
@@ -88,7 +105,14 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
       const res = await fetch('/api/services/booking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bookingId, formData }),
+        body: JSON.stringify({ 
+          bookingId, 
+          formData: {
+            ...formData,
+            phone: `${formData.phonePrefix} ${formData.phone}`,
+            whatsapp: `${formData.whatsappPrefix} ${formData.whatsapp}`
+          } 
+        }),
       });
       if (res.ok) {
         setStep(4); // Success step
@@ -102,8 +126,14 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
   };
 
   const nextStep = () => {
-    if (step === 1 && (!formData.name || !formData.email || !formData.phone)) return;
-    if (step === 2 && (!formData.city || !formData.country)) return;
+    if (step === 1 && (!formData.name || !formData.email || !formData.phone)) {
+      alert("Please fill in all contact details.");
+      return;
+    }
+    if (step === 2 && (!formData.city || !formData.country || !formData.timezone)) {
+      alert("Please provide your location and timezone.");
+      return;
+    }
     setStep(prev => prev + 1);
   };
 
@@ -226,24 +256,46 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="relative">
-                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+                    <div className="relative flex">
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary z-10" />
+                        <select 
+                          className="pl-9 pr-2 py-4 bg-gray-50/50 border border-gray-100 rounded-l-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold text-xs appearance-none border-r-0"
+                          value={formData.phonePrefix}
+                          onChange={(e) => setFormData({ ...formData, phonePrefix: e.target.value })}
+                        >
+                          {countryCodes.map(c => (
+                            <option key={`${c.country}-${c.code}`} value={c.code}>{c.code} ({c.country})</option>
+                          ))}
+                        </select>
+                      </div>
                       <input
                         required
                         type="tel"
-                        placeholder="Phone"
-                        className="w-full pl-10 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold"
+                        placeholder="Phone Number"
+                        className="flex-1 px-4 py-4 bg-gray-50/50 border border-gray-100 rounded-r-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       />
                     </div>
-                    <div className="relative">
-                      <MessageSquare className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-green-500" />
+                    <div className="relative flex">
+                      <div className="relative">
+                        <MessageSquare className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-500 z-10" />
+                        <select 
+                          className="pl-9 pr-2 py-4 bg-gray-50/50 border border-gray-100 rounded-l-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-bold text-xs appearance-none border-r-0"
+                          value={formData.whatsappPrefix}
+                          onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
+                        >
+                          {countryCodes.map(c => (
+                            <option key={`${c.country}-${c.code}-wa`} value={c.code}>{c.code} ({c.country})</option>
+                          ))}
+                        </select>
+                      </div>
                       <input
                         required
                         type="tel"
-                        placeholder="WhatsApp"
-                        className="w-full pl-10 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold"
+                        placeholder="WhatsApp Number"
+                        className="flex-1 px-4 py-4 bg-gray-50/50 border border-gray-100 rounded-r-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold"
                         value={formData.whatsapp}
                         onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
                       />

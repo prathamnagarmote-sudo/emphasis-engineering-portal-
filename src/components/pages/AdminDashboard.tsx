@@ -27,6 +27,7 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState<any[]>([]);
   const [logs, setLogs] = useState<any[]>([]);
   const [bookings, setBookings] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
   const [dbData, setDbData] = useState<{ courses: any[], tests: any[], services: any[] }>({ courses: [], tests: [], services: [] });
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -64,8 +65,14 @@ export default function AdminDashboard() {
           fetch("/api/services"),
           fetch("/api/admin/logs"),
           fetch("/api/admin/bookings"),
-          fetch("/api/admin/vouchers")
+          fetch("/api/admin/vouchers"),
+          fetch("/api/admin/orders")
         ]);
+
+        if (resOrders.ok) {
+          const data = await resOrders.json();
+          setOrders(data.orders || []);
+        }
 
         if (resUsers.ok) {
           const data = await resUsers.json();
@@ -120,19 +127,8 @@ export default function AdminDashboard() {
   }, [users, search]);
 
   const totalSales = useMemo(() => {
-    let total = 0;
-    if (!users || !Array.isArray(users)) return 0;
-    users.forEach(user => {
-      if (user && user.purchasedContent && Array.isArray(user.purchasedContent)) {
-        user.purchasedContent.forEach((id: string) => {
-          if (id && productDictionary[id]) {
-            total += (productDictionary[id].price || 0);
-          }
-        });
-      }
-    });
-    return total;
-  }, [users, productDictionary]);
+    return orders.reduce((acc, order) => acc + (order.totalAmount || 0), 0);
+  }, [orders]);
 
   const totalPurchases = useMemo(() => {
     let count = 0;
@@ -153,42 +149,21 @@ export default function AdminDashboard() {
       "United States": { total: 0, courses: {} },
     };
 
-    if (!users || !Array.isArray(users)) return stats;
-
-    users.forEach(user => {
-      if (!user) return;
-
-      if (user.purchasedContent && Array.isArray(user.purchasedContent)) {
-        user.purchasedContent.forEach((id: string) => {
-          if (!id) return;
-          const product = productDictionary[id];
-          if (product) {
-            // Determine country based on product or user data
-            let country = user.country;
-            if (!country || country === "Unknown") {
-              const lowerId = id.toLowerCase();
-              if (lowerId.includes('imech') || lowerId.includes('iet') || lowerId.includes('ice')) country = "United Kingdom";
-              else if (lowerId.includes('peng')) country = "Canada";
-              else if (lowerId.includes('pe') || lowerId.includes('ncees')) country = "United States";
-              else country = "Other";
-            }
-
-            // Ensure country exists in stats
-            if (country && !stats[country]) {
-              stats[country] = { total: 0, courses: {} };
-            }
-
-            if (country && stats[country]) {
-              stats[country].total += (product.price || 0);
-              const title = product.title || "Unknown Product";
-              stats[country].courses[title] = (stats[country].courses[title] || 0) + (product.price || 0);
-            }
-          }
-        });
+    orders.forEach(order => {
+      const country = order.country || "Other";
+      if (!stats[country]) {
+        stats[country] = { total: 0, courses: {} };
       }
+      stats[country].total += order.totalAmount;
+      
+      order.items.forEach((item: any) => {
+        const title = item.title || "Unknown";
+        stats[country].courses[title] = (stats[country].courses[title] || 0) + (item.price || 0);
+      });
     });
+
     return stats;
-  }, [users, productDictionary]);
+  }, [orders]);
 
   if (loading) {
     return (
@@ -433,7 +408,7 @@ export default function AdminDashboard() {
                               {user.purchasedContent?.length || 0} items
                             </td>
                             <td className="px-8 py-6 font-black text-primary">
-                              ${userTotal.toLocaleString()}
+                              ${orders.filter(o => o.userId === user._id).reduce((acc, o) => acc + o.totalAmount, 0).toLocaleString()}
                             </td>
                             <td className="px-8 py-6 text-gray-500 font-medium">
                               {new Date(user.createdAt).toLocaleDateString()}
@@ -683,46 +658,51 @@ export default function AdminDashboard() {
                   <h4 className="text-xs font-black text-secondary uppercase tracking-widest mb-4 flex items-center gap-2">
                     <ShoppingBag className="w-4 h-4 text-primary" /> Purchase History
                   </h4>
-                  <div className="space-y-3">
-                    {selectedUser.purchasedContent && selectedUser.purchasedContent.length > 0 ? (
-                      selectedUser.purchasedContent.map((id: string, i: number) => {
-                        const product = productDictionary[id];
-                        return (
-                          <div key={i} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-primary/30 transition-all shadow-sm">
-                            <div className="flex items-center gap-4">
-                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-bold ${
-                                product?.type === 'Course' ? 'bg-blue-100 text-blue-600' : 
-                                product?.type === 'Service' ? 'bg-teal-100 text-teal-600' : 
-                                'bg-purple-100 text-purple-600'
-                              }`}>
-                                {product?.type?.charAt(0) || '?'}
+                  <div className="space-y-4">
+                    {orders.filter(o => o.userId === selectedUser._id).length > 0 ? (
+                      orders.filter(o => o.userId === selectedUser._id).map((order: any, i: number) => (
+                        <div key={i} className="p-4 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                Order #{order._id.slice(-6)} • {new Date(order.createdAt).toLocaleDateString()}
                               </div>
-                              <div>
-                                <div className="text-sm font-bold text-gray-900">{product?.title || 'Unknown Product'}</div>
-                                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{product?.type || 'Other'}</div>
+                              <div className="space-y-1">
+                                {order.items.map((item: any, j: number) => (
+                                  <div key={j} className="text-sm font-bold text-secondary flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                    {item.title}
+                                  </div>
+                                ))}
                               </div>
                             </div>
-                            <div className="text-sm font-black text-primary">
-                              ${(product?.price || 0).toFixed(2)}
+                            <div className="text-right">
+                              <div className="text-sm font-black text-primary">${order.totalAmount.toFixed(2)}</div>
+                              {order.voucherCode && (
+                                <div className="text-[9px] font-bold text-green-600 uppercase mt-1">
+                                  Coupon: {order.voucherCode}
+                                </div>
+                              )}
                             </div>
                           </div>
-                        );
-                      })
+                        </div>
+                      ))
                     ) : (
                       <div className="text-center py-10 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
                         <ShoppingBag className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-                        <p className="text-sm text-gray-500 font-medium">No purchases recorded yet.</p>
+                        <p className="text-sm text-gray-500 font-medium">No order history found.</p>
+                        <p className="text-[10px] text-gray-400 mt-1 italic">(Legacy items may only show in general purchased content)</p>
                       </div>
                     )}
                   </div>
                 </div>
 
                 {/* Lifetime Value */}
-                {selectedUser.purchasedContent?.length > 0 && (
+                {orders.filter(o => o.userId === selectedUser._id).length > 0 && (
                   <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
                     <span className="text-sm font-bold text-gray-500">Total Lifetime Value</span>
                     <span className="text-2xl font-black text-primary">
-                      ${selectedUser.purchasedContent.reduce((acc: number, id: string) => acc + (productDictionary[id]?.price || 0), 0).toFixed(2)}
+                      ${orders.filter(o => o.userId === selectedUser._id).reduce((acc, o) => acc + o.totalAmount, 0).toFixed(2)}
                     </span>
                   </div>
                 )}

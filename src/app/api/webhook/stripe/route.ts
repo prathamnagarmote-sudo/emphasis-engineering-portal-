@@ -5,6 +5,7 @@ import User from '@/models/User';
 import ServiceBooking from '@/models/ServiceBooking';
 import Log from '@/models/Log';
 import Voucher from '@/models/Voucher';
+import Order from '@/models/Order';
 import { headers } from 'next/headers';
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -61,9 +62,22 @@ export async function POST(req: Request) {
         }
 
         if (user) {
-          // Grant general access
+          // Grant access (allow duplicates now for multiple service purchases)
           await User.findByIdAndUpdate(user._id, {
-            $addToSet: { purchasedContent: { $each: itemIds } }
+            $push: { purchasedContent: { $each: itemIds } }
+          });
+
+          // Create an Order record for accurate revenue tracking
+          await Order.create({
+            userId: user._id,
+            userEmail: user.email,
+            userName: user.name,
+            items: itemDetails,
+            totalAmount: session.amount_total ? session.amount_total / 100 : 0,
+            currency: session.currency || 'cad',
+            voucherCode: metadata.voucherCode || null,
+            stripeSessionId: session.id,
+            country: user.country || 'Unknown'
           });
 
           // Handle Service Bookings
