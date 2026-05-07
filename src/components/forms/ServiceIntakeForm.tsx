@@ -57,7 +57,7 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
     preferredDate: '',
     preferredTime: '',
     preferredTimeline: '', // City-wise timeline (e.g. "Kolkata 10 AM GMT+5:30")
-    timezone: 'GMT',
+    timezone: '',
     additionalDetails: ''
   });
 
@@ -264,7 +264,7 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                     >
                       <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
                       <span className={formData.timezone ? 'text-secondary' : 'text-gray-400'}>
-                        {timezones.find(tz => tz.value === formData.timezone)?.label || 'Select Timezone'}
+                        {formData.timezone || 'Select Timezone'}
                       </span>
                       <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showTimezoneList ? 'rotate-180' : ''}`} />
                     </div>
@@ -293,7 +293,7 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                             <div 
                               key={tz.label}
                               onClick={() => {
-                                setFormData({ ...formData, timezone: tz.value });
+                                setFormData({ ...formData, timezone: tz.label });
                                 setShowTimezoneList(false);
                               }}
                               className="px-4 py-3 hover:bg-primary/5 cursor-pointer flex items-center justify-between group"

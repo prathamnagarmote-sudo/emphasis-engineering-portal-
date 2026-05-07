@@ -139,13 +139,12 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
   const formatPrice = (priceCAD: number) => {
     const converted = convertPrice(priceCAD);
     
-    // For AED, people often prefer whole numbers, but for "perfect" trust, 
-    // we will show 2 decimals to match global standards like Google.
+    // Using 2 decimal places to match Stripe checkout and provide precision.
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency.code,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(converted);
   };
 

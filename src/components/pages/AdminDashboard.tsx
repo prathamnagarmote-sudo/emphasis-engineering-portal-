@@ -371,9 +371,95 @@ export default function AdminDashboard() {
             </div>
 
             {activeTab === 'users' ? (
-              // ... existing users table ...
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                {/* ... (keep existing users table code here, but for space I'm just marking the end) */}
+              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-8 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 font-display">Registered Students</h2>
+                    <p className="text-xs text-gray-500 mt-1">Manage users and view their purchase history.</p>
+                  </div>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input 
+                      type="text" 
+                      placeholder="Search by name or email..."
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className="pl-10 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary/20 outline-none w-full md:w-64 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm border-collapse">
+                    <thead className="bg-gray-50 text-gray-500 font-black uppercase tracking-widest text-[10px] border-b border-gray-100">
+                      <tr>
+                        <th className="px-8 py-5">Student</th>
+                        <th className="px-8 py-5">Role</th>
+                        <th className="px-8 py-5">Purchases</th>
+                        <th className="px-8 py-5">Value</th>
+                        <th className="px-8 py-5">Joined</th>
+                        <th className="px-8 py-5">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {filteredUsers.map((user) => {
+                        const userTotal = (user.purchasedContent || []).reduce((acc: number, id: string) => {
+                          return acc + (productDictionary[id]?.price || 0);
+                        }, 0);
+
+                        return (
+                          <tr key={user._id} className="hover:bg-gray-50/50 transition-colors">
+                            <td className="px-8 py-6">
+                              <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                                  {user.name.charAt(0)}
+                                </div>
+                                <div>
+                                  <div className="font-bold text-gray-900">{user.name}</div>
+                                  <div className="text-xs text-gray-500">{user.email}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-8 py-6">
+                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                                user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+                              }`}>
+                                {user.role}
+                              </span>
+                            </td>
+                            <td className="px-8 py-6 font-bold text-secondary">
+                              {user.purchasedContent?.length || 0} items
+                            </td>
+                            <td className="px-8 py-6 font-black text-primary">
+                              ${userTotal.toLocaleString()}
+                            </td>
+                            <td className="px-8 py-6 text-gray-500 font-medium">
+                              {new Date(user.createdAt).toLocaleDateString()}
+                            </td>
+                            <td className="px-8 py-6">
+                              <button 
+                                onClick={() => {
+                                  const userBookings = bookings.filter(b => b.userId === user._id);
+                                  setSelectedUserBookings(userBookings.length > 0 ? userBookings : null);
+                                  if (userBookings.length === 0) alert("This student hasn't submitted any service intake forms yet.");
+                                }}
+                                className="p-2 hover:bg-primary/10 text-gray-400 hover:text-primary rounded-lg transition-all"
+                                title="View Bookings"
+                              >
+                                <CalendarDays className="w-5 h-5" />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      {filteredUsers.length === 0 && (
+                        <tr>
+                          <td colSpan={6} className="px-8 py-12 text-center text-gray-400 italic">No students found matching your search.</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : activeTab === 'bookings' ? (
               <div className="space-y-6">
