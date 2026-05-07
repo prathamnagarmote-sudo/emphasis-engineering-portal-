@@ -70,17 +70,23 @@ const Cart: FC = () => {
 
       // Handle free items (price 0) or 100% discount
       if (totalPrice * discountMultiplier === 0) {
-        for (const item of items) {
-          await purchaseItem(item.id, appliedDiscount?.code);
-          if (item.type === 'service') {
-            await fetch('/api/services/booking/init', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ serviceId: item.id, serviceTitle: item.title })
-            });
-          }
+        const res = await fetch('/api/checkout/free', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            items, 
+            voucherCode: appliedDiscount?.code 
+          })
+        });
+
+        if (res.ok) {
+          const hasService = items.some(i => i.type === 'service');
+          clearCart();
+          router.push(`/payment-success?has_service=${hasService}`);
+        } else {
+          const data = await res.json();
+          throw new Error(data.message || 'Failed to process free checkout');
         }
-        router.push('/dashboard');
         return;
       }
 

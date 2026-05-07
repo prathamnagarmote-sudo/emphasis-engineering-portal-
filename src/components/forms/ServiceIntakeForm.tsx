@@ -126,15 +126,20 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
   };
 
   const nextStep = () => {
-    if (step === 1 && (!formData.name || !formData.email || !formData.phone)) {
-      alert("Please fill in all contact details.");
-      return;
+    if (step === 1) {
+      if (!formData.name || !formData.email || !formData.phone) {
+        alert("Please fill in your name, email, and contact number before continuing.");
+        return;
+      }
     }
-    if (step === 2 && (!formData.city || !formData.country || !formData.timezone)) {
-      alert("Please provide your location and timezone.");
-      return;
+    if (step === 2) {
+      if (!formData.city || !formData.country || !formData.timezone) {
+        alert("Location details and Timezone selection are required to proceed to the timeline step.");
+        return;
+      }
     }
     setStep(prev => prev + 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const prevStep = () => setStep(prev => prev - 1);
@@ -348,12 +353,17 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                       onClick={() => setShowTimezoneList(!showTimezoneList)}
                       className="w-full pl-12 pr-10 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold cursor-pointer flex items-center justify-between"
                     >
-                      <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+                      <Globe className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${formData.timezone ? 'text-primary' : 'text-gray-400'}`} />
                       <span className={formData.timezone ? 'text-secondary' : 'text-gray-400'}>
-                        {formData.timezone || 'Select Timezone'}
+                        {formData.timezone || 'Select Your Timezone *'}
                       </span>
-                      <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showTimezoneList ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-4 h-4 transition-all ${showTimezoneList ? 'rotate-180 text-primary' : 'text-gray-400'}`} />
                     </div>
+                    {!formData.timezone && !showTimezoneList && (
+                      <p className="text-[10px] text-primary/60 font-bold mt-2 ml-4 flex items-center gap-1 animate-pulse">
+                        <ArrowRight className="w-3 h-3" /> Please select a timezone from the list
+                      </p>
+                    )}
 
                     <AnimatePresence>
                       {showTimezoneList && (
