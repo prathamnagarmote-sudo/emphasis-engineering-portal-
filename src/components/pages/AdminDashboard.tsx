@@ -58,7 +58,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [resUsers, resCourses, resTests, resServices, resLogs, resBookings, resVouchers] = await Promise.all([
+        const [resUsers, resCourses, resTests, resServices, resLogs, resBookings, resVouchers, resOrders] = await Promise.all([
           fetch("/api/admin/users"),
           fetch("/api/courses"),
           fetch("/api/practice-tests"),
