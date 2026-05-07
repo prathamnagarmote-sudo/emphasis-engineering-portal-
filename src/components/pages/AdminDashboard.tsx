@@ -639,7 +639,8 @@ export default function AdminDashboard() {
         </main>
       </div>
 
-      {/* User Bookings Modal */}
+      <AnimatePresence>
+        {/* User Bookings Modal */}
         {selectedUser && (
           <div className="fixed inset-0 z-[115] flex items-center justify-center p-4 bg-[#061F33]/85 backdrop-blur-md">
             <motion.div 
