@@ -77,7 +77,7 @@ const PracticeTests: FC = () => {
   const testIdFromUrl = params?.id as string | undefined;
   const router = useRouter();
   const { data: session } = useSession();
-  const { isPurchased, purchaseItem } = useCart();
+  const { isPurchased, purchaseItem, addToCart } = useCart();
   const { currency, convertPrice } = useCurrency();
   const [isBuying, setIsBuying] = useState<string | boolean>(false);
 
