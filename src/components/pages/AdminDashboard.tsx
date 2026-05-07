@@ -418,9 +418,16 @@ export default function AdminDashboard() {
                             </td>
                             <td className="px-8 py-6">
                               <div className="space-y-1">
-                                <div className="font-bold text-secondary">{user.purchasedContent?.length || 0} items</div>
-                                {orders.filter(o => o.userId === user._id).slice(0, 1).map((o, i) => (
-                                  <div key={i} className="text-[10px] text-gray-400 font-medium">
+                                <div className="font-bold text-secondary">
+                                  {(user.purchasedContent || []).map((id: string, idx: number) => (
+                                    <div key={idx} className="text-[11px] leading-tight">
+                                      {productDictionary[id]?.title || `ID: ${id}`}
+                                    </div>
+                                  ))}
+                                  {(!user.purchasedContent || user.purchasedContent.length === 0) && "0 items"}
+                                </div>
+                                {orders.filter(o => String(o.userId) === String(user._id) || o.userEmail === user.email).slice(0, 1).map((o, i) => (
+                                  <div key={i} className="text-[9px] text-gray-400 font-medium italic">
                                     Last: {new Date(o.createdAt).toLocaleDateString()}
                                   </div>
                                 ))}
