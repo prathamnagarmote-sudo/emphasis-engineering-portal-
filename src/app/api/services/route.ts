@@ -22,16 +22,23 @@ export async function GET() {
         description: step.description,
         icon: step.icon || "CheckSquare"
       })) || [],
-      packages: s.services?.map((pkg: any) => ({
-        id: pkg.serviceId,
-        title: pkg.title,
-        description: pkg.description,
-        price: pkg.price,
-        originalPrice: pkg.originalPrice,
-        popular: pkg.popular || false,
-        features: pkg.features || [],
-        calendlyUrl: pkg.calendlyUrl
-      })) || [],
+      packages: s.services?.map((pkg: any) => {
+        let price = pkg.price;
+        // PRICE OVERRIDE: Set Interview Prep to 526 CAD to target ~£350 GBP
+        if (s.title && s.title.toLowerCase().includes('interview preparation') && pkg.title.toLowerCase().includes('standard')) {
+          price = 526;
+        }
+        return {
+          id: pkg.serviceId,
+          title: pkg.title,
+          description: pkg.description,
+          price: price,
+          originalPrice: pkg.originalPrice,
+          popular: pkg.popular || false,
+          features: pkg.features || [],
+          calendlyUrl: pkg.calendlyUrl
+        };
+      }) || [],
       faqs: s.faqs?.map((faq: any) => ({
         question: faq.question,
         answer: faq.answer

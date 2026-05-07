@@ -32,14 +32,21 @@ export async function GET(
         content: step.content || "",
       })) || [],
       faqs: s.faqs || [],
-      packages: s.services?.map((svc: any) => ({
-        id: svc.serviceId,
-        title: svc.title,
-        description: svc.description,
-        price: svc.price,
-        features: svc.features,
-        calendlyUrl: svc.calendlyUrl,
-      })) || [],
+      packages: s.services?.map((svc: any) => {
+        let price = svc.price;
+        // PRICE OVERRIDE: Set Interview Prep to 526 CAD to target ~£350 GBP
+        if (s.title && s.title.toLowerCase().includes('interview preparation') && svc.title.toLowerCase().includes('standard')) {
+          price = 526;
+        }
+        return {
+          id: svc.serviceId,
+          title: svc.title,
+          description: svc.description,
+          price: price,
+          features: svc.features,
+          calendlyUrl: svc.calendlyUrl,
+        };
+      }) || [],
       calendlyLink: s.services?.[0]?.calendlyUrl || "",
     };
 
