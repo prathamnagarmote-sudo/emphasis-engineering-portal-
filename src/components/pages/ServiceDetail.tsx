@@ -610,6 +610,21 @@ const ServiceDetail: FC = () => {
                         try {
                           setIsBuying(pkg.id);
 
+                          // Handle free items (price 0)
+                          if (pkg.price === 0) {
+                            const freeRes = await fetch('/api/purchase/free-service', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ itemId: pkg.id, itemTitle: `${service.title} – ${pkg.title}` }),
+                            });
+                            
+                            if (freeRes.ok) {
+                              const freeData = await freeRes.json();
+                              router.push(`/payment-success?session_id=free_${freeData.bookingId}&has_service=true`);
+                              return;
+                            }
+                          }
+
                           const response = await fetch('/api/checkout', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },

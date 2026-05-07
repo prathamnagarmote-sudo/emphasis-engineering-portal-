@@ -461,50 +461,43 @@ const MentorVideoSection: FC = () => {
         >
           <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-video bg-[#061F33]">
             {playing ? (
-              <iframe
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
-                allow="autoplay; fullscreen"
-                allowFullScreen
-              />
+              <div className="w-full h-full flex items-center justify-center bg-gray-900 text-white p-8 text-center">
+                <div className="max-w-md">
+                  <Video className="w-16 h-16 text-primary mx-auto mb-6 opacity-50" />
+                  <h3 className="text-xl font-bold mb-2">New Content Arriving Soon</h3>
+                  <p className="text-gray-400 text-sm">
+                    We are currently recording an updated introduction to our practice test methodology. Stay tuned for a fresh video from Dr. Maxwell.
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="mt-6 border-white/20 text-white hover:bg-white/10"
+                    onClick={() => setPlaying(false)}
+                  >
+                    Back to Overview
+                  </Button>
+                </div>
+              </div>
             ) : (
               <>
-                <img
-                  decoding="async"
-                  src="https://res.cloudinary.com/dwk1cnlw2/image/upload/f_auto,q_auto,w_800/v1776348873/photo-1581092160607-ee22621dd758_sdbfrr.jpg"
-                  alt="Dr. Maxwell Oyom"
-                  className="w-full h-full object-cover brightness-50"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#061F33]/80 via-transparent to-transparent" />
-
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <motion.button
-                    whileHover={{ scale: 1.08 }}
-                    whileTap={{ scale: 0.96 }}
-                    onClick={() => setPlaying(true)}
-                    className="relative w-20 h-20 rounded-full bg-primary flex items-center justify-center shadow-2xl shadow-primary/50"
-                  >
-                    <span className="absolute inset-0 rounded-full bg-primary/40 animate-ping" />
-                    <Play className="w-8 h-8 text-white ml-1 relative z-10" />
-                  </motion.button>
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-secondary/20" />
+                
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                  <div className="w-20 h-20 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center">
+                    <Video className="w-8 h-8 text-white opacity-40" />
+                  </div>
                   <div className="text-center">
-                    <p className="text-white font-semibold text-sm">Why Our Tests Work</p>
-                    <p className="text-gray-400 text-xs">3 min message from Dr. Maxwell</p>
+                    <p className="text-white font-semibold text-sm">Video Introduction</p>
+                    <p className="text-gray-400 text-xs">New mentor video coming soon</p>
                   </div>
-                </div>
-
-                <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/80 to-transparent">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src="https://res.cloudinary.com/dwk1cnlw2/image/upload/f_auto,q_auto,w_80/v1776348635/Chartered-Engineer-2.jpg_jrvafx.webp"
-                      className="w-10 h-10 rounded-full border-2 border-primary object-cover"
-                      alt="Dr. Maxwell"
-                    />
-                    <div>
-                      <div className="text-white font-semibold text-sm">Dr. Maxwell Oyom</div>
-                      <div className="text-gray-400 text-xs">Emphasis Engineering</div>
-                    </div>
-                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setPlaying(true)}
+                    className="px-6 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-xs font-bold hover:bg-white/20 transition-all"
+                  >
+                    View Details
+                  </motion.button>
                 </div>
               </>
             )}

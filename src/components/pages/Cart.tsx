@@ -35,6 +35,37 @@ const Cart: FC = () => {
     setIsCheckingOut(true);
 
     try {
+      // Handle free items (price 0)
+      if (items.length === 1 && items[0].price === 0) {
+        const item = items[0];
+        if (item.type === 'service') {
+          const freeRes = await fetch('/api/purchase/free-service', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ itemId: item.id, itemTitle: item.title }),
+          });
+          
+          if (freeRes.ok) {
+            const freeData = await freeRes.json();
+            clearCart();
+            router.push(`/payment-success?session_id=free_${freeData.bookingId}&has_service=true`);
+            return;
+          }
+        } else {
+          const freeRes = await fetch('/api/purchase/free', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ itemId: item.id }),
+          });
+          
+          if (freeRes.ok) {
+            clearCart();
+            router.push(`/payment-success?session_id=free_${item.id}`);
+            return;
+          }
+        }
+      }
+
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

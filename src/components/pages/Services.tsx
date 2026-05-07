@@ -249,7 +249,7 @@ const Services: FC = () => {
               ))
             ) : services.map((service: any, index: number) => {
               const Icon = iconMap[service.icon] || Briefcase;
-              const isFeatured = index === 1; // Highlight middle card
+              const isFeatured = false; // index === 1; // Highlight middle card (REMOVED: User requested removal of Most Popular badge)
 
               return (
                 <motion.div
@@ -264,17 +264,6 @@ const Services: FC = () => {
                       whileHover={{ y: -12, transition: { duration: 0.2 } }}
                       className={`relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 h-full flex flex-col border ${isFeatured ? 'border-primary/30 ring-1 ring-primary/20' : 'border-gray-100'}`}
                     >
-                      {isFeatured && (
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          whileInView={{ scale: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: 0.3, type: "spring" }}
-                          className="absolute -top-4 left-8 bg-gradient-to-r from-primary to-blue-500 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg"
-                        >
-                          Most Popular
-                        </motion.div>
-                      )}
 
                       <div className="flex items-start justify-between mb-6">
                         <motion.div
