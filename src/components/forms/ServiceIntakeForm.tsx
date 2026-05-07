@@ -18,6 +18,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import Link from 'next/link';
 
 interface IntakeFormProps {
   bookingId: string;
@@ -91,7 +92,6 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
       });
       if (res.ok) {
         setStep(4); // Success step
-        setTimeout(onSuccess, 3000);
       }
     } catch (err) {
       console.error(err);
@@ -112,18 +112,52 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
   if (step === 4) {
     return (
       <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-white/70 backdrop-blur-xl rounded-[40px] p-8 md:p-12 text-center shadow-2xl border border-white/20 relative overflow-hidden"
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="bg-white rounded-[40px] p-10 text-center shadow-2xl relative overflow-hidden"
       >
-        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle className="w-10 h-10 text-green-600" />
+        <div className="relative mb-8">
+          <motion.div 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto relative z-10"
+          >
+            <CheckCircle className="w-12 h-12 text-white" />
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1.5 }}
+            className="absolute inset-0 bg-green-500/20 rounded-full blur-2xl"
+          />
         </div>
-        <h3 className="text-2xl font-bold text-secondary mb-3">Request Received!</h3>
-        <p className="text-gray-600 text-sm leading-relaxed max-w-md mx-auto">
-          Thank you for providing your details for <strong>{serviceTitle}</strong>. 
-          Our instructor will contact you via WhatsApp/Email within 24 hours to provide your custom meeting link.
+
+        <h3 className="text-3xl font-black text-[#061F33] mb-4">You're All Set!</h3>
+        <p className="text-gray-600 text-base leading-relaxed max-w-sm mx-auto mb-10 font-medium">
+          Your details for <strong>{serviceTitle}</strong> have been received. 
+          Expect a WhatsApp/Email from your instructor within 24 hours.
         </p>
+
+        <div className="flex flex-col gap-3">
+          <Link href="/dashboard" className="w-full">
+            <Button className="w-full py-4 text-base shadow-xl shadow-primary/20">
+              Go to My Dashboard
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </Link>
+          <button 
+            onClick={onSuccess}
+            className="w-full py-4 rounded-xl border-2 border-gray-100 text-gray-500 font-bold hover:bg-gray-50 transition-all text-sm"
+          >
+            Close Details
+          </button>
+        </div>
+
+        <div className="mt-8 pt-8 border-t border-gray-50">
+          <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest">
+            <Clock className="w-4 h-4" /> Response time: &lt; 24 Hours
+          </div>
+        </div>
       </motion.div>
     );
   }

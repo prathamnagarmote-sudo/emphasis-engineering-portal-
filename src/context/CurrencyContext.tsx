@@ -139,7 +139,6 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
   const formatPrice = (priceCAD: number) => {
     const converted = convertPrice(priceCAD);
     
-    // Using 2 decimal places to match Stripe checkout and provide precision.
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency.code,

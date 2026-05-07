@@ -36,6 +36,7 @@ export default function AdminDashboard() {
   const [newVoucher, setNewVoucher] = useState({ code: '', discountValue: 30, type: 'service' });
   const [selectedUserBookings, setSelectedUserBookings] = useState<any[] | null>(null);
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
 
   // Build a fast lookup dictionary for all products and their prices
   const productDictionary = useMemo(() => {
@@ -44,6 +45,7 @@ export default function AdminDashboard() {
     dbData.courses.forEach(c => dict[c.id || c._id] = { title: c.title, price: c.price, type: 'Course' });
     dbData.tests.forEach(p => dict[p.id || p.testId || p._id] = { title: p.title, price: p.price || 0, type: 'Practice Test' });
     dbData.services.forEach(s => {
+      dict[s.id || s._id] = { title: s.title, price: s.price || 0, type: 'Service' };
       (s.packages || []).forEach((pkg: any) => {
         dict[pkg.id] = { title: `${s.title} - ${pkg.title}`, price: pkg.price, type: 'Service' };
       });
@@ -410,12 +412,12 @@ export default function AdminDashboard() {
                         return (
                           <tr key={user._id} className="hover:bg-gray-50/50 transition-colors">
                             <td className="px-8 py-6">
-                              <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                              <div className="flex items-center gap-4 cursor-pointer group" onClick={() => setSelectedUser(user)}>
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary group-hover:bg-primary group-hover:text-white transition-all">
                                   {user.name.charAt(0)}
                                 </div>
                                 <div>
-                                  <div className="font-bold text-gray-900">{user.name}</div>
+                                  <div className="font-bold text-gray-900 group-hover:text-primary transition-colors">{user.name}</div>
                                   <div className="text-xs text-gray-500">{user.email}</div>
                                 </div>
                               </div>
@@ -638,7 +640,113 @@ export default function AdminDashboard() {
       </div>
 
       {/* User Bookings Modal */}
-      <AnimatePresence>
+        {selectedUser && (
+          <div className="fixed inset-0 z-[115] flex items-center justify-center p-4 bg-[#061F33]/85 backdrop-blur-md">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-white rounded-[32px] shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col border border-white/20"
+              style={{ maxHeight: '90vh' }}
+            >
+              <div className="p-8 bg-gradient-to-r from-[#061F33] to-[#0d3654] text-white flex items-center justify-between">
+                <div className="flex items-center gap-5">
+                  <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center text-primary font-black text-2xl border border-primary/30">
+                    {selectedUser.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-black">{selectedUser.name}</h3>
+                    <p className="text-primary/70 text-sm font-bold uppercase tracking-widest">Student Profile</p>
+                  </div>
+                </div>
+                <button onClick={() => setSelectedUser(null)} className="p-3 bg-white/5 hover:bg-white/10 rounded-full text-white/70 hover:text-white transition-all">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <div className="p-8 overflow-y-auto space-y-8 flex-1">
+                {/* Contact Info */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                    <p className="text-[10px] text-gray-400 font-black uppercase mb-1">Email Address</p>
+                    <p className="text-sm font-bold text-secondary">{selectedUser.email}</p>
+                  </div>
+                  <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                    <p className="text-[10px] text-gray-400 font-black uppercase mb-1">Joined Date</p>
+                    <p className="text-sm font-bold text-secondary">{new Date(selectedUser.createdAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+
+                {/* Purchase History */}
+                <div>
+                  <h4 className="text-xs font-black text-secondary uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <ShoppingBag className="w-4 h-4 text-primary" /> Purchase History
+                  </h4>
+                  <div className="space-y-3">
+                    {selectedUser.purchasedContent && selectedUser.purchasedContent.length > 0 ? (
+                      selectedUser.purchasedContent.map((id: string, i: number) => {
+                        const product = productDictionary[id];
+                        return (
+                          <div key={i} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-primary/30 transition-all shadow-sm">
+                            <div className="flex items-center gap-4">
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-bold ${
+                                product?.type === 'Course' ? 'bg-blue-100 text-blue-600' : 
+                                product?.type === 'Service' ? 'bg-teal-100 text-teal-600' : 
+                                'bg-purple-100 text-purple-600'
+                              }`}>
+                                {product?.type?.charAt(0) || '?'}
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold text-gray-900">{product?.title || 'Unknown Product'}</div>
+                                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{product?.type || 'Other'}</div>
+                              </div>
+                            </div>
+                            <div className="text-sm font-black text-primary">
+                              ${(product?.price || 0).toFixed(2)}
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="text-center py-10 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                        <ShoppingBag className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                        <p className="text-sm text-gray-500 font-medium">No purchases recorded yet.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Lifetime Value */}
+                {selectedUser.purchasedContent?.length > 0 && (
+                  <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
+                    <span className="text-sm font-bold text-gray-500">Total Lifetime Value</span>
+                    <span className="text-2xl font-black text-primary">
+                      ${selectedUser.purchasedContent.reduce((acc: number, id: string) => acc + (productDictionary[id]?.price || 0), 0).toFixed(2)}
+                    </span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="p-6 bg-gray-50 border-t border-gray-100">
+                <button 
+                  onClick={() => {
+                    const userBookings = bookings.filter(b => b.userId === selectedUser._id);
+                    if (userBookings.length > 0) {
+                      setSelectedUserBookings(userBookings);
+                      setSelectedUser(null);
+                    } else {
+                      alert("No service bookings found for this student.");
+                    }
+                  }}
+                  className="w-full py-4 bg-[#061F33] text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-[#061F33]/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                >
+                  <CalendarDays className="w-4 h-4 text-primary" /> View Service Intake Forms
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
         {selectedUserBookings && (
           <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-[#061F33]/80 backdrop-blur-md">
             <motion.div 
@@ -805,7 +913,6 @@ export default function AdminDashboard() {
                           body: JSON.stringify({ bookingId: selectedBooking._id, status: 'scheduled' })
                         });
                         if (res.ok) {
-                          alert("Status updated to Scheduled!");
                           const updatedRes = await fetch("/api/admin/bookings");
                           const data = await updatedRes.json();
                           setBookings(data.bookings || []);
