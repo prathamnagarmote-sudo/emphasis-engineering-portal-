@@ -20,7 +20,7 @@ interface CartContextType {
   totalItems: number;
   totalPrice: number;
   purchasedItems: string[];
-  purchaseItem: (id: string) => Promise<void>;
+  purchaseItem: (id: string, voucherCode?: string) => Promise<void>;
   isPurchased: (id: string) => boolean;
 }
 
