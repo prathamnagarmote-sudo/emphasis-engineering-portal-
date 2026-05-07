@@ -17,6 +17,7 @@ function PaymentSuccessContent() {
   const { data: session, update } = useSession();
   const [loading, setLoading] = useState(true);
   const [pendingBooking, setPendingBooking] = useState<any>(null);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -96,22 +97,60 @@ function PaymentSuccessContent() {
         {hasService ? (
           <div className="space-y-8">
             {pendingBooking ? (
-              <div className="bg-gray-50 border border-gray-100 rounded-[32px] p-6 md:p-10">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center">
-                    <Calendar className="w-7 h-7 text-primary" />
+              <div className="space-y-8">
+                {!showForm ? (
+                  <div className="space-y-6">
+                    <div className="bg-primary/5 border border-primary/10 rounded-[32px] p-8 text-center">
+                      <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <Calendar className="w-8 h-8 text-primary" />
+                      </div>
+                      <h3 className="text-xl font-bold text-secondary mb-2">Ready to start {pendingBooking.serviceTitle}?</h3>
+                      <p className="text-sm text-gray-500 font-medium mb-6">
+                        You can schedule your meeting now by providing a few details, or you can do it later from your dashboard.
+                      </p>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <Button 
+                          onClick={() => setShowForm(true)}
+                          className="w-full py-4 text-sm"
+                          variant="primary"
+                        >
+                          <Calendar className="w-4 h-4 mr-2" />
+                          Schedule Meeting
+                        </Button>
+                        <Button 
+                          onClick={() => router.push("/dashboard")}
+                          className="w-full py-4 text-sm bg-white border-2 border-gray-100 text-gray-600 hover:bg-gray-50 hover:border-gray-200 shadow-none"
+                        >
+                          Schedule Later
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-center gap-2 text-[10px] text-gray-300 font-bold uppercase tracking-widest">
+                      <Clock className="w-3.5 h-3.5" />
+                      Scheduling takes less than 2 minutes
+                    </div>
                   </div>
-                  <div className="text-left">
-                    <h3 className="text-xl font-bold text-secondary">Schedule {pendingBooking.serviceTitle}</h3>
-                    <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Final Step: Provide details</p>
+                ) : (
+                  <div className="bg-gray-50 border border-gray-100 rounded-[32px] p-6 md:p-10">
+                    <div className="flex items-center gap-4 mb-8">
+                      <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center">
+                        <Calendar className="w-7 h-7 text-primary" />
+                      </div>
+                      <div className="text-left">
+                        <h3 className="text-xl font-bold text-secondary">Schedule {pendingBooking.serviceTitle}</h3>
+                        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Final Step: Provide details</p>
+                      </div>
+                    </div>
+                    
+                    <ServiceIntakeForm 
+                      bookingId={pendingBooking._id} 
+                      serviceTitle={pendingBooking.serviceTitle}
+                      onSuccess={() => setPendingBooking(null)}
+                    />
                   </div>
-                </div>
-                
-                <ServiceIntakeForm 
-                  bookingId={pendingBooking._id} 
-                  serviceTitle={pendingBooking.serviceTitle}
-                  onSuccess={() => setPendingBooking(null)}
-                />
+                )}
               </div>
             ) : (
               <div className="bg-green-50/50 border border-green-100 rounded-[32px] p-8 md:p-12 text-center">
@@ -128,16 +167,6 @@ function PaymentSuccessContent() {
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
-              </div>
-            )}
-            {pendingBooking && (
-              <div className="flex flex-col gap-4">
-                <Link href="/dashboard" className="text-sm font-bold text-gray-400 hover:text-primary transition-all text-center uppercase tracking-widest">
-                  Skip scheduling for now
-                </Link>
-                <p className="text-[10px] text-gray-300 text-center italic">
-                  You can always schedule later from your dashboard under "Order History"
-                </p>
               </div>
             )}
           </div>
