@@ -40,20 +40,57 @@ export async function POST(req: Request) {
           instructorEmail,
           `New Service Intake: ${booking.serviceTitle} - ${session.user.name}`,
           `
-          <div style="font-family: sans-serif; line-height: 1.5; color: #333;">
-            <h2 style="color: #3F9FA3;">New Service Intake Form Submitted</h2>
-            <p><strong>Student:</strong> ${session.user.name} (${session.user.email})</p>
-            <p><strong>Service:</strong> ${booking.serviceTitle}</p>
-            <p><strong>Details:</strong></p>
-            <ul style="background: #f9f9f9; padding: 20px; border-radius: 10px; list-style: none;">
-              <li><strong>Phone:</strong> ${formData.phone || 'N/A'}</li>
-              <li><strong>WhatsApp:</strong> ${formData.whatsapp || 'N/A'}</li>
-              <li><strong>Location:</strong> ${formData.city || 'N/A'}, ${formData.country || 'N/A'}</li>
-              <li><strong>Preferred Time:</strong> ${formData.preferredDate || 'N/A'} at ${formData.preferredTime || 'N/A'}</li>
-            </ul>
-            <p>Please login to the <strong>Admin Dashboard</strong> to view full details and initiate the service.</p>
-            <div style="margin-top: 30px;">
-              <a href="${process.env.NEXTAUTH_URL}/admin" style="background: #3F9FA3; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Go to Admin Dashboard</a>
+          <div style="font-family: sans-serif; line-height: 1.5; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 20px; overflow: hidden;">
+            <div style="background: #061F33; padding: 30px; text-align: center;">
+              <h2 style="color: #3F9FA3; margin: 0; font-size: 24px;">New Service Intake Form</h2>
+              <p style="color: white; opacity: 0.7; margin-top: 5px;">Student has provided their scheduling details</p>
+            </div>
+            
+            <div style="padding: 30px;">
+              <p><strong>Student:</strong> ${formData.name || session.user.name} (${formData.email || session.user.email})</p>
+              <p><strong>Service:</strong> ${booking.serviceTitle}</p>
+              
+              <div style="background: #f9f9f9; padding: 25px; border-radius: 15px; margin: 20px 0;">
+                <h3 style="margin-top: 0; color: #061F33; font-size: 16px;">Scheduling & Location</h3>
+                <table style="width: 100%; font-size: 14px;">
+                  <tr>
+                    <td style="padding: 5px 0; color: #666;"><strong>Timeline:</strong></td>
+                    <td style="padding: 5px 0;">${formData.preferredTimeline || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px 0; color: #666;"><strong>Timezone:</strong></td>
+                    <td style="padding: 5px 0;">${formData.timezone || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px 0; color: #666;"><strong>City:</strong></td>
+                    <td style="padding: 5px 0;">${formData.city || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px 0; color: #666;"><strong>Country:</strong></td>
+                    <td style="padding: 5px 0;">${formData.country || 'N/A'}</td>
+                  </tr>
+                </table>
+              </div>
+
+              <div style="background: #f9f9f9; padding: 25px; border-radius: 15px; margin: 20px 0;">
+                <h3 style="margin-top: 0; color: #061F33; font-size: 16px;">Contact Details</h3>
+                <table style="width: 100%; font-size: 14px;">
+                  <tr>
+                    <td style="padding: 5px 0; color: #666;"><strong>Phone:</strong></td>
+                    <td style="padding: 5px 0;">${formData.phone || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px 0; color: #666;"><strong>WhatsApp:</strong></td>
+                    <td style="padding: 5px 0;">${formData.whatsapp || 'N/A'}</td>
+                  </tr>
+                </table>
+              </div>
+
+              <p>Please login to the <strong>Admin Dashboard</strong> to initiate the service and contact the student.</p>
+              
+              <div style="text-align: center; margin-top: 30px;">
+                <a href="${process.env.NEXTAUTH_URL}/admin" style="display: inline-block; background: #3F9FA3; color: white; padding: 15px 30px; text-decoration: none; border-radius: 12px; font-weight: bold; box-shadow: 0 4px 14px rgba(63,159,163,0.3);">Go to Admin Dashboard</a>
+              </div>
             </div>
           </div>
           `

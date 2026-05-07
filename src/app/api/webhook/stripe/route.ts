@@ -4,6 +4,7 @@ import connectToDatabase from '@/lib/mongodb';
 import User from '@/models/User';
 import ServiceBooking from '@/models/ServiceBooking';
 import Log from '@/models/Log';
+import Voucher from '@/models/Voucher';
 import { headers } from 'next/headers';
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -75,6 +76,18 @@ export async function POST(req: Request) {
                 status: 'pending'
               });
             }
+          }
+
+          // Mark voucher as used if applicable
+          if (metadata.voucherCode) {
+            await Voucher.findOneAndUpdate(
+              { code: metadata.voucherCode.toUpperCase() },
+              { 
+                isUsed: true, 
+                usedBy: user._id, 
+                usedAt: new Date() 
+              }
+            );
           }
           
           await Log.create({ 

@@ -12,7 +12,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const { contentId } = await req.json();
+    const { contentId, voucherCode } = await req.json();
 
     if (!contentId) {
       return NextResponse.json({ message: "Content ID is required" }, { status: 400 });
@@ -33,6 +33,19 @@ export async function POST(req: Request) {
     if (!user.purchasedContent.includes(contentId)) {
       user.purchasedContent.push(contentId);
       await user.save();
+    }
+
+    // Invalidate voucher if provided
+    if (voucherCode) {
+      const Voucher = (await import("@/models/Voucher")).default;
+      await Voucher.findOneAndUpdate(
+        { code: voucherCode.toUpperCase() },
+        { 
+          isUsed: true, 
+          usedBy: user._id, 
+          usedAt: new Date() 
+        }
+      );
     }
 
     return NextResponse.json({ 

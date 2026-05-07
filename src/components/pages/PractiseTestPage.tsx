@@ -374,31 +374,13 @@ const PracticeTests: FC = () => {
     }
 
     setIsBuying(true);
-    try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: [{
-            id: currentTest.testId,
-            title: currentTest.title,
-            price: convertPrice(currentTest.price || 49),
-            type: 'practice-test'
-          }],
-          currency: currency.code
-        }),
-      });
-
-      const data = await response.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error(data.error || 'Failed to create checkout session');
-      }
-    } catch (err: any) {
-      alert(err.message);
-      setIsBuying(false);
-    }
+    addToCart({
+      id: currentTest.testId,
+      title: currentTest.title,
+      price: currentTest.price || 49,
+      type: 'test'
+    });
+    router.push('/cart');
   };
 
   // Start Screen

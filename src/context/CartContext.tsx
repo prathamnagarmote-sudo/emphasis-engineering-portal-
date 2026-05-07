@@ -61,7 +61,7 @@ export const CartProvider: FC<{ children: ReactNode }> = ({ children }) => {
     return items.some(item => item.id === id);
   }, [items]);
 
-  const purchaseItem = useCallback(async (id: string) => {
+  const purchaseItem = useCallback(async (id: string, voucherCode?: string) => {
     if (!session) {
       window.location.href = `/login?callbackUrl=${window.location.pathname}`;
       return;
@@ -71,7 +71,7 @@ export const CartProvider: FC<{ children: ReactNode }> = ({ children }) => {
       const res = await fetch("/api/user/purchase", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contentId: id })
+        body: JSON.stringify({ contentId: id, voucherCode })
       });
       if (res.ok) {
         const data = await res.json();

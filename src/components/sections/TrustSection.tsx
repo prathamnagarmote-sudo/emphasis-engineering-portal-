@@ -106,7 +106,7 @@ const ACCREDITATION_BODIES: AccreditationBody[] = [
   },
   {
     abbr: "NCEES",
-    full: "National Council of Examiners for Engineering and Surveying",
+    full: "National Council of Examiners for Engineering",
     region: "United States",
     flag: "https://flagcdn.com/us.svg",
   },

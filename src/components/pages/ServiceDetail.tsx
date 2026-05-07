@@ -609,42 +609,13 @@ const ServiceDetail: FC = () => {
                         }
                         try {
                           setIsBuying(pkg.id);
-
-                          // Handle free items (price 0)
-                          if (pkg.price === 0) {
-                            const freeRes = await fetch('/api/purchase/free-service', {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({ itemId: pkg.id, itemTitle: `${service.title} – ${pkg.title}` }),
-                            });
-                            
-                            if (freeRes.ok) {
-                              const freeData = await freeRes.json();
-                              router.push(`/payment-success?session_id=free_${freeData.bookingId}&has_service=true`);
-                              return;
-                            }
-                          }
-
-                          const response = await fetch('/api/checkout', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              items: [{
-                                id: pkg.id,
-                                title: `${service.title} – ${pkg.title}`,
-                                price: convertPrice(pkg.price),
-                                type: 'service'
-                              }],
-                              currency: currency.code
-                            }),
+                          addToCart({ 
+                            id: pkg.id, 
+                            title: `${service.title} – ${pkg.title}`, 
+                            price: pkg.price, 
+                            type: 'service' 
                           });
-
-                          const data = await response.json();
-                          if (data.url) {
-                            window.location.href = data.url;
-                          } else {
-                            throw new Error(data.error || 'Failed to create checkout session');
-                          }
+                          router.push('/cart');
                         } catch (err: any) {
                           alert(err.message);
                         } finally {

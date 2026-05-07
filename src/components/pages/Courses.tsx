@@ -181,31 +181,14 @@ const CourseCard: FC<{ course: Course; index: number; onPreview: (c: Course) => 
     }
 
     setIsBuying(true);
-    try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: [{
-            id: course.id,
-            title: course.title,
-            price: convertPrice(course.price),
-            type: 'course'
-          }],
-          currency: currency.code
-        }),
-      });
-
-      const data = await response.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error(data.error || 'Failed to create checkout session');
-      }
-    } catch (err: any) {
-      alert(err.message);
-      setIsBuying(false);
-    }
+    addToCart({ 
+      id: course.id, 
+      title: course.title, 
+      price: course.price, 
+      type: 'course', 
+      thumbnail: course.thumbnail 
+    });
+    router.push('/cart');
   };
 
   return (

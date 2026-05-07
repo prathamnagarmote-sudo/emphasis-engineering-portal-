@@ -14,6 +14,8 @@ const ServiceBookingSchema = new mongoose.Schema({
     whatsapp: String,
     preferredDate: String,
     preferredTime: String,
+    preferredTimeline: String,
+    timezone: String,
     additionalDetails: String,
   },
   meetingLink: String,

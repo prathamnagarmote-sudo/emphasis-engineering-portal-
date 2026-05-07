@@ -17,12 +17,43 @@ const Cart: FC = () => {
   const { data: session } = useSession();
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedDiscount, setAppliedDiscount] = useState<{ value: number, type: string, code: string } | null>(null);
+  const [couponError, setCouponError] = useState('');
+  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
 
   useEffect(() => {
     const handlePageShow = () => setIsCheckingOut(false);
     window.addEventListener('pageshow', handlePageShow);
     return () => window.removeEventListener('pageshow', handlePageShow);
   }, []);
+
+  const validateCoupon = async () => {
+    if (!couponCode) return;
+    setIsValidatingCoupon(true);
+    setCouponError('');
+    try {
+      const res = await fetch('/api/vouchers/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          code: couponCode,
+          type: items.some(i => i.type === 'service') ? 'service' : items.some(i => i.type === 'test') ? 'practice-test' : 'course' 
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAppliedDiscount({ value: data.discountValue, type: data.discountType, code: couponCode });
+        setCouponCode('');
+      } else {
+        setCouponError(data.error || 'Invalid coupon');
+      }
+    } catch (e) {
+      setCouponError('Error validating coupon');
+    } finally {
+      setIsValidatingCoupon(false);
+    }
+  };
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
@@ -35,35 +66,22 @@ const Cart: FC = () => {
     setIsCheckingOut(true);
 
     try {
-      // Handle free items (price 0)
-      if (items.length === 1 && items[0].price === 0) {
-        const item = items[0];
-        if (item.type === 'service') {
-          const freeRes = await fetch('/api/purchase/free-service', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ itemId: item.id, itemTitle: item.title }),
-          });
-          
-          if (freeRes.ok) {
-            const freeData = await freeRes.json();
-            clearCart();
-            router.push(`/payment-success?session_id=free_${freeData.bookingId}&has_service=true`);
-            return;
-          }
-        } else {
-          const freeRes = await fetch('/api/purchase/free', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ itemId: item.id }),
-          });
-          
-          if (freeRes.ok) {
-            clearCart();
-            router.push(`/payment-success?session_id=free_${item.id}`);
-            return;
+      const discountMultiplier = appliedDiscount ? (1 - (appliedDiscount.value / 100)) : 1;
+
+      // Handle free items (price 0) or 100% discount
+      if (totalPrice * discountMultiplier === 0) {
+        for (const item of items) {
+          await purchaseItem(item.id, appliedDiscount?.code);
+          if (item.type === 'service') {
+            await fetch('/api/services/booking/init', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ serviceId: item.id, serviceTitle: item.title })
+            });
           }
         }
+        router.push('/dashboard');
+        return;
       }
 
       const response = await fetch('/api/checkout', {
@@ -73,10 +91,11 @@ const Cart: FC = () => {
           items: items.map(item => ({
             id: item.id,
             title: item.title,
-            price: convertPrice(item.price),
+            price: convertPrice(item.price * discountMultiplier),
             type: item.type
           })),
-          currency: currency.code
+          currency: currency.code,
+          voucherCode: appliedDiscount?.code
         }),
       });
 
@@ -225,32 +244,45 @@ const Cart: FC = () => {
                   <span>Subtotal</span>
                   <span>{formatPrice(totalPrice)}</span>
                 </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Discount</span>
-                  <span className="text-green-600">-$0.00</span>
-                </div>
+                {appliedDiscount && (
+                  <div className="flex justify-between text-green-600 text-sm font-bold">
+                    <span>Discount ({appliedDiscount.code})</span>
+                    <span>-{appliedDiscount.value}%</span>
+                  </div>
+                )}
                 <div className="h-px bg-gray-200" />
                 <div className="flex justify-between text-lg font-bold text-secondary">
                   <span>Total</span>
-                  <span className="text-primary">{formatPrice(totalPrice)}</span>
+                  <span className="text-primary">
+                    {formatPrice(appliedDiscount ? totalPrice * (1 - appliedDiscount.value / 100) : totalPrice)}
+                  </span>
                 </div>
               </div>
 
               {/* Coupon Code */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-secondary mb-2">
-                  Have a coupon?
+                  Have a voucher?
                 </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     placeholder="Enter code"
-                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    className={`flex-1 px-4 py-2 rounded-xl border ${couponError ? 'border-red-500 bg-red-50' : 'border-gray-200'} focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm font-bold`}
                   />
-                  <Button variant="outline" size="sm">
-                    Apply
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={validateCoupon}
+                    disabled={isValidatingCoupon || !couponCode}
+                  >
+                    {isValidatingCoupon ? '...' : 'Apply'}
                   </Button>
                 </div>
+                {couponError && <p className="text-[10px] text-red-500 mt-1 font-bold">{couponError}</p>}
+                {appliedDiscount && <p className="text-[10px] text-green-600 mt-1 font-bold">✓ Voucher applied!</p>}
               </div>
 
               <Button

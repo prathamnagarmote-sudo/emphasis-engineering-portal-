@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { items, currency = 'cad' } = await req.json();
+    const { items, currency = 'cad', voucherCode } = await req.json();
     const origin = req.headers.get('origin') || process.env.NEXTAUTH_URL;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -46,6 +46,7 @@ export async function POST(req: Request) {
           itemIds: JSON.stringify(items.map((i: any) => i.id)),
           itemDetails: JSON.stringify(items.map((i: any) => ({ id: i.id, type: i.type, title: i.title }))),
           hasService: hasService ? 'true' : 'false',
+          voucherCode: voucherCode || '',
         }
       },
       metadata: {
@@ -53,6 +54,7 @@ export async function POST(req: Request) {
         itemIds: JSON.stringify(items.map((i: any) => i.id)),
         itemDetails: JSON.stringify(items.map((i: any) => ({ id: i.id, type: i.type, title: i.title }))),
         hasService: hasService ? 'true' : 'false',
+        voucherCode: voucherCode || '',
       },
     });
 
