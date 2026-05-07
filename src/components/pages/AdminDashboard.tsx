@@ -416,7 +416,7 @@ export default function AdminDashboard() {
                             </td>
                             <td className="px-8 py-6">
                               <div className="font-black text-primary">
-                                ${orders.filter(o => o.userId === user._id).reduce((acc, o) => acc + o.totalAmount, 0).toLocaleString()}
+                                ${orders.filter(o => String(o.userId) === String(user._id)).reduce((acc, o) => acc + o.totalAmount, 0).toLocaleString()}
                               </div>
                             </td>
                             <td className="px-8 py-6 text-gray-500 font-medium">
@@ -425,7 +425,7 @@ export default function AdminDashboard() {
                             <td className="px-8 py-6">
                               <button 
                                 onClick={() => {
-                                  const userBookings = bookings.filter(b => b.userId === user._id);
+                                  const userBookings = bookings.filter(b => String(b.userId) === String(user._id));
                                   setSelectedUserBookings(userBookings.length > 0 ? userBookings : null);
                                   if (userBookings.length === 0) alert("This student hasn't submitted any service intake forms yet.");
                                 }}
@@ -451,7 +451,7 @@ export default function AdminDashboard() {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {bookings.map((booking) => {
-                    const user = users.find(u => u._id === booking.userId);
+                    const user = users.find(u => String(u._id) === String(booking.userId));
                     return (
                       <motion.div 
                         key={booking._id}
@@ -668,8 +668,8 @@ export default function AdminDashboard() {
                     <ShoppingBag className="w-4 h-4 text-primary" /> Purchase History
                   </h4>
                   <div className="space-y-4">
-                    {orders.filter(o => o.userId === selectedUser._id).length > 0 ? (
-                      orders.filter(o => o.userId === selectedUser._id).map((order: any, i: number) => (
+                    {orders.filter(o => String(o.userId) === String(selectedUser._id)).length > 0 ? (
+                      orders.filter(o => String(o.userId) === String(selectedUser._id)).map((order: any, i: number) => (
                         <div key={i} className="p-4 bg-white border border-gray-100 rounded-2xl shadow-sm">
                           <div className="flex justify-between items-start mb-3">
                             <div>
@@ -711,7 +711,7 @@ export default function AdminDashboard() {
                   <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
                     <span className="text-sm font-bold text-gray-500">Total Lifetime Value</span>
                     <span className="text-2xl font-black text-primary">
-                      ${orders.filter(o => o.userId === selectedUser._id).reduce((acc, o) => acc + o.totalAmount, 0).toFixed(2)}
+                      ${orders.filter(o => String(o.userId) === String(selectedUser._id)).reduce((acc, o) => acc + o.totalAmount, 0).toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -720,7 +720,7 @@ export default function AdminDashboard() {
               <div className="p-6 bg-gray-50 border-t border-gray-100">
                 <button 
                   onClick={() => {
-                    const userBookings = bookings.filter(b => b.userId === selectedUser._id);
+                    const userBookings = bookings.filter(b => String(b.userId) === String(selectedUser._id));
                     if (userBookings.length > 0) {
                       setSelectedUserBookings(userBookings);
                       setSelectedUser(null);
