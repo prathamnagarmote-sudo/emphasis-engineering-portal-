@@ -518,7 +518,7 @@ export default function AdminDashboard() {
                   </div>
                 )}
               </div>
-            ) : (
+            ) : activeTab === 'vouchers' ? (
               <div className="space-y-8">
                 {/* Voucher Creation Form */}
                 <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
