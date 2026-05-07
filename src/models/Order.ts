@@ -34,6 +34,7 @@ const OrderSchema = new mongoose.Schema(
     stripeSessionId: {
       type: String,
       unique: true,
+      sparse: true,
     },
     country: String,
   },

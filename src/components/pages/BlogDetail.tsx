@@ -172,8 +172,9 @@ const BlogDetail = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 pb-32">
-        <div className="flex flex-col lg:flex-row gap-20">
-          <aside className="hidden lg:block w-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[64px_1fr] xl:grid-cols-[64px_1fr_288px] gap-10 xl:gap-20">
+          {/* Left Sidebar */}
+          <aside className="hidden lg:block">
             <div className="sticky top-40 flex flex-col items-center gap-6">
               <button onClick={() => alert("Bookmarks feature coming soon!")} className="p-3 rounded-full hover:bg-gray-50 transition-colors text-gray-400 hover:text-[#3F9FA3]" title="Bookmark"><Bookmark className="w-5 h-5" /></button>
               <button onClick={handleCopy} className="p-3 rounded-full hover:bg-gray-50 transition-colors text-gray-400 hover:text-[#3F9FA3]" title={copied ? "Copied!" : "Copy Link"}><Link2 className="w-5 h-5" /></button>
@@ -182,7 +183,8 @@ const BlogDetail = () => {
             </div>
           </aside>
 
-          <article className="flex-1 max-w-3xl mx-auto">
+          {/* Main Content */}
+          <article className="min-w-0">
             <div 
               className="prose prose-lg prose-slate max-w-none prose-headings:text-[#061F33] prose-headings:font-bold prose-p:text-gray-600 prose-p:leading-[1.8] prose-strong:text-[#061F33] prose-a:text-[#3F9FA3] prose-a:no-underline hover:prose-a:underline blog-content"
               dangerouslySetInnerHTML={{ __html: blog.content }}
@@ -204,7 +206,8 @@ const BlogDetail = () => {
             </div>
           </article>
 
-          <aside className="hidden xl:block w-72">
+          {/* Right Sidebar */}
+          <aside className="hidden xl:block">
             <div className="sticky top-40 space-y-12">
               <div>
                 <h5 className="text-xs font-black text-[#061F33] uppercase tracking-[0.2em] mb-6 flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-[#3F9FA3]" />Related Reads</h5>

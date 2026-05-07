@@ -39,27 +39,41 @@ export async function POST(req: Request) {
     });
 
     // 2. Create Order Record
-    await Order.create({
-      userId: user._id,
-      userEmail: user.email,
-      userName: user.name,
-      items: items,
-      totalAmount: 0,
-      currency: 'cad',
-      voucherCode: voucherCode || null,
-      paymentStatus: 'free',
-      country: user.country || 'Unknown'
-    });
+    try {
+      await Order.create({
+        userId: user._id,
+        userEmail: user.email,
+        userName: user.name,
+        items: items.map((i: any) => ({
+          id: i.id,
+          title: i.title,
+          type: i.type,
+          price: i.price
+        })),
+        totalAmount: 0,
+        currency: 'cad',
+        voucherCode: voucherCode || null,
+        paymentStatus: 'free',
+        country: user.country || 'Unknown'
+      });
+    } catch (orderError) {
+      console.error("Order creation failed:", orderError);
+      // Continue anyway or handle accordingly
+    }
 
     // 3. Handle Service Bookings
     for (const item of items) {
       if (item.type === 'service') {
-        await ServiceBooking.create({
-          userId: user._id,
-          serviceId: item.id,
-          serviceTitle: item.title,
-          status: 'pending'
-        });
+        try {
+          await ServiceBooking.create({
+            userId: user._id,
+            serviceId: item.id,
+            serviceTitle: item.title,
+            status: 'pending'
+          });
+        } catch (bookingError) {
+          console.error("Booking creation failed:", bookingError);
+        }
       }
     }
 
