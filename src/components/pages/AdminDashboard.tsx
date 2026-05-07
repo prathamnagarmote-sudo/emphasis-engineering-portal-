@@ -588,7 +588,53 @@ export default function AdminDashboard() {
 
                 {/* Voucher List */}
                 <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                  {/* ... Existing Voucher Table ... */}
+                  <div className="p-6 border-b border-gray-100">
+                    <h2 className="text-lg font-bold text-gray-900 font-display">Existing Vouchers</h2>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm">
+                      <thead className="bg-gray-50 text-gray-500 font-medium">
+                        <tr>
+                          <th className="px-6 py-4">Code</th>
+                          <th className="px-6 py-4">Discount</th>
+                          <th className="px-6 py-4">Type</th>
+                          <th className="px-6 py-4">Status</th>
+                          <th className="px-6 py-4">Created</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {vouchers.length === 0 ? (
+                          <tr>
+                            <td colSpan={5} className="px-6 py-8 text-center text-gray-500 italic">No vouchers generated yet.</td>
+                          </tr>
+                        ) : (
+                          vouchers.map((v) => (
+                            <tr key={v._id} className="hover:bg-gray-50/50">
+                              <td className="px-6 py-4">
+                                <span className="font-black text-secondary bg-gray-100 px-3 py-1 rounded-lg">{v.code}</span>
+                              </td>
+                              <td className="px-6 py-4 font-bold text-primary">-{v.discountValue}%</td>
+                              <td className="px-6 py-4">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                                  {v.type === 'practice-test' ? 'Practice Test' : v.type}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4">
+                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${
+                                  v.isUsed ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'
+                                }`}>
+                                  {v.isUsed ? 'Used' : 'Available'}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 text-gray-400 text-xs">
+                                {new Date(v.createdAt).toLocaleDateString()}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             ) : activeTab === 'orders' ? (
@@ -643,8 +689,8 @@ export default function AdminDashboard() {
                 </div>
               </div>
             ) : (
-              <div className="space-y-8">
-                {/* ... Vouchers ... */}
+              <div className="bg-white p-12 text-center text-gray-400">
+                Unknown Tab Selected
               </div>
             )}
           </div>
