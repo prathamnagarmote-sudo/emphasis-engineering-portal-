@@ -213,7 +213,7 @@ function PaymentSuccessContent() {
                   </div>
                 )}
               </div>
-            ) : hasService ? (
+            ) : (
               <div className="bg-white border border-gray-100 rounded-[32px] p-12 text-center">
                 <h3 className="text-xl font-bold text-secondary mb-2">Purchase Finalized</h3>
                 <p className="text-sm text-gray-400 mb-6">Your purchase has been securely processed. The intake form will appear in your dashboard shortly.</p>
