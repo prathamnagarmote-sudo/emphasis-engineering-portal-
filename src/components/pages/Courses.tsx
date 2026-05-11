@@ -435,8 +435,6 @@ const HowItWorksSection: FC = () => (
    SECTION: MENTOR VIDEO  ← dark bg
 ═══════════════════════════════════════ */
 const MentorVideoSection: FC = () => {
-  const [playing, setPlaying] = useState(false);
-
   return (
     <section className="py-24 bg-[#061F33] relative overflow-hidden">
       <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-primary/10 blur-[130px] rounded-full pointer-events-none" />
@@ -502,54 +500,35 @@ const MentorVideoSection: FC = () => {
           className="relative"
         >
           <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-video bg-[#061F33]">
-            {playing ? (
-              <iframe
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
-                allow="autoplay; fullscreen"
-                allowFullScreen
-              />
-            ) : (
-              <>
+            <img
+              decoding="async"
+              src="https://res.cloudinary.com/dwk1cnlw2/image/upload/f_auto,q_auto,w_800/v1776348873/photo-1581092160607-ee22621dd758_sdbfrr.jpg"
+              alt="Dr. Maxwell Oyom"
+              className="w-full h-full object-cover brightness-50"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#061F33]/80 via-transparent to-transparent" />
+
+            {/* Video coming soon placeholder text */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+              <div className="text-center">
+                <p className="text-white font-semibold text-sm">Why Our Courses Work</p>
+                <p className="text-gray-400 text-xs">Video message coming soon</p>
+              </div>
+            </div>
+
+            <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="flex items-center gap-3">
                 <img
-                  decoding="async"
-                  src="https://res.cloudinary.com/dwk1cnlw2/image/upload/f_auto,q_auto,w_800/v1776348873/photo-1581092160607-ee22621dd758_sdbfrr.jpg"
-                  alt="Dr. Maxwell Oyom"
-                  className="w-full h-full object-cover brightness-50"
+                  src="https://res.cloudinary.com/dwk1cnlw2/image/upload/f_auto,q_auto,w_80/v1776348635/Chartered-Engineer-2.jpg_jrvafx.webp"
+                  className="w-10 h-10 rounded-full border-2 border-primary object-cover"
+                  alt="Dr. Maxwell"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#061F33]/80 via-transparent to-transparent" />
-
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <motion.button
-                    whileHover={{ scale: 1.08 }}
-                    whileTap={{ scale: 0.96 }}
-                    onClick={() => setPlaying(true)}
-                    className="relative w-20 h-20 rounded-full bg-primary flex items-center justify-center shadow-2xl shadow-primary/50"
-                  >
-                    <span className="absolute inset-0 rounded-full bg-primary/40 animate-ping" />
-                    <Play className="w-8 h-8 text-white ml-1 relative z-10" />
-                  </motion.button>
-                  <div className="text-center">
-                    <p className="text-white font-semibold text-sm">Why Our Courses Work</p>
-                    <p className="text-gray-400 text-xs">4 min message from Maxwell Oyom</p>
-                  </div>
+                <div>
+                  <div className="text-white font-semibold text-sm">Maxwell Oyom</div>
+                  <div className="text-gray-400 text-xs"> Lead Instructor</div>
                 </div>
-
-                <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/80 to-transparent">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src="https://res.cloudinary.com/dwk1cnlw2/image/upload/f_auto,q_auto,w_80/v1776348635/Chartered-Engineer-2.jpg_jrvafx.webp"
-                      className="w-10 h-10 rounded-full border-2 border-primary object-cover"
-                      alt="Dr. Maxwell"
-                    />
-                    <div>
-                      <div className="text-white font-semibold text-sm">Maxwell Oyom</div>
-                      <div className="text-gray-400 text-xs"> Lead Instructor</div>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
+              </div>
+            </div>
           </div>
 
           <motion.div

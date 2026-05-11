@@ -497,7 +497,7 @@ const About: FC = () => {
 
                     {/* Content Card */}
                     <div
-                      className={`w-full pl-20 md:pl-0 md:w-1/2 ${isEven ? "md:pr-16 md:text-right" : "md:pl-16 md:text-left"
+                      className={`w-full pl-20 md:pl-0 md:w-1/2 ${isEven ? "md:pl-16 md:text-left" : "md:pr-16 md:text-right"
                         }`}
                     >
                       <span className="text-3xl font-display font-bold text-[#3F9FA3] block mb-2">

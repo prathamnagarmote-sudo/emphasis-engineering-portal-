@@ -8,11 +8,11 @@ import { ArrowRight, CheckCircle2, Globe2, Award, Users } from "lucide-react";
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
 const TRUST_ORGS = [
-  { name: "IET", full: "Institution of Engineering & Technology" },
-  { name: "ICE", full: "Institution of Civil Engineers" },
-  { name: "IMechE", full: "Institution of Mechanical Engineers" },
-  { name: "NCEES", full: "National Council of Examiners for Engineering" },
-  { name: "PEO", full: "Professional Engineers Ontario" },
+  { name: "IET", full: "Institution of Engineering & Technology", url: "https://www.theiet.org/" },
+  { name: "ICE", full: "Institution of Civil Engineers", url: "https://www.ice.org.uk/" },
+  { name: "IMechE", full: "Institution of Mechanical Engineers", url: "https://www.imeche.org/" },
+  { name: "NCEES", full: "National Council of Examiners for Engineering", url: "https://ncees.org/" },
+  { name: "PEO", full: "Professional Engineers Ontario", url: "https://www.peo.on.ca/" },
 ];
 
 const STATS = [
@@ -313,9 +313,13 @@ const TrustBadge: FC<{
   name: string;
   full: string;
   delay: number;
-}> = ({ name, full, delay }) => (
-  <motion.div
-    className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl"
+  url: string;
+}> = ({ name, full, delay, url }) => (
+  <motion.a
+    href={url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl transition-all duration-300 hover:bg-white/10 hover:border-white/30 hover:-translate-y-0.5 cursor-pointer"
     style={{
       background: "rgba(255,255,255,0.055)",
       border: "1px solid rgba(255,255,255,0.10)",
@@ -339,7 +343,7 @@ const TrustBadge: FC<{
         {full}
       </span>
     </div>
-  </motion.div>
+  </motion.a>
 );
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
@@ -583,6 +587,7 @@ const Hero: FC = () => {
                   key={org.name}
                   name={org.name}
                   full={org.full}
+                  url={org.url}
                   delay={0.72 + i * 0.07}
                 />
               ))}

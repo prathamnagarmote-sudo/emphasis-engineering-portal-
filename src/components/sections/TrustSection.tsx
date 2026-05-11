@@ -33,6 +33,7 @@ interface AccreditationBody {
   full: string;
   region: string;
   flag: string;
+  url: string;
 }
 
 interface FeaturePoint {
@@ -91,30 +92,35 @@ const ACCREDITATION_BODIES: AccreditationBody[] = [
     full: "Institution of Engineering & Technology",
     region: "United Kingdom",
     flag: "https://flagcdn.com/gb.svg",
+    url: "https://www.theiet.org/",
   },
   {
     abbr: "ICE",
     full: "Institution of Civil Engineers",
     region: "United Kingdom",
     flag: "https://flagcdn.com/gb.svg",
+    url: "https://www.ice.org.uk/",
   },
   {
     abbr: "IMechE",
     full: "Institution of Mechanical Engineers",
     region: "United Kingdom",
     flag: "https://flagcdn.com/gb.svg",
+    url: "https://www.imeche.org/",
   },
   {
     abbr: "NCEES",
     full: "National Council of Examiners for Engineering",
     region: "United States",
     flag: "https://flagcdn.com/us.svg",
+    url: "https://ncees.org/",
   },
   {
     abbr: "PEO",
     full: "Professional Engineers Ontario",
     region: "Canada",
     flag: "https://flagcdn.com/ca.svg",
+    url: "https://www.peo.on.ca/",
   },
 ];
 
@@ -346,10 +352,14 @@ const AccreditationItem: FC<AccreditationBody & { delay: number }> = ({
   region,
   flag,
   delay,
+  url,
 }) => (
-  <motion.div
+  <motion.a
+    href={url}
+    target="_blank"
+    rel="noopener noreferrer"
     {...fadeUp(delay)}
-    className="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300"
+    className="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-[#3F9FA3]/30 cursor-pointer"
     style={{
       background: "#ffffff",
       border: "1.5px solid #e8eef2",
@@ -404,7 +414,7 @@ const AccreditationItem: FC<AccreditationBody & { delay: number }> = ({
       strokeWidth={2}
       className="flex-shrink-0"
     />
-  </motion.div>
+  </motion.a>
 );
 
 // ─── FEATURE POINT ────────────────────────────────────────────────────────────
