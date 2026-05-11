@@ -51,11 +51,11 @@ const NAV_GROUPS = [
   {
     heading: "Licensing Pathways",
     links: [
-      { label: "UK CEng (IMechE)", href: "/courses" },
-      { label: "UK CEng (IET)",    href: "/courses" },
-      { label: "UK MICE (ICE)",    href: "/courses" },
-      { label: "Canadian P.Eng",   href: "/courses" },
-      { label: "US PE (NCEES)",    href: "/courses" },
+      { label: "UK CEng (IMechE)", href: "https://www.imeche.org/" },
+      { label: "UK CEng (IET)",    href: "https://www.theiet.org/" },
+      { label: "UK MICE (ICE)",    href: "https://www.ice.org.uk/" },
+      { label: "Canadian P.Eng",   href: "https://www.peo.on.ca/" },
+      { label: "US PE (NCEES)",    href: "https://ncees.org/" },
     ],
   },
   {
@@ -87,7 +87,13 @@ const SOCIAL = [
   { Icon: XIcon,     href: "https://x.com/EmphasisEngr",                                     label: "X" },
 ];
 
-const TRUST_BADGES = ["IET", "IMechE", "ICE", "NCEES", "PEO"];
+const INSTITUTIONS = [
+  { label: "IET", fullName: "Institution of Engineering & Technology", href: "https://www.theiet.org/" },
+  { label: "ICE", fullName: "Institution of Civil Engineers", href: "https://www.ice.org.uk/" },
+  { label: "IMechE", fullName: "Institution of Mechanical Engineers", href: "https://www.imeche.org/" },
+  { label: "NCEES", fullName: "NCEES (FE/PE Exams)", href: "https://ncees.org/" },
+  { label: "PEO", fullName: "Professional Engineers Ontario", href: "https://www.peo.on.ca/" }
+];
 
 
 // ─── Mobile accordion group ────────────────────────────────────────────────────
@@ -115,7 +121,7 @@ const MobileGroup: FC<{ heading: string; links: { label: string; href: string }[
           >
             {links.map((l) => (
               <li key={l.label}>
-                <Link href={l.href} className="text-gray-400 hover:text-primary text-sm transition-colors block py-0.5">
+                <Link href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} className="text-gray-400 hover:text-primary text-sm transition-colors block py-0.5">
                   {l.label}
                 </Link>
               </li>
@@ -218,6 +224,8 @@ const Footer: FC = () => {
                     <li key={l.label}>
                       <Link
                         href={l.href}
+                        target={l.href.startsWith('http') ? '_blank' : undefined}
+                        rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                         className="text-gray-400 hover:text-primary text-sm transition-colors hover:translate-x-0.5 inline-block"
                       >
                         {l.label}
@@ -243,16 +251,23 @@ const Footer: FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
             <span className="text-gray-500 text-xs uppercase tracking-[0.2em] shrink-0">
-              Trusted by engineers from
+              Official Institutions
             </span>
-            {TRUST_BADGES.map((badge) => (
-              <div
-                key={badge}
-                className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-white/4 border border-white/8"
+            {INSTITUTIONS.map((inst) => (
+              <motion.a
+                key={inst.label}
+                href={inst.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.08)" }}
+                className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-white/4 border border-white/8 group transition-all"
               >
                 <CheckCircle className="w-3.5 h-3.5 text-primary shrink-0" />
-                <span className="text-gray-300 text-xs font-semibold">{badge}</span>
-              </div>
+                <div className="flex flex-col">
+                  <span className="text-gray-200 text-[11px] font-bold group-hover:text-primary transition-colors">{inst.label}</span>
+                  <span className="text-[9px] text-gray-500 font-medium whitespace-nowrap">{inst.fullName}</span>
+                </div>
+              </motion.a>
             ))}
           </div>
         </div>

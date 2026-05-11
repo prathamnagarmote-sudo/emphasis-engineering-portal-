@@ -37,6 +37,7 @@ const ROADMAPS = [
     title: "UK CEng Practice",
     flag: "https://flagcdn.com/gb.svg",
     timeline: "2–4 weeks",
+    officialLink: "https://www.theiet.org/",
     steps: [
       { label: "Complete baseline assessment test", covered: true },
       { label: "Identify weak competency areas", covered: true },
@@ -49,6 +50,7 @@ const ROADMAPS = [
     title: "ICE MICE Practice",
     flag: "🏗️",
     timeline: "3–5 weeks",
+    officialLink: "https://www.ice.org.uk/",
     steps: [
       { label: "Technical knowledge baseline test", covered: true },
       { label: "Competency evidence mapping", covered: true },
@@ -61,6 +63,7 @@ const ROADMAPS = [
     title: "Canadian P.Eng Practice",
     flag: "https://flagcdn.com/ca.svg",
     timeline: "4–6 weeks",
+    officialLink: "https://www.peo.on.ca/",
     steps: [
       { label: "NPPE diagnostic test", covered: true },
       { label: "Work experience verification prep", covered: true },
@@ -628,9 +631,21 @@ const RoadmapSection: FC = () => {
               </div>
 
               <div className="mt-6 pt-5 border-t border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <TrendingUp className="w-4 h-4 text-green-500" />
-                  100% pass rate following this sequence
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <TrendingUp className="w-4 h-4 text-green-500" />
+                    100% pass rate following this sequence
+                  </div>
+                  {ROADMAPS[active].officialLink && (
+                    <a 
+                      href={ROADMAPS[active].officialLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[10px] text-primary hover:underline font-bold mt-1"
+                    >
+                      Visit Official Site →
+                    </a>
+                  )}
                 </div>
                 <Link href="#tests">
                   <motion.div

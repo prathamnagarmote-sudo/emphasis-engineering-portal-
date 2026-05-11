@@ -44,7 +44,7 @@ const timezones = [
 const countryCodes = [
   { code: '+44', country: 'UK' },
   { code: '+1', country: 'USA' },
-  { code: '+1 ', country: 'Canada' },
+  { code: '+1', country: 'Canada' },
   { code: '+91', country: 'India' },
   { code: '+971', country: 'UAE' },
   { code: '+966', country: 'Saudi Arabia' },
@@ -178,7 +178,7 @@ const countryCodes = [
   { code: '+266', country: 'Lesotho' },
   { code: '+268', country: 'Eswatini' },
   { code: '+265', country: 'Malawi' },
-  { code: '+2Mozambique', country: '258' },
+  { code: '+258', country: 'Mozambique' },
   { code: '+261', country: 'Madagascar' },
   { code: '+230', country: 'Mauritius' },
   { code: '+248', country: 'Seychelles' },
@@ -219,25 +219,36 @@ const countryCodes = [
   { code: '+56', country: 'Chile' },
   { code: '+54', country: 'Argentina' },
   { code: '+679', country: 'Fiji' },
-  { code: '+6Papua New Guinea', country: '675' },
-  { code: '+6 Solomon Islands', country: '677' },
-  { code: '+6 Vanuatu', country: '678' },
-  { code: '+6 Samoa', country: '685' },
-  { code: '+6 Tonga', country: '676' },
-  { code: '+6 Kiribati', country: '686' },
-  { code: '+6 Tuvalu', country: '688' },
-  { code: '+6 Nauru', country: '674' },
-  { code: '+6 Marshall Islands', country: '692' },
-  { code: '+6 Palau', country: '680' },
-  { code: '+6 Micronesia', country: '691' },
+  { code: '+675', country: 'Papua New Guinea' },
+  { code: '+677', country: 'Solomon Islands' },
+  { code: '+678', country: 'Vanuatu' },
+  { code: '+685', country: 'Samoa' },
+  { code: '+676', country: 'Tonga' },
+  { code: '+686', country: 'Kiribati' },
+  { code: '+688', country: 'Tuvalu' },
+  { code: '+674', country: 'Nauru' },
+  { code: '+692', country: 'Marshall Islands' },
+  { code: '+680', country: 'Palau' },
+  { code: '+691', country: 'Micronesia' },
 ].sort((a, b) => a.country.localeCompare(b.country));
 
 const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuccess }) => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchQueryCode, setSearchQueryCode] = useState('');
+  const [searchQueryWA, setSearchQueryWA] = useState('');
+  const [searchQueryCountry, setSearchQueryCountry] = useState('');
+  
   const [showTimezoneList, setShowTimezoneList] = useState(false);
+  const [showCodeList, setShowCodeList] = useState(false);
+  const [showWAList, setShowWAList] = useState(false);
+  const [showCountryList, setShowCountryList] = useState(false);
+
   const timezoneRef = useRef<HTMLDivElement>(null);
+  const codeRef = useRef<HTMLDivElement>(null);
+  const waRef = useRef<HTMLDivElement>(null);
+  const countryRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -257,9 +268,11 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (timezoneRef.current && !timezoneRef.current.contains(event.target as Node)) {
-        setShowTimezoneList(false);
-      }
+      const target = event.target as Node;
+      if (timezoneRef.current && !timezoneRef.current.contains(target)) setShowTimezoneList(false);
+      if (codeRef.current && !codeRef.current.contains(target)) setShowCodeList(false);
+      if (waRef.current && !waRef.current.contains(target)) setShowWAList(false);
+      if (countryRef.current && !countryRef.current.contains(target)) setShowCountryList(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -268,6 +281,20 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
   const filteredTimezones = timezones.filter(tz => 
     tz.label.toLowerCase().includes(searchQuery.toLowerCase()) || 
     tz.value.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredCodes = countryCodes.filter(c => 
+    c.country.toLowerCase().includes(searchQueryCode.toLowerCase()) || 
+    c.code.includes(searchQueryCode)
+  );
+
+  const filteredWAs = countryCodes.filter(c => 
+    c.country.toLowerCase().includes(searchQueryWA.toLowerCase()) || 
+    c.code.includes(searchQueryWA)
+  );
+
+  const filteredCountries = countryCodes.filter(c => 
+    c.country.toLowerCase().includes(searchQueryCountry.toLowerCase())
   );
 
   const handleNext = (e?: React.FormEvent) => {
@@ -444,46 +471,124 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                   <div className="space-y-4">
                     <div className="flex flex-col gap-2">
                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Phone Number</label>
-                       <div className="flex border border-gray-100 rounded-2xl bg-gray-50/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all overflow-hidden">
-                        <select 
-                          className="px-3 py-4 bg-transparent border-r border-gray-100 outline-none font-bold text-[10px] appearance-none min-w-[90px] cursor-pointer"
-                          value={formData.phonePrefix}
-                          onChange={(e) => setFormData({ ...formData, phonePrefix: e.target.value })}
-                        >
-                          {countryCodes.map(c => (
-                            <option key={`${c.country}-${c.code}`} value={c.code}>{c.code} ({c.country})</option>
-                          ))}
-                        </select>
-                        <input
-                          required
-                          type="tel"
-                          placeholder="Number"
-                          className="flex-1 px-4 py-4 bg-transparent outline-none font-semibold text-sm min-w-0"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        />
-                      </div>
+                        <div className="flex border border-gray-100 rounded-2xl bg-gray-50/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all overflow-hidden relative">
+                          {/* Searchable Code Dropdown */}
+                          <div className="relative border-r border-gray-100" ref={codeRef}>
+                            <button
+                              type="button"
+                              onClick={() => setShowCodeList(!showCodeList)}
+                              className="px-3 py-4 bg-transparent outline-none font-bold text-[10px] min-w-[90px] flex items-center justify-between gap-1 h-full"
+                            >
+                              <span>{formData.phonePrefix}</span>
+                              <ChevronDown className={`w-3 h-3 transition-transform ${showCodeList ? 'rotate-180' : ''}`} />
+                            </button>
+
+                            <AnimatePresence>
+                              {showCodeList && (
+                                <motion.div 
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{ opacity: 0, y: 10 }}
+                                  className="absolute z-50 left-0 mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden max-h-60 overflow-y-auto"
+                                >
+                                  <div className="sticky top-0 bg-white p-2 border-b border-gray-50">
+                                    <input 
+                                      type="text"
+                                      placeholder="Search code..."
+                                      className="w-full px-3 py-1.5 bg-gray-50 rounded-lg text-[10px] outline-none"
+                                      value={searchQueryCode}
+                                      onChange={(e) => setSearchQueryCode(e.target.value)}
+                                      autoFocus
+                                    />
+                                  </div>
+                                  {filteredCodes.map(c => (
+                                    <div 
+                                      key={`${c.country}-${c.code}`}
+                                      onClick={() => {
+                                        setFormData({ ...formData, phonePrefix: c.code });
+                                        setShowCodeList(false);
+                                        setSearchQueryCode('');
+                                      }}
+                                      className="px-3 py-2 hover:bg-primary/5 cursor-pointer flex items-center justify-between group"
+                                    >
+                                      <span className="text-[10px] font-bold text-gray-600 group-hover:text-primary">{c.code}</span>
+                                      <span className="text-[9px] text-gray-400">{c.country}</span>
+                                    </div>
+                                  ))}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                          
+                          <input
+                            required
+                            type="tel"
+                            placeholder="Number"
+                            className="flex-1 px-4 py-4 bg-transparent outline-none font-semibold text-sm min-w-0"
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          />
+                        </div>
                     </div>
                     <div className="flex flex-col gap-2">
                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">WhatsApp (Optional)</label>
-                       <div className="flex border border-gray-100 rounded-2xl bg-gray-50/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all overflow-hidden">
-                        <select 
-                          className="px-3 py-4 bg-transparent border-r border-gray-100 outline-none font-bold text-[10px] appearance-none min-w-[90px] cursor-pointer"
-                          value={formData.whatsappPrefix}
-                          onChange={(e) => setFormData({ ...formData, whatsappPrefix: e.target.value })}
-                        >
-                          {countryCodes.map(c => (
-                            <option key={`${c.country}-${c.code}-wa`} value={c.code}>{c.code} ({c.country})</option>
-                          ))}
-                        </select>
-                        <input
-                          type="tel"
-                          placeholder="WhatsApp Number"
-                          className="flex-1 px-4 py-4 bg-transparent outline-none font-semibold text-sm min-w-0"
-                          value={formData.whatsapp}
-                          onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                        />
-                      </div>
+                        <div className="flex border border-gray-100 rounded-2xl bg-gray-50/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all overflow-hidden relative">
+                          {/* Searchable WhatsApp Code Dropdown */}
+                          <div className="relative border-r border-gray-100" ref={waRef}>
+                            <button
+                              type="button"
+                              onClick={() => setShowWAList(!showWAList)}
+                              className="px-3 py-4 bg-transparent outline-none font-bold text-[10px] min-w-[90px] flex items-center justify-between gap-1 h-full"
+                            >
+                              <span>{formData.whatsappPrefix}</span>
+                              <ChevronDown className={`w-3 h-3 transition-transform ${showWAList ? 'rotate-180' : ''}`} />
+                            </button>
+
+                            <AnimatePresence>
+                              {showWAList && (
+                                <motion.div 
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{ opacity: 0, y: 10 }}
+                                  className="absolute z-50 left-0 mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden max-h-60 overflow-y-auto"
+                                >
+                                  <div className="sticky top-0 bg-white p-2 border-b border-gray-50">
+                                    <input 
+                                      type="text"
+                                      placeholder="Search code..."
+                                      className="w-full px-3 py-1.5 bg-gray-50 rounded-lg text-[10px] outline-none"
+                                      value={searchQueryWA}
+                                      onChange={(e) => setSearchQueryWA(e.target.value)}
+                                      autoFocus
+                                    />
+                                  </div>
+                                  {filteredWAs.map(c => (
+                                    <div 
+                                      key={`${c.country}-${c.code}-wa`}
+                                      onClick={() => {
+                                        setFormData({ ...formData, whatsappPrefix: c.code });
+                                        setShowWAList(false);
+                                        setSearchQueryWA('');
+                                      }}
+                                      className="px-3 py-2 hover:bg-primary/5 cursor-pointer flex items-center justify-between group"
+                                    >
+                                      <span className="text-[10px] font-bold text-gray-600 group-hover:text-primary">{c.code}</span>
+                                      <span className="text-[9px] text-gray-400">{c.country}</span>
+                                    </div>
+                                  ))}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+
+                          <input
+                            type="tel"
+                            placeholder="WhatsApp Number"
+                            className="flex-1 px-4 py-4 bg-transparent outline-none font-semibold text-sm min-w-0"
+                            value={formData.whatsapp}
+                            onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+                          />
+                        </div>
                     </div>
                   </div>
                 </div>
@@ -517,16 +622,55 @@ const ServiceIntakeForm: FC<IntakeFormProps> = ({ bookingId, serviceTitle, onSuc
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                       />
                     </div>
-                    <div className="relative">
-                      <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
-                      <input
-                        required
-                        type="text"
-                        placeholder="Country"
-                        className="w-full pl-12 pr-4 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold text-sm"
-                        value={formData.country}
-                        onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                      />
+                    <div className="relative" ref={countryRef}>
+                      <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary z-10" />
+                      <div 
+                        onClick={() => setShowCountryList(!showCountryList)}
+                        className="w-full pl-12 pr-10 py-4 bg-gray-50/50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary/20 outline-none transition-all font-semibold cursor-pointer flex items-center justify-between"
+                      >
+                        <span className={`text-sm ${formData.country ? 'text-secondary' : 'text-gray-400'}`}>
+                          {formData.country || 'Select Country *'}
+                        </span>
+                        <ChevronDown className={`w-4 h-4 transition-all ${showCountryList ? 'rotate-180 text-primary' : 'text-gray-400'}`} />
+                      </div>
+
+                      <AnimatePresence>
+                        {showCountryList && (
+                          <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            className="absolute z-50 left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden max-h-60 overflow-y-auto"
+                          >
+                            <div className="sticky top-0 bg-white p-3 border-b border-gray-50">
+                              <div className="relative">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                                <input 
+                                  type="text"
+                                  placeholder="Search country..."
+                                  className="w-full pl-9 pr-4 py-2 bg-gray-50 rounded-xl text-xs outline-none"
+                                  value={searchQueryCountry}
+                                  onChange={(e) => setSearchQueryCountry(e.target.value)}
+                                  autoFocus
+                                />
+                              </div>
+                            </div>
+                            {filteredCountries.map((c) => (
+                              <div 
+                                key={c.country}
+                                onClick={() => {
+                                  setFormData({ ...formData, country: c.country });
+                                  setShowCountryList(false);
+                                  setSearchQueryCountry('');
+                                }}
+                                className="px-4 py-3 hover:bg-primary/5 cursor-pointer flex items-center group"
+                              >
+                                <span className="text-xs font-semibold text-gray-600 group-hover:text-primary">{c.country}</span>
+                              </div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </div>
 

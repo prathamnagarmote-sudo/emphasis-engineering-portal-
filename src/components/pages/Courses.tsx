@@ -75,6 +75,7 @@ const ROADMAPS = [
     title: "UK CEng (IMechE / IET)",
     flag: "https://flagcdn.com/gb.svg",
     timeline: "6–18 months",
+    officialLink: "https://www.theiet.org/",
     steps: [
       { label: "Academic qualification check", covered: true },
       { label: "Initial Professional Development (IPD)", covered: true },
@@ -87,6 +88,7 @@ const ROADMAPS = [
     title: "ICE MICE",
     flag: "🏗️",
     timeline: "8–14 months",
+    officialLink: "https://www.ice.org.uk/",
     steps: [
       { label: "Academic accreditation review", covered: true },
       { label: "Experience & competency mapping", covered: true },
@@ -99,12 +101,13 @@ const ROADMAPS = [
     title: "Canadian P.Eng",
     flag: "https://flagcdn.com/ca.svg",
     timeline: "12–24 months",
+    officialLink: "https://www.peo.on.ca/",
     steps: [
-      { label: "Academic credential assessment", covered: true },
-      { label: "Work experience verification (4 yrs)", covered: true },
-      { label: "Technical Exam (NPPE)", covered: true },
-      { label: "Good Character References", covered: false },
-      { label: "P.Eng License granted", covered: false },
+      { label: "WES Assessment / Credentialing", covered: true },
+      { label: "Competency-Based Assessment (CBA)", covered: true },
+      { label: "NPPE Ethics & Law Exam", covered: true },
+      { label: "Experience verification", covered: true },
+      { label: "P.Eng Registration", covered: false },
     ],
   },
 ];
@@ -658,9 +661,21 @@ const RoadmapSection: FC = () => {
               </div>
 
               <div className="mt-6 pt-5 border-t border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <TrendingUp className="w-4 h-4 text-green-500" />
-                  100% pass rate on first attempt
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <TrendingUp className="w-4 h-4 text-green-500" />
+                    100% pass rate on first attempt
+                  </div>
+                  {ROADMAPS[active].officialLink && (
+                    <a 
+                      href={ROADMAPS[active].officialLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[10px] text-primary hover:underline font-bold mt-1"
+                    >
+                      Visit Official Site →
+                    </a>
+                  )}
                 </div>
                 <Link href="#courses">
                   <motion.div

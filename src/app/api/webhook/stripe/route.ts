@@ -33,6 +33,13 @@ export async function POST(req: Request) {
 
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      
+      // Log every event type for health monitoring
+      await Log.create({
+        type: 'webhook',
+        message: `RECEIVED EVENT: ${event.type.toUpperCase()}`,
+        details: { id: event.id }
+      });
     } catch (err: any) {
       await Log.create({ 
         type: 'error', 
