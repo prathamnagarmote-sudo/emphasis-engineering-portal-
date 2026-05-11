@@ -18,6 +18,7 @@ function PaymentSuccessContent() {
   const [loading, setLoading] = useState(true);
   const [pendingBooking, setPendingBooking] = useState<any>(null);
   const [showForm, setShowForm] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -136,7 +137,23 @@ function PaymentSuccessContent() {
 
         {hasService ? (
           <div className="space-y-8">
-            {pendingBooking ? (
+            {isSubmitted ? (
+              <div className="bg-green-50/50 border border-green-100 rounded-[32px] p-8 md:p-12 text-center">
+                <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-green-500/20">
+                  <CheckCircle className="w-10 h-10 text-white" />
+                </div>
+                <h3 className="text-2xl font-black text-green-900 mb-4">Booking Scheduled!</h3>
+                <p className="text-green-700 font-medium leading-relaxed max-w-md mx-auto mb-10">
+                  We've received your details. Our lead instructor will review them and reach out within 24 hours with your personal meeting link.
+                </p>
+                <Link href="/dashboard" className="block">
+                  <Button className="w-full py-4 text-base" variant="primary">
+                    Go to Dashboard
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
+              </div>
+            ) : pendingBooking ? (
               <div className="space-y-8">
                 {!showForm ? (
                   <div className="space-y-6">
@@ -188,38 +205,30 @@ function PaymentSuccessContent() {
                     <ServiceIntakeForm 
                       bookingId={pendingBooking._id} 
                       serviceTitle={pendingBooking.serviceTitle}
-                      onSuccess={() => setPendingBooking(null)}
+                      onSuccess={() => {
+                        setPendingBooking(null);
+                        setIsSubmitted(true);
+                      }}
                     />
                   </div>
                 )}
               </div>
             ) : hasService ? (
               <div className="bg-white border border-gray-100 rounded-[32px] p-12 text-center">
-                <Loader2 className="w-10 h-10 text-primary animate-spin mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-secondary mb-2">Finalizing your purchase...</h3>
-                <p className="text-sm text-gray-400">Please wait while we set up your service booking. This usually takes a few seconds.</p>
-                <button 
-                  onClick={() => window.location.reload()}
-                  className="mt-6 text-xs font-bold text-primary hover:underline uppercase tracking-widest"
-                >
-                  Refresh Page
-                </button>
-              </div>
-            ) : (
-              <div className="bg-green-50/50 border border-green-100 rounded-[32px] p-8 md:p-12 text-center">
-                <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-green-500/20">
-                  <CheckCircle className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-2xl font-black text-green-900 mb-4">Booking Scheduled!</h3>
-                <p className="text-green-700 font-medium leading-relaxed max-w-md mx-auto mb-10">
-                  We've received your details. Our lead instructor will review them and reach out within 24 hours with your personal meeting link.
-                </p>
+                <h3 className="text-xl font-bold text-secondary mb-2">Purchase Finalized</h3>
+                <p className="text-sm text-gray-400 mb-6">Your purchase has been securely processed. The intake form will appear in your dashboard shortly.</p>
                 <Link href="/dashboard" className="block">
                   <Button className="w-full py-4 text-base" variant="primary">
                     Go to Dashboard
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
+                <button 
+                  onClick={() => window.location.reload()}
+                  className="mt-6 text-xs font-bold text-primary hover:underline uppercase tracking-widest"
+                >
+                  Refresh Page
+                </button>
               </div>
             )}
           </div>

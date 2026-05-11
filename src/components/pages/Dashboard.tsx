@@ -88,7 +88,7 @@ export default function Dashboard() {
 
     // Services (Each booking is a separate entry)
     const serviceEntries = bookings.map(booking => {
-      const parentService = dbData.services.find(s => s.services?.some((pkg: any) => (pkg.serviceId || pkg.id) === booking.serviceId));
+      const parentService = dbData.services.find(s => s.packages?.some((pkg: any) => (pkg.serviceId || pkg.id) === booking.serviceId));
       return {
         ...booking,
         id: booking._id,

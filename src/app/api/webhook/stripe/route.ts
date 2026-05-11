@@ -68,27 +68,35 @@ export async function POST(req: Request) {
           });
 
           // Create an Order record for accurate revenue tracking
-          await Order.create({
-            userId: user._id,
-            userEmail: user.email,
-            userName: user.name,
-            items: itemDetails,
-            totalAmount: session.amount_total ? session.amount_total / 100 : 0,
-            currency: session.currency || 'cad',
-            voucherCode: metadata.voucherCode || null,
-            stripeSessionId: session.id,
-            country: user.country || 'Unknown'
-          });
+          try {
+            await Order.create({
+              userId: user._id,
+              userEmail: user.email,
+              userName: user.name,
+              items: itemDetails,
+              totalAmount: session.amount_total ? session.amount_total / 100 : 0,
+              currency: session.currency || 'cad',
+              voucherCode: metadata.voucherCode || null,
+              stripeSessionId: session.id,
+              country: user.country || 'Unknown'
+            });
+          } catch (orderErr) {
+            console.error('Order creation failed:', orderErr);
+          }
 
           // Handle Service Bookings
           for (const item of itemDetails) {
             if (item.type === 'service') {
-              await ServiceBooking.create({
-                userId: user._id,
-                serviceId: item.id,
-                serviceTitle: item.title,
-                status: 'pending'
-              });
+              try {
+                await ServiceBooking.create({
+                  userId: user._id,
+                  serviceId: item.id,
+                  serviceTitle: item.title,
+                  status: 'pending'
+                });
+              } catch (bookingErr) {
+                console.error('Service Booking creation failed:', bookingErr);
+              }
             }
           }
 
