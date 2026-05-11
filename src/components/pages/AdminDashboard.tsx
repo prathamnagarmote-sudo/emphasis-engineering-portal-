@@ -109,6 +109,7 @@ export default function AdminDashboard() {
               items: [{ title: 'ICE - Interview Preparation', price: 649 }],
               totalAmount: 649,
               paymentStatus: 'paid',
+              country: 'United Kingdom',
               createdAt: '2026-05-07T10:49:02Z'
             },
             {
@@ -119,6 +120,7 @@ export default function AdminDashboard() {
               items: [{ title: 'NPPE practise test', price: 40 }],
               totalAmount: 40,
               paymentStatus: 'paid',
+              country: 'Canada',
               createdAt: '2026-04-13T21:59:23Z'
             }
           ];
