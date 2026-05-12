@@ -3,7 +3,7 @@ export const aboutData = {
     title: "Empowering the Next Generation of Engineers",
     subtitle: "Properly, Confidently, Successfully.",
     description:
-      "Since 2014, we have supported over 2,000 engineers worldwide in navigating the complexities of professional licensure and chartership with 100% success.",
+      "Since 2014, we have supported over 2,024 engineers worldwide in navigating the complexities of professional licensure and chartership with 100% success.",
   },
 
   story: {
@@ -18,7 +18,7 @@ export const aboutData = {
   // ✅ WHO WE ARE (ZIP CONTENT)
   whoWeAre: [
     "Emphasis Engineering was founded in the United Kingdom in 2014 with a single, clear purpose: to help engineers navigate professional licensure and chartership properly, confidently, and successfully.",
-    "Over the past decade, we have supported more than 2,000 engineers worldwide in achieving Chartered Engineer (CEng) recognition through leading UK institutions, including IET, IMechE, and ICE.",
+    "Over the past decade, we have supported more than 2,024 engineers worldwide in achieving Chartered Engineer (CEng) recognition through leading UK institutions, including IET, IMechE, and ICE.",
     "As our clients' careers became increasingly international, our services expanded beyond the UK. We now provide specialist support for Canadian P.Eng. and US PE registration via the UK-US MRA.",
     "We do not offer generic coaching - every service we provide is grounded in regulatory requirements, assessor expectations, and real decision-making criteria."
   ],
@@ -102,7 +102,7 @@ export const aboutData = {
 
   // ✅ STATS
   stats: [
-    { label: "Engineers Supported", value: "2,000+" },
+    { label: "Engineers Supported", value: "2,024+" },
     { label: "Success Rate", value: "100%" },
     { label: "Years Excellence", value: "10+" },
   ],
@@ -125,17 +125,22 @@ export const aboutData = {
       description: "Launched specialist support for Canadian licensure as our clients' careers became international.",
     },
     {
-      year: "2020",
+      year: "2021",
+      title: "Global Virtual Expansion",
+      description: "Transitioned to a fully digital support model, enabling engineers from any country to access our expertise.",
+    },
+    {
+      year: "2022",
+      title: "2,024+ Success Stories",
+      description: "Reached a major milestone of supporting over 2,024 engineers worldwide with 100% success.",
+    },
+    {
+      year: "2024",
       title: "US PE via MRA",
       description: "Introduced end-to-end support for US registration through the UK-US Mutual Recognition Agreement.",
     },
     {
-      year: "2022",
-      title: "2,000+ Success Stories",
-      description: "Reached a major milestone of supporting over 2,000 engineers worldwide with 100% success.",
-    },
-    {
-      year: "2024",
+      year: "2025",
       title: "10 Years of Excellence",
       description: "Celebrating a decade of assessor-aligned guidance and regulatory-grounded mentorship.",
     },

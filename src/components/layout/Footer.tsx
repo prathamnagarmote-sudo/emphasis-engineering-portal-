@@ -248,27 +248,45 @@ const Footer: FC = () => {
 
       {/* ── TRUST BADGES ── */}
       <div className="relative border-t border-white/8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-            <span className="text-gray-500 text-xs uppercase tracking-[0.2em] shrink-0">
-              Official Institutions
-            </span>
-            {INSTITUTIONS.map((inst) => (
-              <motion.a
-                key={inst.label}
-                href={inst.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.08)" }}
-                className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-white/4 border border-white/8 group transition-all"
-              >
-                <CheckCircle className="w-3.5 h-3.5 text-primary shrink-0" />
-                <div className="flex flex-col">
-                  <span className="text-gray-200 text-[11px] font-bold group-hover:text-primary transition-colors">{inst.label}</span>
-                  <span className="text-[9px] text-gray-500 font-medium whitespace-nowrap">{inst.fullName}</span>
-                </div>
-              </motion.a>
-            ))}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col xl:flex-row items-center justify-center gap-x-12 gap-y-6">
+            <div className="flex items-center gap-4 shrink-0">
+              <div className="h-px w-8 bg-gradient-to-r from-transparent to-white/10 hidden xl:block" />
+              <span className="text-gray-500 text-[10px] uppercase tracking-[0.3em] font-bold whitespace-nowrap">
+                Official Institutions
+              </span>
+              <div className="h-px w-8 bg-gradient-to-l from-transparent to-white/10 hidden xl:block" />
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              {INSTITUTIONS.map((inst) => (
+                <motion.a
+                  key={inst.label}
+                  href={inst.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{
+                    scale: 1.02,
+                    backgroundColor: "rgba(255,255,255,0.08)",
+                    borderColor: "rgba(255,255,255,0.15)"
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex items-center gap-3 px-5 py-2 rounded-xl bg-white/[0.03] border border-white/5 backdrop-blur-sm group transition-all"
+                >
+                  <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <CheckCircle className="w-3 h-3 text-primary" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-gray-200 text-[12px] font-bold group-hover:text-primary transition-colors leading-tight">
+                      {inst.label}
+                    </span>
+                    <span className="text-[9px] text-gray-500 font-medium whitespace-nowrap tracking-wide uppercase">
+                      {inst.fullName}
+                    </span>
+                  </div>
+                </motion.a>
+              ))}
+            </div>
           </div>
         </div>
       </div>
