@@ -59,7 +59,7 @@ export async function POST(req: Request) {
 
     // Send to Instructor
     const instructorResponse = await resend.emails.send({
-      from: 'Contact Form <onboarding@resend.dev>',
+      from: 'Contact Form <verify@emphasisengineering.com>',
       to: instructorEmail,
       subject: `New Contact: ${subject} from ${name}`,
       html: instructorHtml
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
 
     // Send confirmation to User
     const userResponse = await resend.emails.send({
-      from: 'Emphasis Engineering <onboarding@resend.dev>',
+      from: 'Emphasis Engineering <verify@emphasisengineering.com>',
       to: email,
       subject: "We received your message – Emphasis Engineering",
       html: userHtml

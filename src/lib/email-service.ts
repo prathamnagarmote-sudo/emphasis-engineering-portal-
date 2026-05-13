@@ -1,71 +1,64 @@
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-const INSTRUCTOR_EMAIL = process.env.INSTRUCTOR_EMAIL || 'engineeringemphasis@gmail.com';
 const DOMAIN = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+const INSTRUCTOR_EMAIL = process.env.INSTRUCTOR_EMAIL || 'engineeringemphasis@gmail.com';
 
 export async function sendPurchaseEmails(studentEmail: string, studentName: string, items: any[]) {
   try {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+      console.log('❌ [DEBUG] RESEND_API_KEY IS COMPLETELY MISSING!');
+      throw new Error('RESEND_API_KEY is missing');
+    }
+
+    console.log(`✅ [DEBUG] Using API Key starting with: ${resendApiKey.substring(0, 5)}...`);
+
     const isService = items.some(i => i.type === 'service');
     const isCourse = items.some(i => i.type === 'course');
     const isTest = items.some(i => i.type === 'test');
 
-    // 1. SEND EMAIL TO STUDENT
+    // 1. PREPARE STUDENT WELCOME EMAIL
     let studentMessage = `
-      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; rounded: 10px;">
-        <h2 style="color: #0d9488;">Welcome to Emphasis Engineering!</h2>
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+        <h2 style="color: #061F33;">Welcome to Emphasis Engineering!</h2>
         <p>Hi ${studentName},</p>
-        <p>Thank you for your purchase. Your payment was successful and your content has been unlocked.</p>
+        <p>Thank you for your purchase. We are excited to support your engineering career goals.</p>
         
-        <h3 style="margin-top: 20px;">What's Next?</h3>
-        <ul>
+        <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid #3F9FA3; margin: 20px 0;">
+          <h3 style="margin-top: 0;">Purchased Items:</h3>
+          <ul>
+            ${items.map(i => `<li>${i.title}</li>`).join('')}
+          </ul>
+        </div>
     `;
 
     if (isService) {
       studentMessage += `
-        <li style="margin-bottom: 10px;">
-          <strong>Service Access:</strong> Please visit your dashboard to fill out your intake form and schedule your first session. 
-          <br><a href="${DOMAIN}/dashboard" style="color: #0d9488; font-weight: bold;">Schedule Now &rarr;</a>
-        </li>
+        <h3 style="color: #061F33;">Next Steps for Services:</h3>
+        <p>To get started, please log in to your dashboard and complete the intake form for your purchased service. This allows our instructors to review your background before your first session.</p>
       `;
     }
 
     if (isCourse) {
       studentMessage += `
-        <li style="margin-bottom: 10px;">
-          <strong>Course Content:</strong> Your course is now active! You can start watching lessons directly from your student dashboard.
-          <br><a href="${DOMAIN}/dashboard" style="color: #0d9488; font-weight: bold;">Start Learning &rarr;</a>
-        </li>
+        <h3 style="color: #061F33;">Next Steps for Courses:</h3>
+        <p>You can now access your course content directly from your student dashboard. Head over to the "My Courses" section to begin learning.</p>
       `;
     }
 
     if (isTest) {
       studentMessage += `
-        <li style="margin-bottom: 10px;">
-          <strong>Practice Tests:</strong> Your practice tests are ready. Good luck with your preparation!
-          <br><a href="${DOMAIN}/dashboard" style="color: #0d9488; font-weight: bold;">Take Test &rarr;</a>
-        </li>
+        <h3 style="color: #061F33;">Next Steps for Practice Tests:</h3>
+        <p>Your practice tests are now unlocked! You can start your first attempt from the dashboard whenever you are ready.</p>
       `;
     }
 
     studentMessage += `
-        </ul>
-        <p style="margin-top: 30px; font-size: 14px; color: #666;">
-          If you have any questions, simply reply to this email or contact us at ${INSTRUCTOR_EMAIL}.
-        </p>
-        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-        <p style="font-weight: bold; color: #061F33;">The Emphasis Engineering Team</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${DOMAIN}/dashboard" style="background: #061F33; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Go to My Dashboard</a>
+        </div>
+        <p>Best regards,<br>The Emphasis Engineering Team</p>
       </div>
     `;
 
-    await resend.emails.send({
-      from: 'Emphasis Engineering <onboarding@resend.dev>', // Change to your verified domain later
-      to: studentEmail,
-      subject: 'Payment Successful - Welcome to Emphasis Engineering',
-      html: studentMessage,
-    });
-
-    // 2. SEND EMAIL TO INSTRUCTOR
     const instructorMessage = `
       <div style="font-family: sans-serif; padding: 20px;">
         <h2 style="color: #061F33;">New Purchase Notification</h2>
@@ -75,21 +68,53 @@ export async function sendPurchaseEmails(studentEmail: string, studentName: stri
         <ul>
           ${items.map(i => `<li>${i.title} ($${i.price})</li>`).join('')}
         </ul>
-        <p><strong>Next Steps:</strong> Check the Admin Dashboard to manage this booking.</p>
         <a href="${DOMAIN}/admin" style="display: inline-block; padding: 10px 20px; background: #0d9488; color: white; text-decoration: none; border-radius: 5px;">View Admin Dashboard</a>
       </div>
     `;
 
-    await resend.emails.send({
-      from: 'Portal Alerts <onboarding@resend.dev>',
-      to: INSTRUCTOR_EMAIL,
-      subject: `New Purchase: ${studentName}`,
-      html: instructorMessage,
+    // SEND STUDENT EMAIL
+    const studentRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: "Emphasis Engineering <verify@emphasisengineering.com>", 
+        to: studentEmail,
+        subject: "Welcome to Emphasis Engineering – Payment Successful",
+        html: studentMessage,
+      }),
     });
 
+    if (!studentRes.ok) {
+      const errorData = await studentRes.json();
+      throw new Error(`Student Email Failed: ${errorData.message || "Unknown error"}`);
+    }
+
+    // SEND INSTRUCTOR EMAIL
+    const instructorRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: "Emphasis Engineering <verify@emphasisengineering.com>", 
+        to: INSTRUCTOR_EMAIL,
+        subject: `New Purchase: ${studentName}`,
+        html: instructorMessage,
+      }),
+    });
+
+    if (!instructorRes.ok) {
+      const errorData = await instructorRes.json();
+      throw new Error(`Instructor Email Failed: ${errorData.message || "Unknown error"}`);
+    }
+
     return { success: true };
-  } catch (error) {
-    console.error('Email send failed:', error);
-    return { success: false, error };
+  } catch (error: any) {
+    console.error('Email service failed:', error);
+    return { success: false, error: error.message };
   }
 }
