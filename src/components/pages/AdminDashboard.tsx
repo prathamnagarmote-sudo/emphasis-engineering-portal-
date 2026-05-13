@@ -14,9 +14,10 @@ import {
   Clock,
   Phone,
   MessageSquare,
-  Globe,
-  MapPin,
-  CheckCircle,
+  Globe, 
+  MapPin, 
+  CheckCircle, 
+  Mail,
   X
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
