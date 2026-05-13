@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
-import { sendEmail } from "@/lib/mail";
+import { Resend } from 'resend';
+import connectToDatabase from "@/lib/mongodb";
+import Contact from "@/models/Contact";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   try {
+    await connectToDatabase();
     const { name, email, subject, message } = await req.json();
 
     if (!name || !email || !subject || !message) {
@@ -11,6 +16,14 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+    // Save to Database
+    await Contact.create({
+      name,
+      email,
+      subject,
+      message,
+    });
 
     const instructorEmail = process.env.INSTRUCTOR_EMAIL || "omnagarmote@gmail.com";
 
@@ -26,7 +39,7 @@ export async function POST(req: Request) {
           ${message.replace(/\n/g, '<br>') || "No message provided"}
         </div>
         <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-        <p style="font-size: 12px; color: #888;">This message was sent from the Emphasis Engineering Contact Form.</p>
+        <p style="font-size: 12px; color: #888;">This message was sent from the Emphasis Engineering Contact Form. It has also been saved to your Admin Dashboard.</p>
       </div>
     `;
 
@@ -45,24 +58,35 @@ export async function POST(req: Request) {
     `;
 
     // Send to Instructor
-    await sendEmail(
-      instructorEmail,
-      `New Contact: ${subject} from ${name}`,
-      instructorHtml
-    );
+    const instructorResponse = await resend.emails.send({
+      from: 'Contact Form <onboarding@resend.dev>',
+      to: instructorEmail,
+      subject: `New Contact: ${subject} from ${name}`,
+      html: instructorHtml
+    });
+
+    if (instructorResponse.error) {
+      throw new Error(`Resend Error (Instructor): ${instructorResponse.error.message}`);
+    }
 
     // Send confirmation to User
-    await sendEmail(
-      email,
-      "We received your message – Emphasis Engineering",
-      userHtml
-    );
+    const userResponse = await resend.emails.send({
+      from: 'Emphasis Engineering <onboarding@resend.dev>',
+      to: email,
+      subject: "We received your message – Emphasis Engineering",
+      html: userHtml
+    });
+
+    if (userResponse.error) {
+      console.warn("Could not send confirmation to user (likely due to unverified domain):", userResponse.error);
+      // We don't throw here because we still want the contact form to succeed if the instructor got it
+    }
 
     return NextResponse.json({ message: "Message sent successfully" }, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Contact API error:", error);
     return NextResponse.json(
-      { message: "Internal Server Error" },
+      { message: "Failed to send email", details: error.message },
       { status: 500 }
     );
   }

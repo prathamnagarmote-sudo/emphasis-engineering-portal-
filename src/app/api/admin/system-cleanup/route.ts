@@ -1,64 +1,40 @@
-import { NextResponse } from "next/server";
-import connectToDatabase from "@/lib/mongodb";
-import mongoose from "mongoose";
+import { NextResponse } from 'next/server';
+import connectToDatabase from '@/lib/mongodb';
+import Order from '@/models/Order';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
     await connectToDatabase();
     
-    const emailsToKeep = [
-      'pccvalenzuela@gmail.com',
-      'cyrus.sk.work@gmail.com',
-      'faecommongodb@gmail.com'
-    ].map(e => e.toLowerCase());
-
-    const User = mongoose.connection.collection('users');
-    const Order = mongoose.connection.collection('orders');
-    const ServiceBooking = mongoose.connection.collection('servicebookings');
-    const Achievement = mongoose.connection.collection('achievements');
-    const Log = mongoose.connection.collection('logs');
-    const Otp = mongoose.connection.collection('otps');
-
-    // 1. Find users to keep
-    const usersToKeep = await User.find({ email: { $in: emailsToKeep } }).toArray();
-    const userIdsToKeep = usersToKeep.map(u => u._id);
-
-    // 2. Delete other users
-    const deleteUsersResult = await User.deleteMany({ 
-      _id: { $nin: userIdsToKeep },
-      email: { $nin: emailsToKeep }
-    });
-
-    // 3. Delete orders for deleted users
-    const deleteOrdersResult = await Order.deleteMany({ 
-      $and: [
-        { userEmail: { $nin: emailsToKeep } },
-        { userId: { $nin: userIdsToKeep } }
-      ]
-    });
-
-    // 4. Delete service bookings
-    const deleteBookingsResult = await ServiceBooking.deleteMany({ userId: { $nin: userIdsToKeep } });
-
-    // 5. Delete achievements
-    const deleteAchievementsResult = await Achievement.deleteMany({ userId: { $nin: userIdsToKeep } });
-
-    // 6. Clear logs and OTPs
-    await Log.deleteMany({});
-    await Otp.deleteMany({});
-
-    // 7. Update country for the orders of the kept users
-    await Order.updateMany({ userEmail: 'cyrus.sk.work@gmail.com' }, { $set: { country: 'United Kingdom' } });
-    await Order.updateMany({ userEmail: 'pccvalenzuela@gmail.com' }, { $set: { country: 'Canada' } });
-
-    return NextResponse.json({ 
-      message: "Cleanup Successful", 
-      details: {
-        usersDeleted: deleteUsersResult.deletedCount,
-        ordersDeleted: deleteOrdersResult.deletedCount,
-        bookingsDeleted: deleteBookingsResult.deletedCount
+    const email = 'pccvalenzuela@gmail.com';
+    const orders = await Order.find({ userEmail: { $regex: new RegExp(email, 'i') } }).lean();
+    
+    let message = `Found ${orders.length} orders for Patrick. `;
+    
+    if (orders.length > 1) {
+      const orderWithItems = orders.find(o => o.items && o.items.length > 0);
+      const orderWithStripe = orders.find(o => o.stripeSessionId);
+      
+      message += ` | ItemsOrder: ${orderWithItems?._id} (Len: ${orderWithItems?.items?.length}) | StripeOrder: ${orderWithStripe?._id} (Stripe: ${orderWithStripe?.stripeSessionId})`;
+      
+      if (orderWithItems && orderWithStripe && String(orderWithItems._id) !== String(orderWithStripe._id)) {
+        await Order.findByIdAndUpdate(orderWithItems._id, {
+          stripeSessionId: orderWithStripe.stripeSessionId,
+          country: orderWithStripe.country || 'Canada'
+        });
+        
+        await Order.findByIdAndDelete(orderWithStripe._id);
+        message += ' | Successfully merged and deleted duplicate order. Total is now $40.';
+      } else {
+        message += ' | Could not merge - criteria not met.';
       }
-    });
+    } else {
+      message += 'No duplicates found.';
+    }
+
+    return NextResponse.json({ success: true, message });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

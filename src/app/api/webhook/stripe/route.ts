@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
+import { sendPurchaseEmails } from '@/lib/email-service';
 import connectToDatabase from '@/lib/mongodb';
 import User from '@/models/User';
 import ServiceBooking from '@/models/ServiceBooking';
@@ -71,11 +72,13 @@ export async function POST(req: Request) {
         if (user) {
           // Grant access (allow duplicates now for multiple service purchases)
           await User.findByIdAndUpdate(user._id, {
-            $push: { purchasedContent: { $each: itemIds } }
+            $addToSet: { purchasedContent: { $each: itemIds } }
           });
 
           // Create an Order record for accurate revenue tracking
           try {
+            const billingCountry = session.customer_details?.address?.country;
+            
             await Order.create({
               userId: user._id,
               userEmail: user.email,
@@ -85,10 +88,13 @@ export async function POST(req: Request) {
               currency: session.currency || 'cad',
               voucherCode: metadata.voucherCode || null,
               stripeSessionId: session.id,
-              country: user.country || 'Unknown'
+              country: billingCountry || user.country || 'Unknown'
             });
+            // Send automated emails to Student and Instructor
+            await sendPurchaseEmails(user.email, user.name, itemDetails);
+            
           } catch (orderErr) {
-            console.error('Order creation failed:', orderErr);
+            console.error('Order creation/Email failed:', orderErr);
           }
 
           // Handle Service Bookings

@@ -16,7 +16,7 @@ export async function GET() {
 
     await connectToDatabase();
 
-    const orders = await Order.find({}).sort({ createdAt: -1 });
+    const orders = await Order.find({}).sort({ createdAt: -1 }).lean();
 
     return NextResponse.json({ orders }, { status: 200 });
   } catch (error) {

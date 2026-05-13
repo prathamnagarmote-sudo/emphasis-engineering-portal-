@@ -33,7 +33,7 @@ const Contact: FC = () => {
         setTimeout(() => setIsSubmitted(false), 5000);
       } else {
         const data = await response.json();
-        alert(data.message || 'Something went wrong. Please try again.');
+        alert(data.details ? `${data.message}: ${data.details}` : data.message || 'Something went wrong. Please try again.');
       }
     } catch (error) {
       console.error('Contact form error:', error);
