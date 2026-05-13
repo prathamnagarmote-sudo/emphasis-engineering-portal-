@@ -394,84 +394,81 @@ export default function AdminDashboard() {
               ))}
             </div>
 
-            {/* System Health & Logs */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Revenue Analytics (from before) */}
-              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-900 font-display">Global Market Analytics</h2>
-                    <p className="text-xs text-teal-600 font-bold mt-1">ALL REGIONS AND REVENUE STREAMS</p>
-                  </div>
-                  <div className="px-3 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded-full uppercase tracking-wider">Live Sales Data</div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4">
-                  {Object.entries(revenueByCountry).sort((a, b) => b[1].total - a[1].total).map(([country, data]) => (
-                    <div key={country} className="p-4 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-primary" />
-                        <span className="text-sm font-bold text-gray-900">{country}</span>
-                      </div>
-                      <span className="text-lg font-black text-primary">C$ {(data.total || 0).toLocaleString()}</span>
+            {/* System Health & Logs - Only visible on Sales tab */}
+            {activeTab === 'sales' && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Revenue Analytics (from before) */}
+                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900 font-display">Global Market Analytics</h2>
+                      <p className="text-xs text-teal-600 font-bold mt-1">ALL REGIONS AND REVENUE STREAMS</p>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Real-time Webhook Logs */}
-              <div className="bg-[#061F33] rounded-3xl shadow-xl p-8 text-white">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <h2 className="text-xl font-bold font-display">Stripe Webhook Health</h2>
+                    <div className="px-3 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded-full uppercase tracking-wider">Live Sales Data</div>
                   </div>
-                  <button 
-                    onClick={async () => {
-                      const res = await fetch('/api/admin/logs');
-                      const data = await res.json();
-                      setLogs(data.logs || []);
-                    }}
-                    className="text-[10px] uppercase tracking-widest font-bold text-primary hover:text-white transition-colors"
-                  >
-                    Refresh Logs
-                  </button>
+
+                  <div className="grid grid-cols-1 gap-4">
+                    {Object.entries(revenueByCountry).sort((a, b) => b[1].total - a[1].total).map(([country, data]) => (
+                      <div key={country} className="p-4 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-2 h-2 rounded-full bg-primary" />
+                          <span className="text-sm font-bold text-gray-900">{country}</span>
+                        </div>
+                        <span className="text-lg font-black text-primary">C$ {(data.total || 0).toLocaleString()}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="space-y-3 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
-                  {logs.length === 0 ? (
-                    <div className="text-gray-500 text-sm italic py-4">No events recorded yet.</div>
-                  ) : (
-                    logs.map((log: any, idx: number) => (
-                      <div key={idx} className={`p-3 rounded-xl border ${
-                        log.type === 'error' ? 'bg-red-500/10 border-red-500/20' : 
-                        log.type === 'webhook' ? 'bg-green-500/10 border-green-500/20' : 
-                        'bg-white/5 border-white/10'
-                      }`}>
-                        <div className="flex justify-between items-start mb-1">
-                          <span className={`text-[10px] font-bold uppercase tracking-wider ${
-                            log.type === 'error' ? 'text-red-400' : 'text-primary'
-                          }`}>
-                            {log.message}
-                          </span>
-                          <span className="text-[9px] text-gray-500">
-                            {new Date(log.createdAt).toLocaleTimeString()}
-                          </span>
-                        </div>
-                        {log.details && (
-                          <div className="text-[9px] text-gray-400 font-mono truncate">
-                            {JSON.stringify(log.details)}
+                {/* Real-time Webhook Logs */}
+                <div className="bg-[#061F33] rounded-3xl shadow-xl p-8 text-white">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                      <h2 className="text-xl font-bold font-display">Stripe Webhook Health</h2>
+                    </div>
+                    <button 
+                      onClick={async () => {
+                        const res = await fetch('/api/admin/logs');
+                        const data = await res.json();
+                        setLogs(data.logs || []);
+                      }}
+                      className="text-[10px] uppercase tracking-widest font-bold text-primary hover:text-white transition-colors"
+                    >
+                      Refresh Logs
+                    </button>
+                  </div>
+
+                  <div className="space-y-3 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+                    {logs.length === 0 ? (
+                      <div className="text-gray-500 text-sm italic py-4">No events recorded yet.</div>
+                    ) : (
+                      logs.map((log: any, idx: number) => (
+                        <div key={idx} className={`p-3 rounded-xl border ${
+                          log.type === 'error' ? 'bg-red-500/10 border-red-500/20' : 
+                          log.type === 'webhook' ? 'bg-green-500/10 border-green-500/20' : 
+                          'bg-white/5 border-white/10'
+                        }`}>
+                          <div className="flex items-center justify-between mb-2">
+                            <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                              log.type === 'error' ? 'text-red-400' : 
+                              log.type === 'webhook' ? 'text-green-400' : 
+                              'text-blue-400'
+                            }`}>
+                              {log.message}
+                            </span>
+                            <span className="text-[10px] text-gray-500">{new Date(log.timestamp || log.createdAt).toLocaleTimeString()}</span>
                           </div>
-                        )}
-                      </div>
-                    ))
-                  )}
+                          <div className="text-[11px] font-mono text-gray-300 break-all bg-black/20 p-2 rounded-lg">
+                            {typeof log.details === 'object' ? JSON.stringify(log.details) : log.details}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
-                <p className="text-[9px] text-gray-500 mt-4 italic">
-                  Monitoring incoming signals from Stripe API. Errors indicate configuration issues in Vercel.
-                </p>
               </div>
-            </div>
+            )}
 
             {activeTab === 'sales' || activeTab === 'users' ? (
               <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
