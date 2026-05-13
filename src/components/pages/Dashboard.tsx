@@ -37,6 +37,7 @@ const SIDEBAR_ITEMS = [
 export default function Dashboard() {
   const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [contentTab, setContentTab] = useState<"all" | "course" | "test" | "service">("all");
   const [dbData, setDbData] = useState<{ courses: any[], tests: any[], services: any[] }>({ courses: [], tests: [], services: [] });
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -104,6 +105,11 @@ export default function Dashboard() {
     return [...baseContent, ...serviceEntries];
   }, [purchasedIds, dbData, bookings]);
 
+  const filteredContent = useMemo(() => {
+    if (contentTab === 'all') return myContent;
+    return myContent.filter(item => item.type === contentTab);
+  }, [myContent, contentTab]);
+
   const enrolledCount = myContent.filter(c => c.type === 'course').length;
   const testCount = myContent.filter(c => c.type === 'test').length;
   const serviceCount = myContent.filter(c => c.type === 'service').length;
@@ -163,16 +169,19 @@ export default function Dashboard() {
               {/* Stats Row */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                  { icon: BookOpen, label: "Enrolled Courses", value: enrolledCount, color: "text-[#3F9FA3]", bg: "bg-[#3F9FA3]/10" },
-                  { icon: Gamepad2, label: "Practice Tests", value: testCount, color: "text-[#3F9FA3]", bg: "bg-[#3F9FA3]/10" },
-                  { icon: Trophy, label: "Premium Services", value: serviceCount, color: "text-[#3F9FA3]", bg: "bg-[#3F9FA3]/10" },
+                  { id: 'course', icon: BookOpen, label: "Enrolled Courses", value: enrolledCount, color: "text-[#3F9FA3]", bg: "bg-[#3F9FA3]/10" },
+                  { id: 'test', icon: Gamepad2, label: "Practice Tests", value: testCount, color: "text-[#3F9FA3]", bg: "bg-[#3F9FA3]/10" },
+                  { id: 'service', icon: Trophy, label: "Premium Services", value: serviceCount, color: "text-[#3F9FA3]", bg: "bg-[#3F9FA3]/10" },
                 ].map((stat, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.1 }}
-                    className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col items-center text-center"
+                    onClick={() => setContentTab(stat.id as any)}
+                    className={`cursor-pointer transition-all hover:scale-[1.02] bg-white rounded-2xl shadow-sm border p-8 flex flex-col items-center text-center ${
+                      contentTab === stat.id ? 'border-primary ring-2 ring-primary/10' : 'border-gray-100'
+                    }`}
                   >
                     <div className={`w-14 h-14 rounded-full ${stat.bg} flex items-center justify-center mb-4`}>
                       <stat.icon className={`w-7 h-7 ${stat.color}`} />
@@ -185,12 +194,34 @@ export default function Dashboard() {
 
               {/* Learning Content */}
               <div>
-                <h2 className="text-xl font-bold text-gray-900 font-display mb-4">My Learning Content</h2>
+                <div className="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
+                  <div className="flex items-center gap-8">
+                    {[
+                      { id: 'all', label: 'All Content' },
+                      { id: 'course', label: 'My Courses' },
+                      { id: 'test', label: 'Practice Tests' },
+                      { id: 'service', label: 'Premium Services' }
+                    ].map((tab) => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setContentTab(tab.id as any)}
+                        className={`text-sm font-bold transition-all relative py-2 ${
+                          contentTab === tab.id ? 'text-primary' : 'text-gray-400 hover:text-gray-600'
+                        }`}
+                      >
+                        {tab.label}
+                        {contentTab === tab.id && (
+                          <motion.div layoutId="activeSubTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 
-                {myContent.length === 0 ? (
+                {filteredContent.length === 0 ? (
                   <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center">
                     <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">You haven't purchased anything yet.</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">No {contentTab === 'all' ? 'content' : contentTab + 's'} found.</h3>
                     <p className="text-gray-500 mb-6">Browse our catalog to get started!</p>
                     <div className="flex justify-center gap-4">
                       <Link href="/courses" className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white font-semibold">
@@ -203,13 +234,13 @@ export default function Dashboard() {
                   </div>
                 ) : (
                   <div className="grid gap-6">
-                    {myContent.map((content) => (
-                      <div key={content.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col md:flex-row">
-                        <div className="relative w-full md:w-64 h-48 md:h-auto bg-gray-200 shrink-0">
+                    {filteredContent.map((content) => (
+                      <div key={content.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col md:flex-row group hover:shadow-md transition-all">
+                        <div className="relative w-full md:w-64 h-48 md:h-auto bg-gray-200 shrink-0 overflow-hidden">
                           <img 
                             src={content.image || "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800"} 
                             alt={content.title} 
-                            className="absolute inset-0 w-full h-full object-cover"
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                           />
                           <div className="absolute top-4 left-4">
                             <span className={`px-3 py-1 text-white text-[10px] font-bold uppercase rounded-md tracking-wider ${
