@@ -38,6 +38,9 @@ export async function POST(req: Request) {
         <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid #3F9FA3;">
           ${message.replace(/\n/g, '<br>') || "No message provided"}
         </div>
+        <div style="text-align: center; margin-top: 25px;">
+          <a href="https://emphasisengineering.com/admin" style="background: #061F33; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">View in Admin Panel</a>
+        </div>
         <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
         <p style="font-size: 12px; color: #888;">This message was sent from the Emphasis Engineering Contact Form. It has also been saved to your Admin Dashboard.</p>
       </div>
