@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, Lock, Mail, User, AlertCircle, Loader2, CheckCircle, Star, Users, Award, ShieldCheck } from "lucide-react";
+import { ArrowRight, Lock, Mail, User, AlertCircle, Loader2, CheckCircle, Star, Users, Award, ShieldCheck, Eye, EyeOff } from "lucide-react";
 
 // ─── Shared UI pieces ──────────────────────────────────────────────────────────
 const HeroOrbs = () => (
@@ -135,6 +135,7 @@ const Signup = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.09, delayChildren: 0.15 } } };
   const item = { hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.55 } } };
@@ -186,7 +187,7 @@ const Signup = () => {
             <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 }}
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary/20 border border-primary/30 rounded-full text-primary text-sm font-semibold mb-6"
             >
-              <Star className="w-4 h-4 fill-primary" /> Trusted by 2,000+ Engineers
+              <Star className="w-4 h-4 fill-primary" /> Trusted by 1,000+ Engineers
             </motion.div>
             <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.8 }}
               className="text-4xl xl:text-5xl font-bold text-white leading-tight"
@@ -201,13 +202,13 @@ const Signup = () => {
             </motion.p>
           </div>
           <div className="space-y-3">
-            <Benefit text="2,000+ NPPE practice questions with full explanations" delay={0.9} />
+            <Benefit text="1,000+ NPPE practice questions with full explanations" delay={0.9} />
             <Benefit text="Expert-led courses mapped to the NPPE syllabus" delay={1.0} />
             <Benefit text="1-on-1 coaching from licensed P.Eng mentors" delay={1.1} />
             <Benefit text="Track your progress and identify weak areas" delay={1.2} />
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <StatCard icon={Users} value="2,000+" label="Engineers supported" delay={0.9} />
+            <StatCard icon={Users} value="1,000+" label="Engineers supported" delay={0.9} />
             <StatCard icon={Award} value="100%" label="Pass rate" delay={1.4} />
           </div>
         </div>
@@ -275,9 +276,16 @@ const Signup = () => {
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
                     <div className="relative">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                      <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all outline-none text-sm"
+                      <input type={showPassword ? "text" : "password"} value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        className="w-full pl-11 pr-12 py-3.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all outline-none text-sm"
                         placeholder="Min. 6 characters" required minLength={6} />
+                      <button 
+                        type="button" 
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
                     </div>
                   </motion.div>
 

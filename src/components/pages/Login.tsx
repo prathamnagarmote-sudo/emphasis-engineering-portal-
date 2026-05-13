@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, Lock, Mail, AlertCircle, Loader2, CheckCircle, Star, Users, Award, ShieldCheck } from "lucide-react";
+import { ArrowRight, Lock, Mail, AlertCircle, Loader2, CheckCircle, Star, Users, Award, ShieldCheck, Eye, EyeOff } from "lucide-react";
 
 // ─── Stat Card ─────────────────────────────────────────────────────────────────
 const StatCard = ({ icon: Icon, value, label, delay }: { icon: any; value: string; label: string; delay: number }) => (
@@ -269,6 +269,7 @@ const Login = () => {
   const [otpCode, setOtpCode] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -336,7 +337,7 @@ const Login = () => {
             <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 }}
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary/20 border border-primary/30 rounded-full text-primary text-sm font-semibold mb-6"
             >
-              <Star className="w-4 h-4 fill-primary" /> Trusted by 2,000+ Engineers
+              <Star className="w-4 h-4 fill-primary" /> Trusted by 1,000+ Engineers
             </motion.div>
             <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.8 }}
               className="text-4xl xl:text-5xl font-bold text-white leading-tight"
@@ -351,7 +352,7 @@ const Login = () => {
             </motion.p>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <StatCard icon={Users} value="2,000+" label="Engineers supported" delay={0.9} />
+            <StatCard icon={Users} value="1,000+" label="Engineers supported" delay={0.9} />
             <StatCard icon={Award} value="100%" label="Pass rate" delay={1.0} />
             <StatCard icon={CheckCircle} value="5,000+" label="Practice questions" delay={1.1} />
             <StatCard icon={Star} value="4.9/5" label="Student rating" delay={1.2} />
@@ -416,9 +417,16 @@ const Login = () => {
                     </div>
                     <div className="relative">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all outline-none text-sm"
+                      <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)}
+                        className="w-full pl-11 pr-12 py-3.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all outline-none text-sm"
                         placeholder="••••••••" required />
+                      <button 
+                        type="button" 
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
                     </div>
                   </motion.div>
 

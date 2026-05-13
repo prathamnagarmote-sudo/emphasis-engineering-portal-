@@ -354,7 +354,7 @@ export default function AdminDashboard() {
           <div className="space-y-8">
             <div>
               <h1 className="text-3xl font-bold text-teal-600 font-display mb-2">
-                {activeTab === 'sales' ? 'Sales Dashboard' : 
+                {activeTab === 'sales' ? 'Admin Control Panel' : 
                  activeTab === 'users' ? 'Registered Users' : 
                  activeTab === 'bookings' ? 'Service Booking Management' : 
                  activeTab === 'vouchers' ? 'Voucher Management' :
@@ -373,7 +373,7 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
                 { icon: Users, label: "Total Registered Users", value: users.length, color: "text-blue-600", bg: "bg-blue-100" },
-                { icon: DollarSign, label: "Total Revenue (CAD)", value: `$${totalSales.toLocaleString()}`, color: "text-green-600", bg: "bg-green-100" },
+                { icon: DollarSign, label: "Total Revenue (CAD)", value: `C$ ${totalSales.toLocaleString()}`, color: "text-green-600", bg: "bg-green-100" },
                 { icon: ShoppingBag, label: "Total Items Sold", value: totalPurchases, color: "text-purple-600", bg: "bg-purple-100" },
               ].map((stat, i) => (
                 <motion.div
@@ -413,7 +413,7 @@ export default function AdminDashboard() {
                         <div className="w-2 h-2 rounded-full bg-primary" />
                         <span className="text-sm font-bold text-gray-900">{country}</span>
                       </div>
-                      <span className="text-lg font-black text-primary">${(data.total || 0).toLocaleString()}</span>
+                      <span className="text-lg font-black text-primary">C$ {(data.total || 0).toLocaleString()}</span>
                     </div>
                   ))}
                 </div>
@@ -540,7 +540,8 @@ export default function AdminDashboard() {
                                   {(() => {
                                     const orderItems = orders.filter(o => String(o.userId) === String(user._id) || o.userEmail?.toLowerCase() === user.email?.toLowerCase()).flatMap(o => o.items || []).map((i: any) => i.title);
                                     const pcItems = (user.purchasedContent || []).map((id: any) => productDictionary[String(id)]?.title).filter(Boolean);
-                                    const allItems = Array.from(new Set([...orderItems, ...pcItems]));
+                                    const normalizeTitle = (t: string) => t.replace(/[\u2013\u2014-]/g, '-').trim();
+                                    const allItems = Array.from(new Set([...orderItems, ...pcItems].map(normalizeTitle)));
                                     if (allItems.length === 0) return "0 items";
                                     return allItems.map((title: string, idx: number) => (
                                       <div key={idx} className="text-[11px] leading-tight">
@@ -559,11 +560,11 @@ export default function AdminDashboard() {
                              <td className="px-8 py-6">
                               <div className="flex flex-col">
                                 <div className="font-black text-primary">
-                                  ${orders.filter(o => String(o.userId) === String(user._id) || o.userEmail?.toLowerCase() === user.email?.toLowerCase()).reduce((acc, o) => acc + (o.totalAmount || 0), 0).toLocaleString()}
+                                  C$ {orders.filter(o => String(o.userId) === String(user._id) || o.userEmail?.toLowerCase() === user.email?.toLowerCase()).reduce((acc, o) => acc + (o.totalAmount || 0), 0).toLocaleString()}
                                 </div>
                                 {userTotal > 0 && (
                                   <div className="text-[10px] text-gray-400 font-bold italic">
-                                    Est. Value: ${userTotal.toLocaleString()}
+                                    Est. Value: C$ {userTotal.toLocaleString()}
                                   </div>
                                 )}
                               </div>
@@ -1009,7 +1010,7 @@ export default function AdminDashboard() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <div className="text-sm font-black text-primary">${order.totalAmount.toFixed(2)}</div>
+                              <div className="text-sm font-black text-primary">C$ {order.totalAmount.toFixed(2)}</div>
                               {order.voucherCode && (
                                 <div className="text-[9px] font-bold text-green-600 uppercase mt-1">
                                   Coupon: {order.voucherCode}
@@ -1034,7 +1035,7 @@ export default function AdminDashboard() {
                   <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
                     <span className="text-sm font-bold text-gray-500">Total Lifetime Value</span>
                     <span className="text-2xl font-black text-primary">
-                      ${orders.filter(o => String(o.userId) === String(selectedUser._id) || o.userEmail === selectedUser.email).reduce((acc, o) => acc + (o.totalAmount || 0), 0).toFixed(2)}
+                      C$ {orders.filter(o => String(o.userId) === String(selectedUser._id) || o.userEmail === selectedUser.email).reduce((acc, o) => acc + (o.totalAmount || 0), 0).toFixed(2)}
                     </span>
                   </div>
                 )}

@@ -94,7 +94,7 @@ export async function sendPurchaseEmails(studentEmail: string, studentName: stri
               <tr style="border-bottom: 1px solid #f1f5f9;">
                 <td style="padding: 10px;">${i.title}</td>
                 <td style="padding: 10px; text-transform: capitalize; color: #64748b;">${i.type || i.category || 'N/A'}</td>
-                <td style="padding: 10px; text-align: right;">$${i.price}</td>
+                <td style="padding: 10px; text-align: right;">C$${i.price}</td>
               </tr>
             `).join('')}
           </tbody>

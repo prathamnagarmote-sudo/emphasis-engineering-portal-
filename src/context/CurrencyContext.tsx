@@ -13,7 +13,7 @@ interface Currency {
 }
 
 export const CURRENCIES: Record<CurrencyCode, Currency> = {
-  CAD: { code: 'CAD', symbol: '$', label: 'CAD', flag: 'https://flagcdn.com/ca.svg', rate: 1 },
+  CAD: { code: 'CAD', symbol: 'C$', label: 'CAD', flag: 'https://flagcdn.com/ca.svg', rate: 1 },
   USD: { code: 'USD', symbol: '$', label: 'USD', flag: 'https://flagcdn.com/us.svg', rate: 0.74 },
   GBP: { code: 'GBP', symbol: '£', label: 'GBP', flag: 'https://flagcdn.com/gb.svg', rate: 0.58 },
   AED: { code: 'AED', symbol: 'د.إ', label: 'AED', flag: 'https://flagcdn.com/ae.svg', rate: 2.72 },
@@ -139,6 +139,10 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
   const formatPrice = (priceCAD: number) => {
     const converted = convertPrice(priceCAD);
     
+    if (currency.code === 'CAD') {
+      return `C$${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency.code,
