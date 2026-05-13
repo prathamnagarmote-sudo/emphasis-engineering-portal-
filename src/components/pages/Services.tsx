@@ -268,9 +268,20 @@ const Services: FC = () => {
                       <div className="flex items-start justify-between mb-6">
                         <motion.div
                           whileHover={{ rotate: 5, scale: 1.1 }}
-                          className="w-16 h-16 bg-gradient-to-br from-primary to-primary-dark rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20"
+                          className="w-16 h-16 bg-gradient-to-br from-primary to-primary-dark rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 overflow-hidden"
                         >
-                          <Icon className="w-8 h-8 text-white" />
+                          <img 
+                            src={
+                              service.title?.toUpperCase().includes("ICE") ? "https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=800" :
+                              service.title?.toUpperCase().includes("CANADIAN") ? "https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800" :
+                              service.image || "https://images.unsplash.com/photo-1454165833767-02a522111d67?w=800&q=80"
+                            }
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800";
+                            }}
+                            alt={service.title}
+                            className="w-full h-full object-cover"
+                          />
                         </motion.div>
 
                         {isFeatured && (

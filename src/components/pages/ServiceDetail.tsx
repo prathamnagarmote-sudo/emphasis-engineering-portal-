@@ -372,7 +372,14 @@ const ServiceDetail: FC = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 }}
-                src={service.image || "https://images.unsplash.com/photo-1454165833767-02a522111d67?w=800&q=80"}
+                src={
+                  service.title?.toUpperCase().includes("ICE") ? "https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=800" :
+                  service.title?.toUpperCase().includes("CANADIAN") ? "https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=800" :
+                  service.image || "https://images.unsplash.com/photo-1454165833767-02a522111d67?w=800&q=80"
+                }
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800";
+                }}
                 alt={service.title}
                 className="w-full max-w-md rounded-2xl object-cover aspect-[4/3] shadow-2xl"
                 style={{
@@ -665,7 +672,7 @@ const ServiceDetail: FC = () => {
           {/* Trust badges */}
           <div className="flex flex-wrap items-center justify-center gap-6 mt-12 text-sm text-gray-400">
             <span className="flex items-center gap-2"><Shield className="w-4 h-4 text-primary" /> Quality guarantee</span>
-            <span className="flex items-center gap-2"><BookOpen className="w-4 h-4 text-primary" /> Lifetime access</span>
+            <span className="flex items-center gap-2"><Clock className="w-4 h-4 text-primary" /> Dedicated support</span>
             <span className="flex items-center gap-2"><Calendar className="w-4 h-4 text-primary" /> Flexible scheduling</span>
           </div>
         </div>

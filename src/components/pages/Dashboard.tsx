@@ -40,24 +40,27 @@ export default function Dashboard() {
   const [contentTab, setContentTab] = useState<"all" | "course" | "test" | "service">("all");
   const [dbData, setDbData] = useState<{ courses: any[], tests: any[], services: any[] }>({ courses: [], tests: [], services: [] });
   const [bookings, setBookings] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [resCourses, resTests, resServices, resBookings] = await Promise.all([
+        const [resCourses, resTests, resServices, resBookings, resOrders] = await Promise.all([
           fetch("/api/courses"),
           fetch("/api/practice-tests"),
           fetch("/api/services"),
-          fetch("/api/services/booking")
+          fetch("/api/services/booking"),
+          fetch("/api/user/orders")
         ]);
 
-        const [courses, tests, services, bookingsData] = await Promise.all([
+        const [courses, tests, services, bookingsData, ordersData] = await Promise.all([
           resCourses.json(),
           resTests.json(),
           resServices.json(),
-          resBookings.json()
+          resBookings.json(),
+          resOrders.json()
         ]);
 
         setDbData({ 
@@ -66,6 +69,7 @@ export default function Dashboard() {
           services: Array.isArray(services) ? services : [] 
         });
         setBookings(Array.isArray(bookingsData) ? bookingsData : []);
+        setOrders(Array.isArray(ordersData?.orders) ? ordersData.orders : []);
       } catch (error) {
         console.error("Dashboard fetch error:", error);
       } finally {
@@ -312,45 +316,56 @@ export default function Dashboard() {
 
               <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left">
+                  <table className="w-full text-left border-collapse">
                     <thead className="bg-gray-50 border-b border-gray-100">
                       <tr>
-                        <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-widest">Item Details</th>
-                        <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-widest">Date</th>
-                        <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-widest">Type</th>
-                        <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-widest">Status</th>
+                        <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Item Details</th>
+                        <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Date</th>
+                        <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
+                        <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
-                      {myContent.length === 0 ? (
+                      {orders.length === 0 ? (
                         <tr>
                           <td colSpan={4} className="px-8 py-20 text-center text-gray-500 italic">
-                            No orders found.
+                            No transaction records found.
                           </td>
                         </tr>
                       ) : (
-                        myContent.map((item, idx) => (
+                        orders.map((order, idx) => (
                           <tr key={idx} className="hover:bg-gray-50/50 transition-colors">
                             <td className="px-8 py-6">
-                              <div className="font-bold text-gray-900">{item.title}</div>
-                              <div className="text-xs text-gray-400 mt-1">Order ID: #{item.id?.toString().slice(-8).toUpperCase()}</div>
+                              <div className="space-y-1">
+                                {order.items?.map((item: any, i: number) => (
+                                  <div key={i} className="font-bold text-gray-900 flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                    {item.title}
+                                  </div>
+                                ))}
+                                <div className="text-[10px] text-gray-400 font-mono mt-2">ID: {order._id?.toString().toUpperCase() || order.stripeSessionId?.slice(-12).toUpperCase()}</div>
+                              </div>
                             </td>
-                            <td className="px-8 py-6 text-sm text-gray-600">
-                              {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "Recently Purchased"}
-                            </td>
-                            <td className="px-8 py-6">
-                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                                item.type === 'course' ? 'bg-primary/10 text-primary' : 
-                                item.type === 'test' ? 'bg-amber-100 text-amber-700' : 
-                                'bg-purple-100 text-purple-700'
-                              }`}>
-                                {item.type}
-                              </span>
+                            <td className="px-8 py-6 text-sm text-gray-600 font-medium">
+                              {new Date(order.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                             </td>
                             <td className="px-8 py-6">
-                              <div className="flex items-center gap-2 text-green-600 font-bold text-sm">
-                                <CheckCircle className="w-4 h-4" />
-                                Completed
+                              <div className="space-y-1">
+                                <div className="text-sm font-black text-gray-900">C$ {order.totalAmount?.toLocaleString()}</div>
+                                {order.voucherCode && (
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="px-1.5 py-0.5 bg-green-100 text-green-700 text-[9px] font-black rounded uppercase tracking-tighter">
+                                      {order.voucherCode}
+                                    </span>
+                                    <span className="text-[10px] text-green-600 font-bold">(-C$ {order.discountAmount || 0})</span>
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-8 py-6">
+                              <div className="flex items-center gap-2 text-green-600 font-black text-xs uppercase tracking-wider">
+                                <div className="w-2 h-2 rounded-full bg-green-500" />
+                                {order.paymentStatus || 'Completed'}
                               </div>
                             </td>
                           </tr>

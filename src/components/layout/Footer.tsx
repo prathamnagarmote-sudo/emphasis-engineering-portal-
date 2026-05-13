@@ -38,28 +38,7 @@ const XIcon = () => (
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const NAV_GROUPS = [
   {
-    heading: "Platform",
-    links: [
-      { label: "About Us",        href: "/about" },
-      { label: "Courses",         href: "/courses" },
-      { label: "Practice Tests",  href: "/practice-tests" },
-      { label: "Services",        href: "/services" },
-      { label: "Blog",            href: "/blog" },
-      { label: "Testimonials",    href: "/testimonials" },
-    ],
-  },
-  {
-    heading: "Licensing Pathways",
-    links: [
-      { label: "UK CEng (IMechE)", href: "https://www.imeche.org/" },
-      { label: "UK CEng (IET)",    href: "https://www.theiet.org/" },
-      { label: "UK MICE (ICE)",    href: "https://www.ice.org.uk/" },
-      { label: "Canadian P.Eng",   href: "https://www.peo.on.ca/" },
-      { label: "US PE (NCEES)",    href: "https://ncees.org/" },
-    ],
-  },
-  {
-    heading: "Services",
+    heading: "Mentorship",
     links: [
       { label: "1-on-1 Mentoring",   href: "/services" },
       { label: "Document Review",    href: "/services" },
@@ -69,12 +48,32 @@ const NAV_GROUPS = [
     ],
   },
   {
+    heading: "Success Path",
+    links: [
+      { label: "UK CEng Roadmap",    href: "/services" },
+      { label: "Canadian P.Eng",     href: "/services" },
+      { label: "US PE Pathway",      href: "/services" },
+      { label: "Success Stories",    href: "/testimonials" },
+      { label: "Knowledge Hub",      href: "/blog" },
+    ],
+  },
+  {
+    heading: "Resources",
+    links: [
+      { label: "Student Dashboard",  href: "/dashboard" },
+      { label: "Practice Tests",     href: "/practice-tests" },
+      { label: "Licensure Guide",    href: "/blog" },
+      { label: "Help Center",        href: "/contact" },
+      { label: "Verified Reviews",   href: "/testimonials" },
+    ],
+  },
+  {
     heading: "Legal",
     links: [
       { label: "Privacy Policy",   href: "/privacy-policy" },
       { label: "Terms of Service", href: "/terms-of-service" },
-      { label: "Cookie Policy",    href: "/cookie-policy" },
       { label: "Refund Policy",    href: "/refund-policy" },
+      { label: "Cookie Policy",    href: "/cookie-policy" },
     ],
   },
 ];
@@ -247,18 +246,18 @@ const Footer: FC = () => {
       </div>
 
       {/* ── TRUST BADGES ── */}
-      <div className="relative border-t border-white/8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col xl:flex-row items-center justify-center gap-x-12 gap-y-6">
-            <div className="flex items-center gap-4 shrink-0">
-              <div className="h-px w-8 bg-gradient-to-r from-transparent to-white/10 hidden xl:block" />
-              <span className="text-gray-500 text-[10px] uppercase tracking-[0.3em] font-bold whitespace-nowrap">
+      <div className="relative border-t border-white/8 bg-white/[0.01]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="flex flex-col items-center justify-center gap-8">
+            <div className="flex items-center gap-6 w-full max-w-2xl">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10" />
+              <span className="text-gray-500 text-[11px] uppercase tracking-[0.4em] font-black whitespace-nowrap">
                 Official Institutions
               </span>
-              <div className="h-px w-8 bg-gradient-to-l from-transparent to-white/10 hidden xl:block" />
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/10" />
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-4">
+            <div className="flex flex-wrap items-center justify-center gap-5">
               {INSTITUTIONS.map((inst) => (
                 <motion.a
                   key={inst.label}
