@@ -20,7 +20,43 @@ const nextConfig: NextConfig = {
         destination: "/terms-of-service",
         permanent: true,
       },
-      // Legacy Search Result Redirects
+      // .php Legacy Redirects (Crucial for Google Search Results)
+      {
+        source: "/about.php",
+        destination: "/about",
+        permanent: true,
+      },
+      {
+        source: "/contact.php",
+        destination: "/contact",
+        permanent: true,
+      },
+      {
+        source: "/team.php",
+        destination: "/about",
+        permanent: true,
+      },
+      {
+        source: "/our-testimonial.php",
+        destination: "/testimonials",
+        permanent: true,
+      },
+      {
+        source: "/dashboard.php",
+        destination: "/dashboard",
+        permanent: true,
+      },
+      {
+        source: "/uk-chartered.php",
+        destination: "/services/ICE",
+        permanent: true,
+      },
+      {
+        source: "/us-professional-engineer.php",
+        destination: "/services/NCEES",
+        permanent: true,
+      },
+      // General Search Result Redirects
       {
         source: "/uk-chartered",
         destination: "/services/ICE",
