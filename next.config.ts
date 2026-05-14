@@ -22,13 +22,8 @@ const nextConfig: NextConfig = {
       },
       // Legacy Search Result Redirects
       {
-        source: "/about-us",
-        destination: "/about",
-        permanent: true,
-      },
-      {
-        source: "/contact-us",
-        destination: "/contact",
+        source: "/uk-chartered",
+        destination: "/services/ICE",
         permanent: true,
       },
       {
@@ -39,6 +34,17 @@ const nextConfig: NextConfig = {
       {
         source: "/us-professional-engineer",
         destination: "/services/NCEES",
+        permanent: true,
+      },
+      // Ensure about and contact are perfectly mapped
+      {
+        source: "/about-us",
+        destination: "/about",
+        permanent: true,
+      },
+      {
+        source: "/contact-us",
+        destination: "/contact",
         permanent: true,
       },
       {
