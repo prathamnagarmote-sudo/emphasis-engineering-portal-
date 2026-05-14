@@ -296,6 +296,26 @@ const ServiceDetail: FC = () => {
 
   return (
     <div className="pt-20">
+      {/* JSON-LD Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": service.title,
+            "description": service.description,
+            "provider": {
+              "@type": "Organization",
+              "name": "Emphasis Engineering",
+              "url": "https://emphasisengineering.com"
+            },
+            "image": service.image || "https://res.cloudinary.com/dwk1cnlw2/image/upload/v1775721626/logo-nobackground-500_prbht7.png",
+            "areaServed": "Global",
+            "serviceType": "Engineering Licensure Mentorship"
+          })
+        }}
+      />
 
       {/* ── HERO ── */}
       <section

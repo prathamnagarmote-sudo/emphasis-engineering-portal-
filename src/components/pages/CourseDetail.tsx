@@ -288,6 +288,34 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
   return (
 
     <div className="pt-20 bg-gray-50 min-h-screen">
+      {/* JSON-LD Structured Data for Courses */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Course",
+            "name": course.title,
+            "description": course.description,
+            "provider": {
+              "@type": "Organization",
+              "name": "Emphasis Engineering",
+              "url": "https://emphasisengineering.com"
+            },
+            "image": course.thumbnail || "https://res.cloudinary.com/dwk1cnlw2/image/upload/v1775721626/logo-nobackground-500_prbht7.png",
+            "offers": {
+              "@type": "Offer",
+              "price": course.price,
+              "priceCurrency": "CAD"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": course.rating,
+              "reviewCount": course.reviews
+            }
+          })
+        }}
+      />
 
       {/* ── HERO SECTION ────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#061F33] via-[#0a2f4b] to-[#061F33] py-16">
