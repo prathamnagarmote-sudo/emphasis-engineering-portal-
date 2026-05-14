@@ -4,7 +4,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXTAUTH_URL || 'https://emphasisengineering.com';
 
   // Base routes
-  const routes = [
+  const routes: MetadataRoute.Sitemap = [
     '',
     '/about',
     '/services',
@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
+    changeFrequency: 'weekly',
     priority: route === '' ? 1 : 0.8,
   }));
 
@@ -29,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         routes.push({
           url: `${baseUrl}/services/${encodeURIComponent(s.title)}`,
           lastModified: new Date(),
-          changeFrequency: 'monthly' as const,
+          changeFrequency: 'monthly',
           priority: 0.7,
         });
       });
@@ -43,7 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         routes.push({
           url: `${baseUrl}/courses/${encodeURIComponent(c.title)}`,
           lastModified: new Date(),
-          changeFrequency: 'monthly' as const,
+          changeFrequency: 'monthly',
           priority: 0.7,
         });
       });
