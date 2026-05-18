@@ -12,6 +12,7 @@ import {
 import { useCart } from '@/context/CartContext';
 import { useCurrency } from '@/context/CurrencyContext';
 import Button from '@/components/ui/Button';
+import ShareButtons from '@/components/ui/ShareButtons';
 
 const iconMap: Record<string, ElementType> = { Briefcase, Building2, Code2, Target, Award };
 
@@ -383,6 +384,11 @@ const ServiceDetail: FC = () => {
                       </motion.div>
                     </a>
                   )}
+                </div>
+
+                {/* Social Sharing */}
+                <div className="mt-8 pt-6 border-t border-white/10">
+                  <ShareButtons title={service.title} />
                 </div>
               </div>
             </div>

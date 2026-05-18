@@ -15,6 +15,7 @@ import Button from '@/components/ui/Button';
 import { useCart } from '@/context/CartContext';
 import { useCurrency } from '@/context/CurrencyContext';
 import PageHero from '@/components/ui/PageHero';
+import ShareButtons from '@/components/ui/ShareButtons';
 
 /* ─── Data ─── */
 const FEATURES = [
@@ -257,6 +258,10 @@ const TestCard: FC<{ test: PracticeTest; index: number }> = ({ test, index }) =>
               </>
             )}
           </div>
+        </div>
+
+        <div className="mb-4">
+          <ShareButtons title={test.title} url={`/practice-tests/${testId}`} />
         </div>
 
         <div className="flex gap-2">

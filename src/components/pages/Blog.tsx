@@ -8,6 +8,7 @@ import {
   ChevronRight, ArrowRight, Clock, TrendingUp, Users, Award, Globe,
 } from "lucide-react";
 import PageHero from "@/components/ui/PageHero";
+import ShareButtons from "@/components/ui/ShareButtons";
 
 /* ── types ── */
 interface Blog {
@@ -124,11 +125,14 @@ const HeroCard = ({ blog, onClick }: { blog: Blog; onClick: () => void }) => (
       <p className="text-gray-400 text-base leading-relaxed line-clamp-2 mb-8 max-w-xl">
         {blog.desc}
       </p>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <Avatar name={blog.author} dark />
-        <span className="flex items-center gap-2 text-[#3F9FA3] text-sm font-bold group-hover:gap-3 transition-all">
-          Read Article <ArrowRight className="w-4 h-4" />
-        </span>
+        <div className="flex items-center gap-6" onClick={(e) => e.stopPropagation()}>
+          <ShareButtons title={blog.title} url={typeof window !== "undefined" ? `${window.location.origin}/blog/${blog.blogId}` : ""} />
+          <span className="flex items-center gap-2 text-[#3F9FA3] text-sm font-bold group-hover:gap-3 transition-all">
+            Read Article <ArrowRight className="w-4 h-4" />
+          </span>
+        </div>
       </div>
     </div>
   </motion.article>
@@ -158,8 +162,11 @@ const BlogCard = ({ blog, onClick, delay = 0 }: { blog: Blog; onClick: () => voi
         {blog.title}
       </h3>
       <p className="text-gray-500 text-sm leading-relaxed line-clamp-3 flex-1">{blog.desc}</p>
-      <div className="mt-6 pt-5 border-t border-gray-50 flex items-center justify-between">
+      <div className="mt-6 pt-5 border-t border-gray-50 flex items-center justify-between gap-4">
         <Avatar name={blog.author} />
+        <div onClick={(e) => e.stopPropagation()}>
+          <ShareButtons title={blog.title} url={typeof window !== "undefined" ? `${window.location.origin}/blog/${blog.blogId}` : ""} />
+        </div>
         <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[#3F9FA3] group-hover:translate-x-1 transition-all" />
       </div>
     </div>
@@ -189,8 +196,11 @@ const HorizontalCard = ({ blog, onClick, delay = 0 }: { blog: Blog; onClick: () 
         {blog.title}
       </h3>
       <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 flex-1">{blog.desc}</p>
-      <div className="mt-4 pt-4 border-t border-gray-50 flex items-center justify-between">
+      <div className="mt-4 pt-4 border-t border-gray-50 flex items-center justify-between gap-4">
         <Avatar name={blog.author} />
+        <div onClick={(e) => e.stopPropagation()}>
+          <ShareButtons title={blog.title} url={typeof window !== "undefined" ? `${window.location.origin}/blog/${blog.blogId}` : ""} />
+        </div>
         <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[#3F9FA3] group-hover:translate-x-1 transition-all" />
       </div>
     </div>
@@ -228,11 +238,14 @@ const WideCard = ({ blog, onClick, delay = 0 }: { blog: Blog; onClick: () => voi
       <p className="text-gray-400 text-sm leading-relaxed line-clamp-2 mb-6 max-w-2xl">
         {blog.desc}
       </p>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <Avatar name={blog.author} dark />
-        <span className="flex items-center gap-2 text-[#3F9FA3] text-sm font-bold group-hover:gap-3 transition-all">
-          Read Article <ArrowRight className="w-4 h-4" />
-        </span>
+        <div className="flex items-center gap-6" onClick={(e) => e.stopPropagation()}>
+          <ShareButtons title={blog.title} url={typeof window !== "undefined" ? `${window.location.origin}/blog/${blog.blogId}` : ""} />
+          <span className="flex items-center gap-2 text-[#3F9FA3] text-sm font-bold group-hover:gap-3 transition-all">
+            Read Article <ArrowRight className="w-4 h-4" />
+          </span>
+        </div>
       </div>
     </div>
   </motion.article>

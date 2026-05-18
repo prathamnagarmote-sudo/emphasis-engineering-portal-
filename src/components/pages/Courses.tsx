@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useCurrency } from '@/context/CurrencyContext';
+import ShareButtons from '@/components/ui/ShareButtons';
 import { Course } from '@/types';
 import Button from '@/components/ui/Button';
 import PageHero from '@/components/ui/PageHero';
@@ -291,6 +292,10 @@ const CourseCard: FC<{ course: Course; index: number; onPreview: (c: Course) => 
             <span className="text-gray-400 text-xs line-through mr-1">{formatPrice(course.originalPrice)}</span>
             <span className="text-primary font-extrabold text-xl">{formatPrice(course.price)}</span>
           </div>
+        </div>
+
+        <div className="mb-4">
+          <ShareButtons title={course.title} url={`/courses/${course.id}`} />
         </div>
 
         <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>

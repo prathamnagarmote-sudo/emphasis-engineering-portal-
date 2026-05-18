@@ -5,10 +5,10 @@ import { FC, useEffect, useRef, useState } from 'react';
 import { Users, BookOpen, GraduationCap, TrendingUp } from 'lucide-react';
 
 const stats = [
-  { icon: Users, value: 20000, suffix: '+', label: 'Students Enrolled' },
-  { icon: BookOpen, value: 200, suffix: '+', label: 'Courses Available' },
-  { icon: GraduationCap, value: 50, suffix: '+', label: 'Emphasis Engineering Team' },
-  { icon: TrendingUp, value: 100, suffix: '%', label: 'Success Rate' },
+  { icon: Users, value: 2000, suffix: '+', label: 'Engineers Mentored' },
+  { icon: BookOpen, value: 10, suffix: '+', label: 'Countries Served' },
+  { icon: GraduationCap, value: 10, suffix: '+', label: 'Years of Practice' },
+  { icon: TrendingUp, value: 100, suffix: '%', label: 'First-Attempt Pass Rate' },
 ];
 
 const AnimatedCounter: FC<{ target: number; suffix: string; duration?: number }> = ({

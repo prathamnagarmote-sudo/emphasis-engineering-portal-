@@ -6,7 +6,7 @@ import User from "@/models/User";
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -14,11 +14,42 @@ export async function GET() {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
+    const { searchParams } = new URL(req.url);
+    const search = searchParams.get("search") || "";
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "20");
+    const skip = (page - 1) * limit;
+
     await connectToDatabase();
 
-    const users = await User.find({}).sort({ createdAt: -1 }).select("-password");
+    // Create a search query
+    const query = search
+      ? {
+          $or: [
+            { name: { $regex: search, $options: "i" } },
+            { email: { $regex: search, $options: "i" } },
+          ],
+        }
+      : {};
 
-    return NextResponse.json({ users }, { status: 200 });
+    const [users, total] = await Promise.all([
+      User.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .select("-password"),
+      User.countDocuments(query),
+    ]);
+
+    return NextResponse.json({
+      users,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
+    }, { status: 200 });
   } catch (error) {
     console.error("Admin Users fetch error:", error);
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });

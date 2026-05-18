@@ -49,16 +49,17 @@ function useCounter(
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasStarted) {
+        if (entry.isIntersecting) {
           setHasStarted(true);
+          observer.disconnect();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.1, rootMargin: "50px" }
     );
 
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
-  }, [hasStarted]);
+  }, []);
 
   useEffect(() => {
     if (!hasStarted) return;
@@ -470,13 +471,12 @@ const Hero: FC = () => {
               textShadow: "0 1px 10px rgba(0,0,0,0.35)",
             }}
           >
-            Expert-led mentoring and structured programs to guide engineers
-            through the{" "}
+            CEng report review, mock PRI interviews, and CBA writing — guiding engineers through{" "}
             <span className="text-white font-semibold">UK CEng</span>,{" "}
             <span className="text-white font-semibold">Canadian P.Eng</span>,
             and{" "}
             <span className="text-white font-semibold">US PE</span> licensure
-            pathways - from first application to final approval.
+            — from first application to final approval.
           </motion.p>
 
           {/* ── CTA BUTTONS ── */}
@@ -527,7 +527,7 @@ const Hero: FC = () => {
                 whileTap={{ scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 400, damping: 24 }}
               >
-                Explore Courses
+                Book Free Consultation
               </motion.div>
             </Link>
           </motion.div>

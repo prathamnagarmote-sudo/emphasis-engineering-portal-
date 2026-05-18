@@ -265,6 +265,51 @@ const About: FC = () => {
       </section>
 
       {/* ═══════════════════════════════════════════
+          2b. PROVEN 4-STEP METHODOLOGY
+      ═══════════════════════════════════════════ */}
+      <section className="py-24 relative">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mb-6 backdrop-blur-md">
+              <div className="w-2 h-2 rounded-full bg-[#3F9FA3] shadow-[0_0_10px_#3F9FA3]" />
+              <span className="text-xs font-semibold tracking-widest text-white/80 uppercase">Our Process</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-display font-bold">
+              Our Proven <span className="text-[#3F9FA3]">4-Step Framework</span>
+            </h2>
+            <p className="text-gray-400 mt-4 text-lg max-w-2xl mx-auto">
+              A structured, assessor-aligned approach that has delivered a 100% success rate across IET, IMechE, ICE, Canadian P.Eng, and US PE pathways.
+            </p>
+          </motion.div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {aboutData.methodology.map((item, i) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.12 }}
+                className="relative p-8 rounded-[2rem] border border-white/10 bg-white/[0.02] backdrop-blur-3xl group hover:border-[#3F9FA3]/40 transition-all duration-300"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-[#3F9FA3]/8 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2rem]" />
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#3F9FA3] to-teal-600 flex items-center justify-center text-white font-black text-xl mb-6 shadow-lg shadow-[#3F9FA3]/20">
+                  {item.step}
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                <p className="text-gray-400 leading-relaxed text-sm">{item.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
           3. INTERACTIVE GLOBAL SERVICES
       ═══════════════════════════════════════════ */}
       <section className="py-32 relative">
@@ -385,9 +430,19 @@ const About: FC = () => {
 
               <div className="w-16 h-1 bg-gradient-to-r from-[#3F9FA3] to-transparent rounded-full mb-8" />
 
-              <p className="text-gray-300 text-lg leading-relaxed mb-10">
+              <p className="text-gray-300 text-lg leading-relaxed mb-8">
                 {aboutData.founder.bio}
               </p>
+
+              {/* Founder Highlights */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+                {aboutData.founderHighlights.map((highlight, i) => (
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+                    <CheckCircle className="w-4 h-4 text-[#3F9FA3] shrink-0 mt-0.5" />
+                    <span className="text-gray-300 text-sm leading-snug">{highlight}</span>
+                  </div>
+                ))}
+              </div>
 
               <div className="flex items-center gap-4">
                 <a
@@ -425,7 +480,7 @@ const About: FC = () => {
                   <Eye className="w-12 h-12 text-blue-400 mb-8" />
                   <h3 className="text-3xl font-display font-bold mb-6">Our Vision</h3>
                   <p className="text-gray-300 text-lg leading-relaxed">
-                    To be the global gold standard for engineering professional registration support, ensuring every qualified engineer achieves the recognition they deserve across international borders.
+                    To be a leading force in engineering mentorship and licensure.
                   </p>
                 </div>
               </TiltCard>
@@ -444,7 +499,7 @@ const About: FC = () => {
                   <Target className="w-12 h-12 text-[#3F9FA3] mb-8" />
                   <h3 className="text-3xl font-display font-bold mb-6">Our Mission</h3>
                   <p className="text-gray-300 text-lg leading-relaxed">
-                    To empower engineers with precise, assessor-aligned guidance that simplifies the path to licensure and chartership, grounded in regulatory excellence and real-world success.
+                    To help engineers achieve licensure fast through clear, assessor-aligned guidance.
                   </p>
                 </div>
               </TiltCard>

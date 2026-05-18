@@ -34,7 +34,7 @@ const solutions = [
     impact: "high"
   },
   { 
-    title: "Structured competency writing support",
+    title: "DAP and CPD development",
     detail: "Template + 1-on-1 review sessions",
     impact: "critical"
   },
@@ -132,8 +132,8 @@ const WhyFailSection = () => {
             </span>
           </h2>
           
-          <p className="text-gray-600 mt-6 text-lg max-w-2xl mx-auto leading-relaxed">
-            It's not about skill. It's about clarity, structure, and guidance at every critical step.
+           <p className="text-gray-600 mt-6 text-lg max-w-2xl mx-auto leading-relaxed">
+            Success depends on aligning with institutional competency frameworks.
           </p>
 
           {/* Stats bar */}
@@ -328,7 +328,7 @@ const WhyFailSection = () => {
                   whileTap={{ scale: 0.95 }}
                   className="px-8 py-4 bg-gradient-to-r from-primary to-teal-500 rounded-xl font-semibold shadow-lg shadow-primary/30 inline-flex items-center gap-2"
                 >
-                  Get Your Free Roadmap
+                  Get Your Roadmap
                   <ArrowRight className="w-5 h-5" />
                 </motion.button>
               </Link>

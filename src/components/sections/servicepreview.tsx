@@ -113,7 +113,7 @@ const ServicesPreview: FC = () => {
 
           <p className="text-gray-600 mt-6 max-w-lg text-lg">
             We don't offer random services - we guide engineers through
-            structured, country-specific licensing systems.
+            specific UK-SPEC, PEO, and NCEES licensing systems.
           </p>
 
           {/* Staggered list - ONE whileInView on parent, variants handle children */}
@@ -150,7 +150,7 @@ const ServicesPreview: FC = () => {
                 transition={{ type: "spring", stiffness: 380, damping: 22 }}
                 className="mt-10 px-8 py-4 bg-secondary text-white rounded-xl font-semibold flex items-center gap-2 hover:bg-secondary-light transition shadow-lg"
               >
-                Explore Services
+                Start Your Application
                 <ArrowRight className="w-5 h-5" />
               </motion.button>
             </Link>

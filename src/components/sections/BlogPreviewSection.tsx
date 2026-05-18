@@ -278,7 +278,7 @@ const BlogPreviewSection: FC = () => {
             </div>
             <Link href="/blog" className="shrink-0">
               <div className="group relative px-8 py-4 bg-primary rounded-2xl text-white font-bold flex items-center gap-3 overflow-hidden cursor-pointer shadow-lg shadow-primary/30">
-                Explore the Blog <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                Read Latest Insights <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
           </div>

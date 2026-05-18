@@ -17,9 +17,9 @@ import {
   MessageSquare,
   ArrowRight,
   Bookmark,
-  Share
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import ShareButtons from "@/components/ui/ShareButtons";
 
 interface Blog {
   blogId: string;
@@ -179,7 +179,9 @@ const BlogDetail = () => {
               <button onClick={() => alert("Bookmarks feature coming soon!")} className="p-3 rounded-full hover:bg-gray-50 transition-colors text-gray-400 hover:text-[#3F9FA3]" title="Bookmark"><Bookmark className="w-5 h-5" /></button>
               <button onClick={handleCopy} className="p-3 rounded-full hover:bg-gray-50 transition-colors text-gray-400 hover:text-[#3F9FA3]" title={copied ? "Copied!" : "Copy Link"}><Link2 className="w-5 h-5" /></button>
               <div className="w-px h-12 bg-gray-100" />
-              <button onClick={handleShare} className="p-3 rounded-full hover:bg-gray-50 transition-colors text-gray-400 hover:text-[#3F9FA3]" title="Share"><Share className="w-5 h-5" /></button>
+              <div className="flex flex-col items-center gap-4">
+                <ShareButtons title={blog.title} />
+              </div>
             </div>
           </aside>
 

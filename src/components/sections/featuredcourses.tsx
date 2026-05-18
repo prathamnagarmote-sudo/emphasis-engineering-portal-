@@ -153,7 +153,7 @@ const FeaturedCourses: FC = () => {
                 transition={{ type: "spring", stiffness: 340, damping: 20 }}
                 className="mt-8 px-8 py-4 bg-primary text-white rounded-xl flex items-center gap-2"
               >
-                Explore All Courses
+                Start Learning
                 <motion.span
                   animate={{ x: [0, 5, 0] }}
                   transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" as any }}

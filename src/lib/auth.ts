@@ -28,13 +28,16 @@ export const authOptions: NextAuthOptions = {
         await connectToDatabase();
 
         // ADMIN SEED INJECTION
-        if (credentials.email === "admin@emphasis.com" && credentials.password === "admin123") {
-          let adminUser = await User.findOne({ email: "admin@emphasis.com" });
+        const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@emphasis.com";
+        const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
+
+        if (credentials.email === ADMIN_EMAIL && credentials.password === ADMIN_PASSWORD) {
+          let adminUser = await User.findOne({ email: ADMIN_EMAIL });
           if (!adminUser) {
-            const hashedPassword = await bcrypt.hash("admin123", 10);
+            const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10);
             adminUser = await User.create({
               name: "Admin User",
-              email: "admin@emphasis.com",
+              email: ADMIN_EMAIL,
               password: hashedPassword,
               role: "admin",
               isVerified: true,

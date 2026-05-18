@@ -32,6 +32,7 @@ import {
 import { useCart } from "@/context/CartContext";
 import { useCurrency } from "@/context/CurrencyContext";
 import Button from "@/components/ui/Button";
+import ShareButtons from "@/components/ui/ShareButtons";
 
 /* ─── Animation Variants ─── */
 const containerVariants = {
@@ -495,18 +496,22 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
                 </ul>
               </div>
 
-              {/* Money-back guarantee */}
-              <div className="mt-6 pt-6 border-t border-white/20 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center shrink-0">
-                  <Shield className="w-5 h-5 text-green-400" />
+                <div className="mt-8 pt-6 border-t border-white/20">
+                  <ShareButtons title={course.title} />
                 </div>
-                <div className="flex-1">
-                  <p className="text-white font-semibold text-sm">Our Quality Guarantee</p>
-                  <p className="text-white/60 text-xs mt-0.5">
-                    100% success rate to date. Moneyback guarantee under fairuse terms.
-                  </p>
+
+                {/* Money-back guarantee */}
+                <div className="mt-6 pt-6 border-t border-white/20 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center shrink-0">
+                    <Shield className="w-5 h-5 text-green-400" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-white font-semibold text-sm">Our Quality Guarantee</p>
+                    <p className="text-white/60 text-xs mt-0.5">
+                      100% success rate to date. Moneyback guarantee under fairuse terms.
+                    </p>
+                  </div>
                 </div>
-              </div>
             </motion.div>
           </div>
         </div>

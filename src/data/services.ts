@@ -580,7 +580,7 @@ Non-accredited degrees are assessed individually.`
   {
     id: "ICE",
     title: "ICE",
-    description: "Chartered Engineer (CEng) – ICE Professional Registration Support. Navigate one of the most demanding engineering registrations in the UK with expert guidance on UK-SPEC competencies, report writing, and professional review preparation.",
+    description: "Chartered Engineer (CEng) – ICE Professional Registration Support. ICE is widely regarded as one of the most demanding UK engineering registrations: it requires a detailed written report mapped to ICE attributes, strong demonstration of personal accountability, and a rigorous panel review covering Health & Safety, Sustainable Development, and whole-life project thinking. We guide you through every stage — attribute mapping, report structuring, sustainability framing, and mock review preparation.",
     icon: "Target",
     calendlyLink: "https://calendly.com/sayeependke/available-slots",
     image: "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?w=800&q=80",
@@ -741,8 +741,8 @@ Phone:
 
   {
     id: "CANADIAN PEng",
-    title: "CANADIAN PEng",
-    description: "Professional Engineer (P.Eng.) – Canadian Licensure Support. Navigate the Canadian engineering licensing process with expert guidance on competency-based assessment (CBA), application strategy, and NPPE preparation.",
+    title: "Canadian P.Eng",
+    description: "Professional Engineer (P.Eng.) – Canadian Licensure Support. P.Eng. licensing is regulated provincially — requirements vary between PEO (Ontario), APEGA (Alberta), Engineers & Geoscientists BC, and others. We provide expert guidance on Competency-Based Assessment (CBA) writing across all 34 competencies, validator strategy, NPPE preparation, and end-to-end application support through your provincial regulator.",
     icon: "Globe",
     calendlyLink: "https://calendly.com/sayeependke/available-slots",
     image: "https://images.unsplash.com/photo-1503387762-592dee58c460?w=800&q=80",

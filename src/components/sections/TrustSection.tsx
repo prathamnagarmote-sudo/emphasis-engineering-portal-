@@ -181,13 +181,17 @@ function useCounter(target: number, duration = 2000, delay = 0) {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !started) setStarted(true);
+        if (entry.isIntersecting) {
+          setStarted(true);
+          observer.disconnect();
+        }
       },
-      { threshold: 0.4 }
+      { threshold: 0.1, rootMargin: "50px" }
     );
+
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
-  }, [started]);
+  }, []);
 
   useEffect(() => {
     if (!started) return;

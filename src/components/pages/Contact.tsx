@@ -2,7 +2,7 @@
 
 import { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle, Shield } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import PageHero from '@/components/ui/PageHero';
 
@@ -75,8 +75,8 @@ const Contact: FC = () => {
     <div className="pt-20">
       <PageHero
         badge="Contact Us"
-        heading="Get in Touch with Emphasis Engineering"
-        subtitle="We're here to support your professional engineering journey. Reach out with questions about training, exam prep, or account access."
+        heading="Start Your Roadmap Today"
+        subtitle="Speak directly with Maxwell Oyom, CEng, P.Eng — a nuclear engineering leader with 16+ years of experience who has helped 2,000+ engineers achieve professional licensure."
         primaryCta={{ label: "Send a Message", href: "#contact-form" }}
         secondaryCta={{ label: "Book Free Consultation", href: "/services" }}
       />
@@ -120,11 +120,24 @@ const Contact: FC = () => {
               className="bg-white rounded-3xl p-8 md:p-12 shadow-xl"
             >
               <h2 className="font-display text-2xl font-bold text-secondary mb-2">
-                Send Us a Message
+                Request Your Personalized Roadmap
               </h2>
-              <p className="text-gray-600 mb-8">
-                Fill out the form below and we'll get back to you shortly.
+              <p className="text-gray-600 mb-6">
+                Fill out the form and we'll respond within 24 hours with a clear, honest assessment of your pathway to licensure.
               </p>
+
+              {/* Trust Signal Strip */}
+              <div className="flex flex-col sm:flex-row gap-3 mb-8 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <Shield className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-secondary text-sm">Maxwell Oyom, CEng, P.Eng</div>
+                    <div className="text-gray-500 text-xs">Nuclear Engineer · 16+ Years · 2,000+ Engineers Mentored</div>
+                  </div>
+                </div>
+              </div>
 
               {isSubmitted ? (
                 <motion.div
@@ -212,7 +225,7 @@ const Contact: FC = () => {
 
                   <Button type="submit" size="lg" className="w-full" isLoading={isSubmitting}>
                     <Send className="w-5 h-5 mr-2" />
-                    Send Message
+                    Request Your Personalized Roadmap
                   </Button>
                 </form>
               )}

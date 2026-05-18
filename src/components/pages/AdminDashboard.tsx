@@ -43,6 +43,8 @@ export default function AdminDashboard() {
   const [selectedUserForGrant, setSelectedUserForGrant] = useState<any | null>(null);
   const [grantContentId, setGrantContentId] = useState<string>("");
   const [isGranting, setIsGranting] = useState(false);
+  const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
+  const [isSearching, setIsSearching] = useState(false);
 
   // Build a fast lookup dictionary for all products and their prices
   const productDictionary = useMemo(() => {
@@ -184,24 +186,50 @@ export default function AdminDashboard() {
     }
   }, [session]);
 
+  // Handle server-side search for users
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (!session || (session.user as any).role !== "admin") return;
+      setIsSearching(true);
+      try {
+        const res = await fetch(`/api/admin/users?search=${encodeURIComponent(search)}&page=${pagination.page}`);
+        if (res.ok) {
+          const data = await res.json();
+          setUsers(data.users || []);
+          setPagination(prev => ({ 
+            ...prev, 
+            pages: data.pagination?.pages || 1, 
+            total: data.pagination?.total || 0 
+          }));
+        }
+      } catch (e) {
+        console.error("Search fetch error", e);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      fetchUsers();
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timer);
+  }, [search, pagination.page, session]);
+
   const filteredUsers = useMemo(() => {
     return users.filter(u => {
-      const matchesSearch = u.name.toLowerCase().includes(search.toLowerCase()) || 
-                            u.email.toLowerCase().includes(search.toLowerCase());
-      if (!matchesSearch) return false;
-
+      // Server-side search handles name/email now
+      // We only filter for "purchasers" if on sales tab
       const hasOrders = orders.some(o => String(o.userId) === String(u._id) || o.userEmail === u.email);
       const hasPurchasedContent = u.purchasedContent && u.purchasedContent.length > 0;
       const isPurchaser = hasOrders || hasPurchasedContent;
 
       if (activeTab === 'sales') {
         return isPurchaser;
-      } else if (activeTab === 'users') {
-        return true;
       }
       return true;
     });
-  }, [users, search, activeTab, orders]);
+  }, [users, activeTab, orders]);
 
   const totalSales = useMemo(() => {
     return orders.reduce((acc, order) => acc + (order.totalAmount || 0), 0);
@@ -481,15 +509,23 @@ export default function AdminDashboard() {
                       {activeTab === 'sales' ? 'Manage users and view their purchase history.' : 'Manage all registered users.'}
                     </p>
                   </div>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input 
-                      type="text" 
-                      placeholder="Search by name or email..."
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      className="pl-10 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary/20 outline-none w-full md:w-64 transition-all"
-                    />
+                  <div className="relative flex items-center gap-3">
+                    {isSearching && (
+                      <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    )}
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <input 
+                        type="text" 
+                        placeholder="Search by name or email..."
+                        value={search}
+                        onChange={(e) => {
+                          setSearch(e.target.value);
+                          setPagination(prev => ({ ...prev, page: 1 }));
+                        }}
+                        className="pl-10 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary/20 outline-none w-full md:w-64 transition-all"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -605,6 +641,32 @@ export default function AdminDashboard() {
                       )}
                     </tbody>
                   </table>
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="px-8 py-4 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+                  <div className="text-xs text-gray-500 font-medium">
+                    Showing <span className="font-bold text-gray-900">{filteredUsers.length}</span> of <span className="font-bold text-gray-900">{pagination.total}</span> students
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      disabled={pagination.page === 1 || isSearching}
+                      onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
+                      className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent transition-all"
+                    >
+                      Previous
+                    </button>
+                    <div className="text-xs font-bold px-2 text-gray-400">
+                      Page {pagination.page} of {pagination.pages}
+                    </div>
+                    <button 
+                      disabled={pagination.page >= pagination.pages || isSearching}
+                      onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
+                      className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent transition-all"
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : activeTab === 'bookings' ? (

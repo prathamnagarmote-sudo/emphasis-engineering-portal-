@@ -12,6 +12,7 @@ import { useCart } from '@/context/CartContext';
 import { useCurrency } from '@/context/CurrencyContext';
 import { Lock } from 'lucide-react';
 import Link from 'next/link';
+import ShareButtons from '@/components/ui/ShareButtons';
 
 // Time in milliseconds to wait before showing again (15 minutes)
 const REAPPEAR_DELAY = 15 * 60 * 1000;
@@ -403,6 +404,11 @@ const PracticeTests: FC = () => {
             <p className="text-gray-600 mb-8 max-w-lg mx-auto">
               {currentTest?.description ?? 'Test your knowledge with our comprehensive practice exam.'}
             </p>
+
+            {/* Social Sharing */}
+            <div className="flex justify-center mb-8 pb-8 border-b border-gray-100">
+               <ShareButtons title={currentTest?.title || "Practice Test"} />
+            </div>
 
             {reattemptLimitReached ? (
               <div className="bg-red-50 border border-red-200 rounded-xl p-8 mb-8 text-center max-w-md mx-auto">

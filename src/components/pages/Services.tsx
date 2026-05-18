@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import SectionTitle from '@/components/ui/SectionTitle';
 import PageHero from '@/components/ui/PageHero';
+import ShareButtons from '@/components/ui/ShareButtons';
 
 const iconMap: Record<string, ElementType> = {
   Briefcase,
@@ -300,6 +301,10 @@ const Services: FC = () => {
                         {service.description}
                       </p>
 
+                      <div className="mb-6 pt-6 border-t border-gray-100">
+                        <ShareButtons title={service.title} url={`/services/${service.id}`} />
+                      </div>
+
                       <div className="space-y-3 mb-8">
                         {service.features.slice(0, 3).map((feature: any, i: number) => (
                           <motion.div
@@ -574,7 +579,7 @@ const Services: FC = () => {
                 Need a Custom Solution?
               </h3>
               <p className="text-white/80 text-lg mb-10 max-w-2xl mx-auto">
-                Can't find what you're looking for? Our team is ready to create a customized
+                Need a tailored pathway based on your experience? Our team is ready to build a personalised
                 solution tailored to your specific needs.
               </p>
 
@@ -585,7 +590,7 @@ const Services: FC = () => {
                     whileTap={{ scale: 0.95 }}
                     className="px-8 py-4 bg-primary text-white font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all flex items-center gap-2"
                   >
-                    Contact Us
+                    Start Your Roadmap
                     <ArrowRight className="w-5 h-5" />
                   </motion.button>
                 </Link>
@@ -595,7 +600,7 @@ const Services: FC = () => {
                     whileTap={{ scale: 0.95 }}
                     className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/25 text-white font-semibold rounded-2xl hover:bg-white/20 transition-all"
                   >
-                    View All Services
+                    Book Strategy Session
                   </motion.button>
                 </Link>
               </div>

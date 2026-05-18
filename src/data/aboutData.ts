@@ -1,7 +1,7 @@
 export const aboutData = {
   hero: {
     title: "Empowering the Next Generation of Engineers",
-    subtitle: "Properly, Confidently, Successfully.",
+    subtitle: "With Clarity and Confidence.",
     description:
       "Since 2014, we have supported over 2,024 engineers worldwide in navigating the complexities of professional licensure and chartership with 100% success.",
   },
@@ -9,7 +9,7 @@ export const aboutData = {
   story: {
     title: "Who We Are",
     desc1:
-      "Emphasis Engineering was founded in the United Kingdom in 2014 with a single, clear purpose: to help engineers navigate professional licensure and chartership properly, confidently, and successfully.",
+      "Emphasis Engineering was founded in the United Kingdom in 2014 with a single, clear purpose: to help engineers navigate professional licensure and chartership with clarity and confidence.",
     desc2:
       "We do not offer generic coaching or template-based advice. Every service we provide is grounded in regulatory requirements and real assessor expectations.",
     buttonText: "Explore Our Services",
@@ -17,7 +17,7 @@ export const aboutData = {
 
   // ✅ WHO WE ARE (ZIP CONTENT)
   whoWeAre: [
-    "Emphasis Engineering was founded in the United Kingdom in 2014 with a single, clear purpose: to help engineers navigate professional licensure and chartership properly, confidently, and successfully.",
+    "Emphasis Engineering was founded in the United Kingdom in 2014 with a single, clear purpose: to help engineers navigate professional licensure and chartership with clarity and confidence.",
     "Over the past decade, we have supported more than 2,024 engineers worldwide in achieving Chartered Engineer (CEng) recognition through leading UK institutions, including IET, IMechE, and ICE.",
     "As our clients' careers became increasingly international, our services expanded beyond the UK. We now provide specialist support for Canadian P.Eng. and US PE registration via the UK-US MRA.",
     "We do not offer generic coaching - every service we provide is grounded in regulatory requirements, assessor expectations, and real decision-making criteria."
@@ -90,11 +90,11 @@ export const aboutData = {
 
   // ✅ FOUNDER
   founder: {
-    name: "Maxwell Oyom",
+    name: "Maxwell Oyom, CEng, P.Eng",
     title: "Founder & CEO",
     image:
       "https://res.cloudinary.com/dwk1cnlw2/image/upload/v1775497245/1753446721798_vdltqd.jpg",
-    bio: "Maxwell Oyom is an experienced engineering professional and industry leader with a strong background in construction management and large-scale projects. Passionate about empowering the next generation of engineers, he founded Emphasis Engineering to help engineers navigate professional licensure properly and successfully. Every service provided is grounded in real assessor expectations and regulatory requirements, ensuring a 100% success rate for all supported candidates.",
+    bio: "Maxwell Oyom is a high-performing engineering leader and nuclear infrastructure expert with a proven track record delivering complex, large-scale projects across North America and Europe. A Chartered Engineer (CEng) and Professional Engineer (P.Eng), he operates at the highest levels of technical excellence, regulatory rigor, and execution discipline.\n\nWith over 16 years of experience in the nuclear industry, Maxwell has built deep expertise in one of the world’s most demanding engineering environments, gaining unmatched insight into the standards, precision, and accountability required to succeed.\n\nAs Founder & CEO of Emphasis Engineering, he turns this elite experience into a decisive advantage for engineers by helping them secure professional licensure with clarity, confidence, and results. His approach is bold, practical, and built around exactly what assessors look for, positioning his clients to stand out and win.",
     linkedin:
       "https://www.linkedin.com/in/maxwell-oyom",
     twitter: "https://twitter.com",
@@ -105,6 +105,38 @@ export const aboutData = {
     { label: "Engineers Supported", value: "2,024+" },
     { label: "Success Rate", value: "100%" },
     { label: "Years Excellence", value: "10+" },
+  ],
+
+  // ✅ PROVEN METHODOLOGY
+  methodology: [
+    {
+      step: 1,
+      title: "Assess",
+      description: "We evaluate your qualifications, experience, and career goals to identify the optimal licensure pathway and any gaps.",
+    },
+    {
+      step: 2,
+      title: "Prepare",
+      description: "Receive a tailored roadmap with evidence strategy, competency writing support, and assessor-aligned document preparation.",
+    },
+    {
+      step: 3,
+      title: "Review",
+      description: "Your submission goes through mock assessments, detailed feedback, and iterative refinement until it is professionally robust.",
+    },
+    {
+      step: 4,
+      title: "Succeed",
+      description: "Walk into your professional review with confidence — fully prepared, assessor-ready, and positioned to achieve registration.",
+    },
+  ],
+
+  // ✅ FOUNDER HIGHLIGHTS
+  founderHighlights: [
+    "Nuclear infrastructure leadership across Europe & North America",
+    "2,000+ engineers mentored to professional licensure",
+    "Major infrastructure project delivery at the highest regulatory levels",
+    "16+ years in the world's most demanding engineering environment",
   ],
 
   // ✅ TIMELINE
