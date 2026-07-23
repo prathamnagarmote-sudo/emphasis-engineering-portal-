@@ -18,7 +18,10 @@ import {
   MapPin, 
   CheckCircle, 
   Mail,
-  X
+  X,
+  RefreshCw,
+  Zap,
+  ShieldCheck
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { AnimatePresence } from "framer-motion";
@@ -45,6 +48,44 @@ export default function AdminDashboard() {
   const [isGranting, setIsGranting] = useState(false);
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
   const [isSearching, setIsSearching] = useState(false);
+  const [isSyncingStripe, setIsSyncingStripe] = useState(false);
+  const [stripeSyncMessage, setStripeSyncMessage] = useState<string | null>(null);
+
+  const handleStripeSync = async () => {
+    setIsSyncingStripe(true);
+    setStripeSyncMessage(null);
+    try {
+      const res = await fetch('/api/admin/stripe/sync', { method: 'POST' });
+      const data = await res.json();
+      if (res.ok) {
+        setStripeSyncMessage(data.message || 'Sync completed!');
+        // Refresh logs, orders, and users
+        const [resLogs, resOrders, resUsers] = await Promise.all([
+          fetch('/api/admin/logs'),
+          fetch('/api/admin/orders'),
+          fetch('/api/admin/users')
+        ]);
+        if (resLogs.ok) {
+          const lData = await resLogs.json();
+          setLogs(lData.logs || []);
+        }
+        if (resOrders.ok) {
+          const oData = await resOrders.json();
+          setOrders(oData.orders || []);
+        }
+        if (resUsers.ok) {
+          const uData = await resUsers.json();
+          setUsers(uData.users || []);
+        }
+      } else {
+        setStripeSyncMessage(`Error: ${data.error || 'Failed to sync'}`);
+      }
+    } catch (e: any) {
+      setStripeSyncMessage(`Sync Error: ${e.message}`);
+    } finally {
+      setIsSyncingStripe(false);
+    }
+  };
 
   // Build a fast lookup dictionary for all products and their prices
   const productDictionary = useMemo(() => {
@@ -448,46 +489,92 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                {/* Real-time Webhook Logs */}
+                {/* Real-time Webhook Logs & Payment Sync */}
                 <div className="bg-[#061F33] rounded-3xl shadow-xl p-8 text-white">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                      <h2 className="text-xl font-bold font-display">Stripe Webhook Health</h2>
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-white/10">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
+                        <h2 className="text-xl font-bold font-display">Stripe Webhook Health</h2>
+                        <span className="text-[10px] bg-green-500/20 text-green-400 font-bold px-2 py-0.5 rounded-full border border-green-500/30">
+                          OPERATIONAL
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-400 font-mono">
+                        Active Route: <span className="text-primary font-bold">/api/webhook/stripe</span>
+                      </p>
                     </div>
-                    <button 
-                      onClick={async () => {
-                        const res = await fetch('/api/admin/logs');
-                        const data = await res.json();
-                        setLogs(data.logs || []);
-                      }}
-                      className="text-[10px] uppercase tracking-widest font-bold text-primary hover:text-white transition-colors"
-                    >
-                      Refresh Logs
-                    </button>
+
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={handleStripeSync}
+                        disabled={isSyncingStripe}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-xs transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
+                      >
+                        <Zap className={`w-3.5 h-3.5 ${isSyncingStripe ? 'animate-bounce' : ''}`} />
+                        {isSyncingStripe ? 'Syncing Payments...' : 'Sync Unsynced Payments'}
+                      </button>
+
+                      <button 
+                        onClick={async () => {
+                          const res = await fetch('/api/admin/logs');
+                          const data = await res.json();
+                          setLogs(data.logs || []);
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-bold text-gray-300 hover:text-white transition-colors border border-white/10"
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                        Refresh
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="space-y-3 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+                  {stripeSyncMessage && (
+                    <div className={`mb-6 p-4 rounded-xl text-xs font-medium border flex items-center justify-between ${
+                      stripeSyncMessage.includes('Error') 
+                        ? 'bg-red-500/10 border-red-500/30 text-red-300' 
+                        : 'bg-green-500/10 border-green-500/30 text-green-300'
+                    }`}>
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-primary" />
+                        <span>{stripeSyncMessage}</span>
+                      </div>
+                      <button 
+                        onClick={() => setStripeSyncMessage(null)}
+                        className="text-gray-400 hover:text-white text-xs"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="space-y-3 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar">
                     {logs.length === 0 ? (
-                      <div className="text-gray-500 text-sm italic py-4">No events recorded yet.</div>
+                      <div className="text-gray-500 text-sm italic py-4 text-center">No events recorded yet.</div>
                     ) : (
                       logs.map((log: any, idx: number) => (
-                        <div key={idx} className={`p-3 rounded-xl border ${
-                          log.type === 'error' ? 'bg-red-500/10 border-red-500/20' : 
-                          log.type === 'webhook' ? 'bg-green-500/10 border-green-500/20' : 
+                        <div key={idx} className={`p-3.5 rounded-2xl border transition-all ${
+                          log.type === 'error' ? 'bg-red-500/10 border-red-500/20 hover:border-red-500/40' : 
+                          log.message?.includes('AUTO-SYNC') ? 'bg-amber-500/10 border-amber-500/30 hover:border-amber-500/50' :
+                          log.type === 'webhook' ? 'bg-green-500/10 border-green-500/20 hover:border-green-500/40' : 
                           'bg-white/5 border-white/10'
                         }`}>
                           <div className="flex items-center justify-between mb-2">
-                            <span className={`text-[10px] font-bold uppercase tracking-wider ${
-                              log.type === 'error' ? 'text-red-400' : 
-                              log.type === 'webhook' ? 'text-green-400' : 
-                              'text-blue-400'
-                            }`}>
-                              {log.message}
+                            <div className="flex items-center gap-2">
+                              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                                log.type === 'error' ? 'bg-red-500/20 text-red-400' : 
+                                log.message?.includes('AUTO-SYNC') ? 'bg-amber-500/20 text-amber-300' :
+                                log.type === 'webhook' ? 'bg-green-500/20 text-green-400' : 
+                                'bg-blue-500/20 text-blue-400'
+                              }`}>
+                                {log.message}
+                              </span>
+                            </div>
+                            <span className="text-[10px] text-gray-400 font-mono">
+                              {new Date(log.timestamp || log.createdAt).toLocaleString()}
                             </span>
-                            <span className="text-[10px] text-gray-500">{new Date(log.timestamp || log.createdAt).toLocaleTimeString()}</span>
                           </div>
-                          <div className="text-[11px] font-mono text-gray-300 break-all bg-black/20 p-2 rounded-lg">
+                          <div className="text-[11px] font-mono text-gray-300 break-all bg-black/30 p-2.5 rounded-xl border border-white/5">
                             {typeof log.details === 'object' ? JSON.stringify(log.details) : log.details}
                           </div>
                         </div>

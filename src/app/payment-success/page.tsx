@@ -25,6 +25,27 @@ function PaymentSuccessContent() {
     let attempts = 0;
     const maxAttempts = 15; // 30 seconds total
 
+    // ─────────────────────────────────────────────────────────────
+    // FAIL-SAFE: The moment the student lands here, hit our verify
+    // endpoint. If the Stripe webhook already ran → it's a no-op.
+    // If the webhook missed → it instantly fulfills everything:
+    //   ✅ Unlocks course/service/test in MongoDB
+    //   ✅ Creates the Order record (Admin Panel)
+    //   ✅ Sends student confirmation email
+    //   ✅ Sends instructor new-sale alert email
+    // ─────────────────────────────────────────────────────────────
+    const runFailSafeVerification = async () => {
+      if (!sessionId) return;
+      try {
+        await fetch(`/api/checkout/verify?session_id=${sessionId}`);
+        // Always refresh session after verify so dashboard shows new content immediately
+        await update();
+      } catch (e) {
+        // Fail silently — the webhook may still deliver
+        console.error('Fail-safe verify error:', e);
+      }
+    };
+
     const checkBooking = async () => {
       try {
         attempts++;
@@ -59,6 +80,8 @@ function PaymentSuccessContent() {
     };
 
     const startPolling = async () => {
+      // Run fail-safe first, then start booking polling
+      await runFailSafeVerification();
       const found = await checkBooking();
       if (!found && hasService) {
         interval = setInterval(async () => {
@@ -84,7 +107,7 @@ function PaymentSuccessContent() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [hasService, update, router]);
+  }, [hasService, update, router, sessionId]);
 
   if (loading) {
     return (
