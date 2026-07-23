@@ -855,6 +855,7 @@ const CourseDetail: FC<{ id?: string }> = ({ id: propId }) => {
                       </div>
                       <motion.a
                         href={resource.url}
+                        download
                         target="_blank"
                         rel="noopener noreferrer"
                         whileHover={{ scale: 1.05 }}
