@@ -20,6 +20,11 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
+  icons: {
+    icon: "/faviconemphasis.png",
+    shortcut: "/faviconemphasis.png",
+    apple: "/faviconemphasis.png",
+  },
   openGraph: {
     type: "website",
     locale: "en_CA",

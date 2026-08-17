@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       message,
     });
 
-    const instructorEmail = process.env.INSTRUCTOR_EMAIL || "omnagarmote@gmail.com";
+    const instructorEmail = process.env.INSTRUCTOR_EMAIL || "engineeringemphasis@gmail.com";
 
     // Email to Instructor
     const instructorHtml = `

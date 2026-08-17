@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
     // Notify instructor
     try {
-      const instructorEmail = process.env.INSTRUCTOR_EMAIL || process.env.EMAIL_USER;
+      const instructorEmail = process.env.INSTRUCTOR_EMAIL || process.env.EMAIL_USER || "engineeringemphasis@gmail.com";
       if (instructorEmail) {
         const { sendEmail } = await import('@/lib/mail');
         await sendEmail(
