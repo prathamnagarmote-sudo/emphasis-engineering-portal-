@@ -49,8 +49,6 @@ function PaymentSuccessContent() {
     const checkBooking = async () => {
       try {
         attempts++;
-        // Refresh session to get latest purchased content
-        await update();
 
         if (hasService) {
           const res = await fetch('/api/services/booking');
@@ -61,11 +59,13 @@ function PaymentSuccessContent() {
             if (latestPending) {
               setPendingBooking(latestPending);
               setLoading(false);
+              await update();
               return true; // Stop polling
             }
           }
         } else {
           setLoading(false);
+          await update();
           return true; // Not a service, stop polling
         }
       } catch (e) {

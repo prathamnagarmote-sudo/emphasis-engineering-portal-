@@ -83,7 +83,7 @@ const AuthSection = () => {
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
-  if (status === "loading") {
+  if (status === "loading" && !(session as any)?.user) {
     return <div className="w-8 h-8 animate-pulse bg-gray-200 rounded-full flex-shrink-0" />;
   }
 
