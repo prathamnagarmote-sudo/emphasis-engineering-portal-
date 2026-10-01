@@ -1,16 +1,29 @@
-const DOMAIN = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+const DOMAIN = 
+  process.env.NEXTAUTH_URL && !process.env.NEXTAUTH_URL.includes('localhost')
+    ? process.env.NEXTAUTH_URL
+    : 'https://emphasisengineering.com';
+
 const INSTRUCTOR_EMAIL = process.env.INSTRUCTOR_EMAIL || 'engineeringemphasis@gmail.com';
 
 export async function sendPurchaseEmails(studentEmail: string, studentName: string, items: any[]) {
   try {
     const resendApiKey = process.env.RESEND_API_KEY;
     if (!resendApiKey) {
-      throw new Error('RESEND_API_KEY is missing');
+      console.error('RESEND_API_KEY is missing from environment variables');
+      return { success: false, error: 'RESEND_API_KEY is missing' };
     }
 
-    const isService = items.some(i => i.type === 'service' || i.category === 'service');
-    const isCourse = items.some(i => i.type === 'course' || i.category === 'course');
-    const isTest = items.some(i => i.type === 'test' || i.category === 'test');
+    if (!studentEmail) {
+      console.error('sendPurchaseEmails: studentEmail is missing');
+      return { success: false, error: 'Student email is missing' };
+    }
+
+    const safeItems = Array.isArray(items) && items.length > 0 ? items : [{ title: 'Emphasis Engineering Access', type: 'service' }];
+    const displayName = (studentName && studentName.trim()) || studentEmail.split('@')[0] || 'Learner';
+
+    const isService = safeItems.some(i => i.type === 'service' || i.category === 'service');
+    const isCourse = safeItems.some(i => i.type === 'course' || i.category === 'course');
+    const isTest = safeItems.some(i => i.type === 'test' || i.category === 'test');
 
     // 1. BUILD STUDENT WELCOME EMAIL
     let studentMessage = `
@@ -20,12 +33,12 @@ export async function sendPurchaseEmails(studentEmail: string, studentName: stri
         </div>
         
         <h2 style="color: #061F33; text-align: center; margin-bottom: 8px;">Success! Your Order is Confirmed</h2>
-        <p style="color: #475569; text-align: center; margin-bottom: 32px;">Hi ${studentName}, welcome to Emphasis Engineering. Your access is now ready.</p>
+        <p style="color: #475569; text-align: center; margin-bottom: 32px;">Hi ${displayName}, welcome to Emphasis Engineering. Your access is now ready.</p>
         
         <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #f1f5f9; margin-bottom: 32px;">
           <h3 style="margin-top: 0; font-size: 16px; color: #061F33; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Order Details:</h3>
           <ul style="padding-left: 20px; color: #334155; margin-bottom: 0;">
-            ${items.map(i => `<li style="margin-bottom: 8px;"><strong>${i.title}</strong></li>`).join('')}
+            ${safeItems.map(i => `<li style="margin-bottom: 8px;"><strong>${i.title}</strong></li>`).join('')}
           </ul>
         </div>
     `;
@@ -75,7 +88,7 @@ export async function sendPurchaseEmails(studentEmail: string, studentName: stri
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
         <h2 style="color: #0d9488;">🚀 New Enrollment Alert!</h2>
         <div style="background: #f0fdfa; padding: 20px; border-radius: 8px; border-left: 5px solid #0d9488;">
-          <p style="margin: 0 0 10px;"><strong>Student Name:</strong> ${studentName}</p>
+          <p style="margin: 0 0 10px;"><strong>Student Name:</strong> ${displayName}</p>
           <p style="margin: 0 0 10px;"><strong>Student Email:</strong> ${studentEmail}</p>
           <p style="margin: 0;"><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
         </div>
@@ -90,11 +103,11 @@ export async function sendPurchaseEmails(studentEmail: string, studentName: stri
             </tr>
           </thead>
           <tbody>
-            ${items.map(i => `
+            ${safeItems.map(i => `
               <tr style="border-bottom: 1px solid #f1f5f9;">
                 <td style="padding: 10px;">${i.title}</td>
                 <td style="padding: 10px; text-transform: capitalize; color: #64748b;">${i.type || i.category || 'N/A'}</td>
-                <td style="padding: 10px; text-align: right;">C$${i.price}</td>
+                <td style="padding: 10px; text-align: right;">${i.price !== undefined && i.price !== null ? `C$${i.price}` : '-'}</td>
               </tr>
             `).join('')}
           </tbody>
@@ -106,49 +119,73 @@ export async function sendPurchaseEmails(studentEmail: string, studentName: stri
       </div>
     `;
 
+    let studentError: string | null = null;
+    let instructorError: string | null = null;
+
     // SEND STUDENT EMAIL
-    const studentRes = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${resendApiKey}`,
-      },
-      body: JSON.stringify({
-        from: "Emphasis Engineering <verify@emphasisengineering.com>", 
-        to: studentEmail,
-        subject: "🎉 Welcome! Your Emphasis Engineering Order is Ready",
-        html: studentMessage,
-      }),
-    });
+    try {
+      const studentRes = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${resendApiKey}`,
+        },
+        body: JSON.stringify({
+          from: "Emphasis Engineering <verify@emphasisengineering.com>", 
+          to: studentEmail.trim(),
+          subject: "🎉 Welcome! Your Emphasis Engineering Order is Ready",
+          html: studentMessage,
+        }),
+      });
 
-    if (!studentRes.ok) {
-      const errorData = await studentRes.json();
-      throw new Error(`Student Email Failed: ${errorData.message || "Unknown error"}`);
+      if (!studentRes.ok) {
+        const errorData = await studentRes.json();
+        studentError = errorData.message || `Status ${studentRes.status}`;
+        console.error('Student purchase email failed:', studentError);
+      }
+    } catch (e: any) {
+      studentError = e.message;
+      console.error('Student purchase email exception:', e);
     }
 
-    // SEND INSTRUCTOR EMAIL
-    const instructorRes = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${resendApiKey}`,
-      },
-      body: JSON.stringify({
-        from: "Portal Alerts <verify@emphasisengineering.com>", 
-        to: INSTRUCTOR_EMAIL,
-        subject: `🔥 New Sale: ${studentName} purchased ${items.length} item(s)`,
-        html: instructorMessage,
-      }),
-    });
+    // SEND INSTRUCTOR EMAIL (runs independently of student email outcome)
+    try {
+      const instructorRes = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${resendApiKey}`,
+        },
+        body: JSON.stringify({
+          from: "Emphasis Engineering <verify@emphasisengineering.com>", 
+          to: INSTRUCTOR_EMAIL.trim(),
+          subject: `New Student Enrollment: ${displayName} (${safeItems.map(i => i.title).join(', ')})`,
+          html: instructorMessage,
+          text: `New Student Enrollment\n\nStudent Name: ${displayName}\nStudent Email: ${studentEmail}\nDate: ${new Date().toLocaleDateString()}\n\nItems Purchased:\n${safeItems.map(i => `- ${i.title} (${i.type || i.category || 'Item'})`).join('\n')}\n\nView in Admin Dashboard: ${DOMAIN}/admin`
+        }),
+      });
 
-    if (!instructorRes.ok) {
-      const errorData = await instructorRes.json();
-      throw new Error(`Instructor Email Failed: ${errorData.message || "Unknown error"}`);
+      if (!instructorRes.ok) {
+        const errorData = await instructorRes.json();
+        instructorError = errorData.message || `Status ${instructorRes.status}`;
+        console.error('Instructor sale notification email failed:', instructorError);
+      }
+    } catch (e: any) {
+      instructorError = e.message;
+      console.error('Instructor sale notification email exception:', e);
     }
 
-    return { success: true };
+    const hasAnyError = !!studentError || !!instructorError;
+    return { 
+      success: !hasAnyError, 
+      studentDelivered: !studentError,
+      instructorDelivered: !instructorError,
+      studentError,
+      instructorError
+    };
   } catch (error: any) {
-    console.error('Email service failed:', error);
+    console.error('Email service failed completely:', error);
     return { success: false, error: error.message };
   }
 }
+

@@ -44,7 +44,7 @@ export async function POST(req: Request) {
         metadata: {
           userId: (session.user as any).id,
           itemIds: JSON.stringify(items.map((i: any) => i.id)),
-          itemDetails: JSON.stringify(items.map((i: any) => ({ id: i.id, type: i.type, title: i.title }))),
+          itemDetails: JSON.stringify(items.map((i: any) => ({ id: i.id, type: i.type, title: i.title, price: i.price }))),
           hasService: hasService ? 'true' : 'false',
           voucherCode: voucherCode || '',
         }
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       metadata: {
         userId: (session.user as any).id,
         itemIds: JSON.stringify(items.map((i: any) => i.id)),
-        itemDetails: JSON.stringify(items.map((i: any) => ({ id: i.id, type: i.type, title: i.title }))),
+        itemDetails: JSON.stringify(items.map((i: any) => ({ id: i.id, type: i.type, title: i.title, price: i.price }))),
         hasService: hasService ? 'true' : 'false',
         voucherCode: voucherCode || '',
       },

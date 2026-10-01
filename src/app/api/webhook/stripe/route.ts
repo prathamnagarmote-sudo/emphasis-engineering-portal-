@@ -90,12 +90,34 @@ export async function POST(req: Request) {
               stripeSessionId: session.id,
               country: billingCountry || user.country || 'Unknown'
             });
-            // Send automated emails to Student and Instructor
-            await sendPurchaseEmails(user.email, user.name, itemDetails);
-            
-          } catch (orderErr) {
-            console.error('Order creation/Email failed:', orderErr);
+          } catch (orderErr: any) {
+            console.error('Order creation failed in webhook:', orderErr);
+            await Log.create({
+              type: 'error',
+              message: `Webhook Order creation error for ${user.email}: ${orderErr.message}`,
+              details: { error: orderErr.message, sessionId: session.id }
+            });
           }
+
+          // Send automated emails to Student and Instructor (always runs independently)
+          try {
+            const emailResult = await sendPurchaseEmails(user.email, user.name, itemDetails);
+            await Log.create({
+              type: emailResult.success ? 'webhook' : 'error',
+              message: emailResult.success 
+                ? `Purchase confirmation emails sent to ${user.email}` 
+                : `Purchase email issue for ${user.email}: ${emailResult.studentError || emailResult.instructorError || emailResult.error}`,
+              details: { emailResult, items: itemDetails, email: user.email }
+            });
+          } catch (emailErr: any) {
+            console.error('Webhook email sending exception:', emailErr);
+            await Log.create({
+              type: 'error',
+              message: `Webhook email sending exception for ${user.email}: ${emailErr.message}`,
+              details: { error: emailErr.message, email: user.email }
+            });
+          }
+
 
           // Handle Service Bookings
           for (const item of itemDetails) {

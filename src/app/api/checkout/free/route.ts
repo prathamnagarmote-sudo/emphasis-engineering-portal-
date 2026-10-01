@@ -7,6 +7,7 @@ import Order from "@/models/Order";
 import ServiceBooking from "@/models/ServiceBooking";
 import Voucher from "@/models/Voucher";
 import Log from "@/models/Log";
+import { sendPurchaseEmails } from "@/lib/email-service";
 
 export async function POST(req: Request) {
   try {
@@ -95,6 +96,13 @@ export async function POST(req: Request) {
       message: `Free purchase: ${user.email} acquired ${items.length} items`,
       details: { items: itemIds, userId: user._id }
     });
+
+    // 6. Send confirmation emails to Student and Instructor
+    try {
+      await sendPurchaseEmails(user.email, user.name, items);
+    } catch (emailErr) {
+      console.error('Free checkout email sending error:', emailErr);
+    }
 
     return NextResponse.json({ message: "Success" }, { status: 200 });
 

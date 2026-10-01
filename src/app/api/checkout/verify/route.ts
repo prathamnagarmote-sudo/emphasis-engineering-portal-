@@ -136,7 +136,6 @@ export async function GET(req: Request) {
         createdAt: new Date(stripeSession.created * 1000),
       });
     } catch (orderErr: any) {
-      // If unique constraint fires, the webhook just beat us — that's fine
       if (orderErr.code === 11000) {
         return NextResponse.json({
           status: 'already_fulfilled',
@@ -144,7 +143,12 @@ export async function GET(req: Request) {
           alreadyFulfilled: true,
         });
       }
-      throw orderErr;
+      console.error('Verify Order creation error:', orderErr);
+      await Log.create({
+        type: 'error',
+        message: `Verify Order creation error for ${user.email}: ${orderErr.message}`,
+        details: { error: orderErr.message, sessionId }
+      });
     }
 
     // Step 7: Create service bookings if any item is a service
@@ -172,9 +176,16 @@ export async function GET(req: Request) {
 
     // Step 9: Send confirmation emails (student + instructor)
     try {
-      await sendPurchaseEmails(user.email, user.name, itemDetails);
-    } catch (emailErr) {
-      console.error('Failsafe email error:', emailErr);
+      const emailResult = await sendPurchaseEmails(user.email, user.name, itemDetails);
+      await Log.create({
+        type: emailResult.success ? 'webhook' : 'error',
+        message: emailResult.success 
+          ? `Failsafe purchase emails sent to ${user.email}` 
+          : `Failsafe email delivery issue for ${user.email}: ${emailResult.studentError || emailResult.instructorError || emailResult.error}`,
+        details: { emailResult, items: itemDetails, email: user.email }
+      });
+    } catch (emailErr: any) {
+      console.error('Failsafe email exception:', emailErr);
     }
 
     // Step 10: Log the auto-heal event for Admin Dashboard visibility
@@ -183,6 +194,7 @@ export async function GET(req: Request) {
       message: `FAILSAFE AUTO-HEAL: Fulfilled missing purchase for ${user.email}`,
       details: { items: itemIds, sessionId, userId: user._id },
     });
+
 
     return NextResponse.json({
       status: 'fulfilled',

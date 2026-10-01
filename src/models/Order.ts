@@ -1,5 +1,15 @@
 import mongoose from 'mongoose';
 
+const OrderItemSchema = new mongoose.Schema(
+  {
+    id: { type: String },
+    title: { type: String },
+    type: { type: String },
+    price: { type: Number },
+  },
+  { _id: false }
+);
+
 const OrderSchema = new mongoose.Schema(
   {
     userId: {
@@ -9,14 +19,7 @@ const OrderSchema = new mongoose.Schema(
     },
     userEmail: String,
     userName: String,
-    items: [
-      {
-        id: String,
-        title: String,
-        type: String,
-        price: Number, // Original price
-      }
-    ],
+    items: [OrderItemSchema],
     totalAmount: {
       type: Number,
       required: true,
@@ -44,3 +47,4 @@ const OrderSchema = new mongoose.Schema(
 );
 
 export default mongoose.models.Order || mongoose.model('Order', OrderSchema);
+

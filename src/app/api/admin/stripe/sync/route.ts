@@ -89,17 +89,21 @@ export async function POST() {
 
           // 2. Create Order document
           const country = sessionObj.customer_details?.address?.country || user.country || 'Unknown';
-          await Order.create({
-            userId: user._id,
-            userEmail: user.email,
-            userName: user.name,
-            items: itemDetails,
-            totalAmount: sessionObj.amount_total ? sessionObj.amount_total / 100 : 0,
-            currency: sessionObj.currency || 'cad',
-            stripeSessionId: sessionId,
-            country: country,
-            createdAt: new Date(sessionObj.created * 1000)
-          });
+          try {
+            await Order.create({
+              userId: user._id,
+              userEmail: user.email,
+              userName: user.name,
+              items: itemDetails,
+              totalAmount: sessionObj.amount_total ? sessionObj.amount_total / 100 : 0,
+              currency: sessionObj.currency || 'cad',
+              stripeSessionId: sessionId,
+              country: country,
+              createdAt: new Date(sessionObj.created * 1000)
+            });
+          } catch (orderErr: any) {
+            console.error('Auto-sync Order creation error:', orderErr);
+          }
 
           // 3. Handle service bookings if applicable
           for (const item of itemDetails) {
