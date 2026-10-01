@@ -122,6 +122,8 @@ export async function sendPurchaseEmails(studentEmail: string, studentName: stri
     let studentError: string | null = null;
     let instructorError: string | null = null;
 
+    const studentText = `Order Confirmation - Emphasis Engineering\n\nHi ${displayName},\n\nWelcome to Emphasis Engineering. Your order is confirmed and your access is now ready.\n\nOrder Details:\n${safeItems.map(i => `- ${i.title}`).join('\n')}\n\n${isService ? 'Service Activation:\nTo begin your application support, please log in to your dashboard to complete your Intake Form and schedule your initial review session with our instructors.\n\n' : ''}${isCourse ? 'Course Learning:\nYour training modules are now unlocked! Log in to your dashboard to access your course content.\n\n' : ''}${isTest ? 'Practice Exams:\nYour practice tests are ready. Log in to your dashboard to begin your attempts.\n\n' : ''}Access your dashboard here: ${DOMAIN}/dashboard\n\nIf you have any questions or need assistance, simply reply to this email.\n\nThe Emphasis Engineering Team`;
+
     // SEND STUDENT EMAIL
     try {
       const studentRes = await fetch("https://api.resend.com/emails", {
@@ -133,8 +135,10 @@ export async function sendPurchaseEmails(studentEmail: string, studentName: stri
         body: JSON.stringify({
           from: "Emphasis Engineering <verify@emphasisengineering.com>", 
           to: studentEmail.trim(),
-          subject: "🎉 Welcome! Your Emphasis Engineering Order is Ready",
+          reply_to: INSTRUCTOR_EMAIL.trim(),
+          subject: "Order Confirmation: Your Emphasis Engineering Access is Ready",
           html: studentMessage,
+          text: studentText,
         }),
       });
 
@@ -159,6 +163,7 @@ export async function sendPurchaseEmails(studentEmail: string, studentName: stri
         body: JSON.stringify({
           from: "Emphasis Engineering <verify@emphasisengineering.com>", 
           to: INSTRUCTOR_EMAIL.trim(),
+          reply_to: studentEmail.trim(),
           subject: `New Student Enrollment: ${displayName} (${safeItems.map(i => i.title).join(', ')})`,
           html: instructorMessage,
           text: `New Student Enrollment\n\nStudent Name: ${displayName}\nStudent Email: ${studentEmail}\nDate: ${new Date().toLocaleDateString()}\n\nItems Purchased:\n${safeItems.map(i => `- ${i.title} (${i.type || i.category || 'Item'})`).join('\n')}\n\nView in Admin Dashboard: ${DOMAIN}/admin`
