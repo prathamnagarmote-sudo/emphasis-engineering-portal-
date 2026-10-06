@@ -182,7 +182,7 @@ const Footer: FC = () => {
             <ul className="space-y-3 mb-8">
               {[
                 { Icon: MapPin, text: "94 Grath Crescent, Whitby, Ontario L1N 6N8, Canada" },
-                { Icon: Phone, text: "+1 647-495-2703" },
+                { Icon: Phone, text: "+1 289 928 4759" },
                 { Icon: Mail,  text: "emphasis.engineering@gmail.com" },
               ].map(({ Icon, text }) => (
                 <li key={text} className="flex items-start gap-3 text-sm text-gray-400">

@@ -60,7 +60,7 @@ const Contact: FC = () => {
     {
       icon: Phone,
       title: 'Call Us',
-      content: '+1 647-495-2703 ',
+      content: '+1 289 928 4759',
       description: 'Mon-Fri 9am-6pm EST',
     },
     {
