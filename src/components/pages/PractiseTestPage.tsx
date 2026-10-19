@@ -34,6 +34,7 @@ interface PracticeTest {
   description: string;
   questions: Question[];
   duration: number;
+  questionsCount?: number;
   isFree?: boolean;
   passPercentage?: number;
   price?: number;
@@ -108,8 +109,11 @@ const PracticeTests: FC = () => {
 
   const practiceQuestions = currentTest?.questions || [];
   const testIdSafe = testIdFromUrl || "default-test";
-  const purchased = isPurchased(testIdSafe);
-  const canStart = currentTest?.isFree || purchased;
+  const purchased = isPurchased(testIdSafe) ||
+    (currentTest?.testId ? isPurchased(currentTest.testId) : false) ||
+    (currentTest?._id ? isPurchased(String(currentTest._id)) : false);
+  const canStart = Boolean(currentTest?.isFree || purchased);
+  const totalQuestionsCount = currentTest?.questionsCount || practiceQuestions.length || 0;
 
   useEffect(() => {
     if (testIdSafe) {
@@ -164,7 +168,7 @@ const PracticeTests: FC = () => {
           timeLeft: parsed.timeLeft !== undefined ? parsed.timeLeft : prev.timeLeft
         }));
         // Automatically start the test to the saved state ONLY if they have access
-        if (currentTest.isFree || isPurchased(testIdSafe)) {
+        if (canStart) {
           setIsStarted(true);
         }
       } catch (e) {
@@ -300,6 +304,10 @@ const PracticeTests: FC = () => {
   };
 
   const handleStartMode = (mode: 'practice' | 'exam') => {
+    if (!canStart) {
+      handlePurchase();
+      return;
+    }
     setExamState(prev => ({
       ...prev,
       testMode: mode,
@@ -410,7 +418,7 @@ const PracticeTests: FC = () => {
                <ShareButtons title={currentTest?.title || "Practice Test"} />
             </div>
 
-            {reattemptLimitReached ? (
+            {reattemptLimitReached && canStart ? (
               <div className="bg-red-50 border border-red-200 rounded-xl p-8 mb-8 text-center max-w-md mx-auto">
                 <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
                 <h3 className="font-bold text-secondary text-xl mb-2">Attempt Limit Reached</h3>
@@ -426,17 +434,30 @@ const PracticeTests: FC = () => {
                 <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-10">
                   {/* Practice Mode Card */}
                   <motion.div 
-                    whileHover={{ y: -5, borderColor: '#3F9FA3' }}
+                    whileHover={canStart ? { y: -5, borderColor: '#3F9FA3' } : {}}
                     onClick={() => handleStartMode('practice')}
-                    className="bg-white border-2 border-gray-100 rounded-3xl p-8 text-left cursor-pointer transition-all shadow-sm hover:shadow-xl group"
+                    className={`bg-white border-2 border-gray-100 rounded-3xl p-8 text-left transition-all shadow-sm ${
+                      canStart ? 'cursor-pointer hover:shadow-xl group' : 'cursor-pointer hover:border-amber-300 relative overflow-hidden'
+                    }`}
                   >
                     <div className="flex items-center justify-between mb-6">
-                      <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-primary">
+                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-colors ${
+                        canStart ? 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white' : 'bg-gray-100 text-gray-400'
+                      }`}>
                         <BookOpen className="w-8 h-8" />
                       </div>
-                      <span className="px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-[10px] font-bold uppercase tracking-wider">Beta</span>
+                      {canStart ? (
+                        <span className="px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-[10px] font-bold uppercase tracking-wider">Beta</span>
+                      ) : (
+                        <span className="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                          <Lock className="w-3 h-3" /> Locked
+                        </span>
+                      )}
                     </div>
-                    <h3 className="text-xl font-bold text-secondary mb-3">Practice mode</h3>
+                    <h3 className="text-xl font-bold text-secondary mb-3 flex items-center justify-between">
+                      Practice mode
+                      {!canStart && <Lock className="w-4 h-4 text-amber-600 inline" />}
+                    </h3>
                     <p className="text-gray-500 text-sm mb-8 leading-relaxed">
                       Practice answering questions in a low-stakes environment and review each answer before moving on to the next question.
                     </p>
@@ -447,7 +468,7 @@ const PracticeTests: FC = () => {
                           <AlertCircle className="w-3.5 h-3.5" />
                           <span className="text-[10px] font-semibold uppercase">Questions</span>
                         </div>
-                        <div className="text-sm font-bold text-secondary">{practiceQuestions.length}</div>
+                        <div className="text-sm font-bold text-secondary">{totalQuestionsCount}</div>
                       </div>
                       <div>
                         <div className="flex items-center gap-1.5 text-gray-400 mb-1">
@@ -468,17 +489,30 @@ const PracticeTests: FC = () => {
 
                   {/* Exam Mode Card */}
                   <motion.div 
-                    whileHover={{ y: -5, borderColor: '#061F33' }}
+                    whileHover={canStart ? { y: -5, borderColor: '#061F33' } : {}}
                     onClick={() => handleStartMode('exam')}
-                    className="bg-white border-2 border-gray-100 rounded-3xl p-8 text-left cursor-pointer transition-all shadow-sm hover:shadow-xl group"
+                    className={`bg-white border-2 border-gray-100 rounded-3xl p-8 text-left transition-all shadow-sm ${
+                      canStart ? 'cursor-pointer hover:shadow-xl group' : 'cursor-pointer hover:border-amber-300 relative overflow-hidden'
+                    }`}
                   >
                     <div className="flex items-center justify-between mb-6">
-                      <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-colors text-secondary">
+                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-colors ${
+                        canStart ? 'bg-secondary/10 text-secondary group-hover:bg-secondary group-hover:text-white' : 'bg-gray-100 text-gray-400'
+                      }`}>
                         <Target className="w-8 h-8" />
                       </div>
-                      <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-bold uppercase tracking-wider">Timed</span>
+                      {canStart ? (
+                        <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-bold uppercase tracking-wider">Timed</span>
+                      ) : (
+                        <span className="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                          <Lock className="w-3 h-3" /> Locked
+                        </span>
+                      )}
                     </div>
-                    <h3 className="text-xl font-bold text-secondary mb-3">Exam mode</h3>
+                    <h3 className="text-xl font-bold text-secondary mb-3 flex items-center justify-between">
+                      Exam mode
+                      {!canStart && <Lock className="w-4 h-4 text-amber-600 inline" />}
+                    </h3>
                     <p className="text-gray-500 text-sm mb-8 leading-relaxed">
                       Simulate a standardized test by completing your practice test within the time limit and achieving a passing score.
                     </p>
@@ -489,7 +523,7 @@ const PracticeTests: FC = () => {
                           <AlertCircle className="w-3.5 h-3.5" />
                           <span className="text-[10px] font-semibold uppercase">Questions</span>
                         </div>
-                        <div className="text-sm font-bold text-secondary">{practiceQuestions.length}</div>
+                        <div className="text-sm font-bold text-secondary">{totalQuestionsCount}</div>
                       </div>
                       <div>
                         <div className="flex items-center gap-1.5 text-gray-400 mb-1">
@@ -525,6 +559,7 @@ const PracticeTests: FC = () => {
                     </Button>
                   </div>
                 )}
+
               </>
             )}
           </motion.div>
@@ -719,6 +754,29 @@ const PracticeTests: FC = () => {
                 })}
             </div>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Protect against direct unpurchased access to active exam
+  if (!canStart) {
+    return (
+      <div className="pt-40 min-h-screen bg-gray-50 flex flex-col items-center px-4">
+        <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mb-6">
+          <Lock className="w-10 h-10 text-amber-600" />
+        </div>
+        <h2 className="text-2xl font-bold text-secondary mb-2">Test Locked</h2>
+        <p className="text-gray-500 mb-8 text-center max-w-md">
+          This is a premium practice test. Please purchase this test to unlock the questions.
+        </p>
+        <div className="flex gap-4">
+          <Button onClick={handlePurchase} disabled={!!isBuying} size="lg">
+            {isBuying ? "Processing..." : "Buy Now to Unlock"}
+          </Button>
+          <Link href="/practice-tests">
+            <Button variant="outline" size="lg">Back to All Tests</Button>
+          </Link>
         </div>
       </div>
     );
