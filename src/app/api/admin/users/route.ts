@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import connectToDatabase from "@/lib/mongodb";
 import User from "@/models/User";
+import Order from "@/models/Order";
+import mongoose from "mongoose";
 
 export const dynamic = 'force-dynamic';
 
@@ -18,27 +20,54 @@ export async function GET(req: Request) {
     const search = searchParams.get("search") || "";
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
+    const purchased = searchParams.get("purchased") === "true";
     const skip = (page - 1) * limit;
 
     await connectToDatabase();
 
-    // Create a search query
-    const query = search
-      ? {
-          $or: [
-            { name: { $regex: search, $options: "i" } },
-            { email: { $regex: search, $options: "i" } },
-          ],
-        }
-      : {};
+    let baseQuery: any = {};
+
+    if (purchased) {
+      // Find orders to get associated user emails and userIds
+      const orders = await Order.find({}).select("userId userEmail").lean();
+      const orderUserIds = orders
+        .map((o: any) => o.userId)
+        .filter((id: any) => id && mongoose.isValidObjectId(id));
+      const orderEmails = orders
+        .map((o: any) => o.userEmail)
+        .filter(Boolean);
+
+      baseQuery = {
+        $or: [
+          { purchasedContent: { $exists: true, $ne: [] } },
+          ...(orderUserIds.length > 0 ? [{ _id: { $in: orderUserIds } }] : []),
+          ...(orderEmails.length > 0 ? [{ email: { $in: orderEmails } }] : []),
+        ],
+      };
+    }
+
+    let finalQuery: any = baseQuery;
+    if (search) {
+      const searchQuery = {
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } },
+        ],
+      };
+      if (purchased) {
+        finalQuery = { $and: [baseQuery, searchQuery] };
+      } else {
+        finalQuery = searchQuery;
+      }
+    }
 
     const [users, total] = await Promise.all([
-      User.find(query)
+      User.find(finalQuery)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .select("-password"),
-      User.countDocuments(query),
+      User.countDocuments(finalQuery),
     ]);
 
     return NextResponse.json({

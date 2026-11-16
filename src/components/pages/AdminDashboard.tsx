@@ -21,7 +21,14 @@ import {
   X,
   RefreshCw,
   Zap,
-  ShieldCheck
+  ShieldCheck,
+  Trash2,
+  Sparkles,
+  Filter,
+  CheckSquare,
+  Square,
+  AlertTriangle,
+  Check
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { AnimatePresence } from "framer-motion";
@@ -50,6 +57,14 @@ export default function AdminDashboard() {
   const [isSearching, setIsSearching] = useState(false);
   const [isSyncingStripe, setIsSyncingStripe] = useState(false);
   const [stripeSyncMessage, setStripeSyncMessage] = useState<string | null>(null);
+
+  // Enquiries / Contacts Management State
+  const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
+  const [contactSearch, setContactSearch] = useState("");
+  const [contactStatusFilter, setContactStatusFilter] = useState<'all' | 'new' | 'read' | 'replied'>('all');
+  const [isCleaningSpam, setIsCleaningSpam] = useState(false);
+  const [isDeletingContacts, setIsDeletingContacts] = useState(false);
+  const [contactNotice, setContactNotice] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   const handleStripeSync = async () => {
     setIsSyncingStripe(true);
@@ -87,6 +102,163 @@ export default function AdminDashboard() {
     }
   };
 
+  // Enquiries Filtered List
+  const filteredContacts = useMemo(() => {
+    return contacts.filter((c) => {
+      if (contactStatusFilter !== 'all' && c.status !== contactStatusFilter) {
+        return false;
+      }
+      if (contactSearch.trim()) {
+        const q = contactSearch.toLowerCase();
+        const matchesName = (c.name || '').toLowerCase().includes(q);
+        const matchesEmail = (c.email || '').toLowerCase().includes(q);
+        const matchesSubject = (c.subject || '').toLowerCase().includes(q);
+        const matchesMessage = (c.message || '').toLowerCase().includes(q);
+        return matchesName || matchesEmail || matchesSubject || matchesMessage;
+      }
+      return true;
+    });
+  }, [contacts, contactStatusFilter, contactSearch]);
+
+  const toggleSelectContact = (id: string) => {
+    setSelectedContactIds(prev =>
+      prev.includes(id) ? prev.filter(cId => cId !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAllFiltered = () => {
+    const filteredIds = filteredContacts.map(c => c._id);
+    const allSelected = filteredIds.length > 0 && filteredIds.every(id => selectedContactIds.includes(id));
+    if (allSelected) {
+      setSelectedContactIds(prev => prev.filter(id => !filteredIds.includes(id)));
+    } else {
+      setSelectedContactIds(prev => Array.from(new Set([...prev, ...filteredIds])));
+    }
+  };
+
+  const handleDeleteSingleContact = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this enquiry?")) return;
+    setIsDeletingContacts(true);
+    try {
+      const res = await fetch('/api/admin/contacts', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setContacts(prev => prev.filter(c => c._id !== id));
+        setSelectedContactIds(prev => prev.filter(cId => cId !== id));
+        setContactNotice({ message: "Enquiry deleted successfully.", type: "success" });
+      } else {
+        setContactNotice({ message: data.error || "Failed to delete enquiry.", type: "error" });
+      }
+    } catch (err: any) {
+      setContactNotice({ message: err.message || "Error deleting enquiry.", type: "error" });
+    } finally {
+      setIsDeletingContacts(false);
+    }
+  };
+
+  const handleDeleteSelectedContacts = async () => {
+    if (selectedContactIds.length === 0) return;
+    if (!confirm(`Are you sure you want to delete the ${selectedContactIds.length} selected enquiries?`)) return;
+    setIsDeletingContacts(true);
+    try {
+      const res = await fetch('/api/admin/contacts', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedContactIds })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setContacts(prev => prev.filter(c => !selectedContactIds.includes(c._id)));
+        setSelectedContactIds([]);
+        setContactNotice({ message: data.message || `Deleted ${selectedContactIds.length} enquiries.`, type: "success" });
+      } else {
+        setContactNotice({ message: data.error || "Failed to delete selected enquiries.", type: "error" });
+      }
+    } catch (err: any) {
+      setContactNotice({ message: err.message || "Bulk deletion error.", type: "error" });
+    } finally {
+      setIsDeletingContacts(false);
+    }
+  };
+
+  const handleDeleteAllContacts = async () => {
+    if (contacts.length === 0) return;
+    if (!confirm(`WARNING: This will permanently delete ALL ${contacts.length} enquiries. This cannot be undone. Are you sure?`)) return;
+    setIsDeletingContacts(true);
+    try {
+      const res = await fetch('/api/admin/contacts', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ all: true })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setContacts([]);
+        setSelectedContactIds([]);
+        setContactNotice({ message: data.message || "All enquiries deleted successfully.", type: "success" });
+      } else {
+        setContactNotice({ message: data.error || "Failed to delete all enquiries.", type: "error" });
+      }
+    } catch (err: any) {
+      setContactNotice({ message: err.message || "Deletion error.", type: "error" });
+    } finally {
+      setIsDeletingContacts(false);
+    }
+  };
+
+  const handleCleanSpam = async () => {
+    setIsCleaningSpam(true);
+    try {
+      const res = await fetch('/api/admin/contacts', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cleanupSpam: true })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        const deletedIds: string[] = data.deletedIds || [];
+        setContacts(prev => prev.filter(c => !deletedIds.includes(c._id)));
+        setSelectedContactIds(prev => prev.filter(cId => !deletedIds.includes(cId)));
+        setContactNotice({
+          message: data.deletedCount > 0
+            ? `AI Filter Cleaned ${data.deletedCount} spam enquiries! Remaining legitimate enquiries preserved.`
+            : "No spam detected. All existing enquiries are clean!",
+          type: "success"
+        });
+      } else {
+        setContactNotice({ message: data.error || "Failed to clean spam.", type: "error" });
+      }
+    } catch (err: any) {
+      setContactNotice({ message: err.message || "Spam cleanup error.", type: "error" });
+    } finally {
+      setIsCleaningSpam(false);
+    }
+  };
+
+  const handleBulkMarkRead = async () => {
+    if (selectedContactIds.length === 0) return;
+    try {
+      await Promise.all(
+        selectedContactIds.map(id =>
+          fetch('/api/admin/contacts', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, status: 'read' })
+          })
+        )
+      );
+      setContacts(prev => prev.map(c => selectedContactIds.includes(c._id) ? { ...c, status: 'read' } : c));
+      setSelectedContactIds([]);
+      setContactNotice({ message: "Selected enquiries marked as read.", type: "success" });
+    } catch (err: any) {
+      setContactNotice({ message: "Failed to update status.", type: "error" });
+    }
+  };
+
   // Build a fast lookup dictionary for all products and their prices
   const productDictionary = useMemo(() => {
     const dict: Record<string, { title: string; price: number; type: string }> = {};
@@ -120,8 +292,9 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const isSales = activeTab === 'sales';
         const [resUsers, resCourses, resTests, resServices, resLogs, resBookings, resVouchers, resOrders, resContacts] = await Promise.all([
-          fetch("/api/admin/users"),
+          fetch(`/api/admin/users?page=1${isSales ? '&purchased=true' : ''}`),
           fetch("/api/courses"),
           fetch("/api/practice-tests"),
           fetch("/api/services"),
@@ -233,7 +406,8 @@ export default function AdminDashboard() {
       if (!session || (session.user as any).role !== "admin") return;
       setIsSearching(true);
       try {
-        const res = await fetch(`/api/admin/users?search=${encodeURIComponent(search)}&page=${pagination.page}`);
+        const isSales = activeTab === 'sales';
+        const res = await fetch(`/api/admin/users?search=${encodeURIComponent(search)}&page=${pagination.page}${isSales ? '&purchased=true' : ''}`);
         if (res.ok) {
           const data = await res.json();
           setUsers(data.users || []);
@@ -255,13 +429,16 @@ export default function AdminDashboard() {
     }, 500); // 500ms debounce
 
     return () => clearTimeout(timer);
-  }, [search, pagination.page, session]);
+  }, [search, pagination.page, session, activeTab]);
 
   const filteredUsers = useMemo(() => {
     return users.filter(u => {
       // Server-side search handles name/email now
       // We only filter for "purchasers" if on sales tab
-      const hasOrders = orders.some(o => String(o.userId) === String(u._id) || o.userEmail === u.email);
+      const hasOrders = orders.some(o => 
+        (o.userId && String(o.userId) === String(u._id)) || 
+        (o.userEmail && u.email && o.userEmail.toLowerCase() === u.email.toLowerCase())
+      );
       const hasPurchasedContent = u.purchasedContent && u.purchasedContent.length > 0;
       const isPurchaser = hasOrders || hasPurchasedContent;
 
@@ -361,14 +538,22 @@ export default function AdminDashboard() {
             </div>
             <div className="py-2">
               <button 
-                onClick={() => setActiveTab("sales")}
+                onClick={() => {
+                  setActiveTab("sales");
+                  setPagination(prev => ({ ...prev, page: 1 }));
+                  setSearch("");
+                }}
                 className={`w-full flex items-center gap-3 px-6 py-4 text-sm font-semibold transition-all ${activeTab === 'sales' ? 'bg-white/10 text-white border-l-4 border-primary' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
               >
                 <DollarSign className="w-5 h-5" />
                 Sales
               </button>
               <button 
-                onClick={() => setActiveTab("users")}
+                onClick={() => {
+                  setActiveTab("users");
+                  setPagination(prev => ({ ...prev, page: 1 }));
+                  setSearch("");
+                }}
                 className={`w-full flex items-center gap-3 px-6 py-4 text-sm font-semibold transition-all ${activeTab === 'users' ? 'bg-white/10 text-white border-l-4 border-primary' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
               >
                 <Users className="w-5 h-5" />
@@ -929,90 +1114,317 @@ export default function AdminDashboard() {
               </div>
             ) : activeTab === 'messages' ? (
               <div className="space-y-6">
-                <div className="grid grid-cols-1 gap-6">
-                  {contacts.map((contact) => (
-                    <motion.div 
-                      key={contact._id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+                {/* Header & Stats Banner */}
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <h2 className="text-2xl font-black text-gray-900">Customer Enquiries</h2>
+                      <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-black rounded-full">
+                        {contacts.length} Total
+                      </span>
+                      {contacts.filter(c => c.status === 'new').length > 0 && (
+                        <span className="px-3 py-1 bg-teal-100 text-teal-800 text-xs font-black rounded-full flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
+                          {contacts.filter(c => c.status === 'new').length} New
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-gray-500 text-sm mt-1">
+                      Direct inquiries, consultation requests, and course questions submitted via the website.
+                    </p>
+                  </div>
+
+                  {/* AI Spam Clean & Bulk Clear Actions */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={handleCleanSpam}
+                      disabled={isCleaningSpam || contacts.length === 0}
+                      className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md shadow-emerald-600/20 disabled:opacity-50 transition-all cursor-pointer"
+                      title="Run AI spam classifier to purge bot messages and keep genuine student enquiries"
                     >
-                      <div className="p-6 flex flex-col md:flex-row justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-bold text-gray-900 text-lg">{contact.subject}</h3>
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${
-                              contact.status === 'new' ? 'bg-teal-100 text-teal-700' : 
-                              contact.status === 'read' ? 'bg-blue-100 text-blue-700' : 
-                              'bg-green-100 text-green-700'
-                            }`}>
-                              {contact.status}
-                            </span>
-                          </div>
-                          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500 mb-4">
-                            <div className="flex items-center gap-1.5">
-                              <Users className="w-4 h-4 text-primary" />
-                              <span className="font-semibold text-gray-700">{contact.name}</span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                              <Mail className="w-4 h-4 text-primary" />
-                              <a href={`mailto:${contact.email}`} className="hover:text-primary transition-colors">{contact.email}</a>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                              <CalendarDays className="w-4 h-4 text-primary" />
-                              {new Date(contact.createdAt).toLocaleString()}
-                            </div>
-                          </div>
-                          <div className="bg-gray-50 rounded-xl p-5 text-gray-700 text-sm whitespace-pre-wrap border border-gray-100">
-                            {contact.message}
-                          </div>
-                        </div>
-                        <div className="flex md:flex-col gap-2 shrink-0">
-                          <button 
-                            onClick={async () => {
-                              const res = await fetch('/api/admin/contacts', {
-                                method: 'PATCH',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ id: contact._id, status: 'read' })
-                              });
-                              if (res.ok) {
-                                setContacts(contacts.map(c => c._id === contact._id ? { ...c, status: 'read' } : c));
-                              }
-                            }}
-                            className="flex-1 px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-blue-100 hover:text-blue-700 transition-all"
+                      {isCleaningSpam ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 animate-spin" />
+                          Cleaning Spam...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4" />
+                          Clean Spam with AI
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      onClick={handleDeleteAllContacts}
+                      disabled={isDeletingContacts || contacts.length === 0}
+                      className="px-3 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold flex items-center gap-1.5 disabled:opacity-50 transition-all cursor-pointer"
+                      title="Permanently delete all enquiries"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Delete All
+                    </button>
+                  </div>
+                </div>
+
+                {/* Notice Alert Banner */}
+                {contactNotice && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`p-4 rounded-xl flex items-center justify-between text-sm font-semibold border ${
+                      contactNotice.type === 'success'
+                        ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                        : 'bg-red-50 text-red-800 border-red-200'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      {contactNotice.type === 'success' ? (
+                        <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
+                      ) : (
+                        <AlertTriangle className="w-5 h-5 text-red-600 shrink-0" />
+                      )}
+                      <span>{contactNotice.message}</span>
+                    </div>
+                    <button
+                      onClick={() => setContactNotice(null)}
+                      className="text-gray-400 hover:text-gray-700 ml-4 p-1 rounded-lg hover:bg-black/5"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </motion.div>
+                )}
+
+                {/* Search, Filter & Bulk Selection Bar */}
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-4">
+                  <div className="flex flex-col md:flex-row gap-3 justify-between items-center">
+                    {/* Search Field */}
+                    <div className="relative w-full md:w-96">
+                      <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Search by name, email, or message..."
+                        value={contactSearch}
+                        onChange={(e) => setContactSearch(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                      />
+                      {contactSearch && (
+                        <button
+                          onClick={() => setContactSearch("")}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Status Filter Buttons */}
+                    <div className="flex items-center gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+                      {(['all', 'new', 'read', 'replied'] as const).map((filterKey) => {
+                        const count = filterKey === 'all' 
+                          ? contacts.length 
+                          : contacts.filter(c => c.status === filterKey).length;
+                        const isActive = contactStatusFilter === filterKey;
+                        return (
+                          <button
+                            key={filterKey}
+                            onClick={() => setContactStatusFilter(filterKey)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all whitespace-nowrap cursor-pointer ${
+                              isActive
+                                ? 'bg-[#061F33] text-white shadow-sm'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }`}
                           >
-                            Mark Read
+                            {filterKey} ({count})
                           </button>
-                          <button 
-                            onClick={async () => {
-                              const res = await fetch('/api/admin/contacts', {
-                                method: 'PATCH',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ id: contact._id, status: 'replied' })
-                              });
-                              if (res.ok) {
-                                setContacts(contacts.map(c => c._id === contact._id ? { ...c, status: 'replied' } : c));
-                              }
-                            }}
-                            className="flex-1 px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-green-100 hover:text-green-700 transition-all"
-                          >
-                            Mark Replied
-                          </button>
-                          <a 
-                            href={`mailto:${contact.email}?subject=Re: ${contact.subject}`}
-                            className="flex-1 px-4 py-2 bg-primary text-[#061F33] rounded-xl text-xs font-black text-center shadow-md shadow-primary/10 hover:scale-[1.02] active:scale-[0.98] transition-all"
-                          >
-                            Reply Now
-                          </a>
-                        </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Bulk Actions Row */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-100 text-xs">
+                    <div className="flex items-center gap-3">
+                      <label className="flex items-center gap-2 font-bold text-gray-700 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={filteredContacts.length > 0 && filteredContacts.every(c => selectedContactIds.includes(c._id))}
+                          onChange={toggleSelectAllFiltered}
+                          disabled={filteredContacts.length === 0}
+                          className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                        />
+                        <span>
+                          Select All Filtered ({filteredContacts.length})
+                        </span>
+                      </label>
+
+                      {selectedContactIds.length > 0 && (
+                        <span className="px-2.5 py-1 bg-primary/10 text-[#061F33] font-black rounded-lg">
+                          {selectedContactIds.length} Selected
+                        </span>
+                      )}
+                    </div>
+
+                    {selectedContactIds.length > 0 && (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={handleBulkMarkRead}
+                          className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                          Mark Selected Read
+                        </button>
+
+                        <button
+                          onClick={handleDeleteSelectedContacts}
+                          disabled={isDeletingContacts}
+                          className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold flex items-center gap-1.5 shadow-sm shadow-red-600/20 disabled:opacity-50 transition-all cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          Delete Selected ({selectedContactIds.length})
+                        </button>
                       </div>
-                    </motion.div>
-                  ))}
+                    )}
+                  </div>
+                </div>
+
+                {/* Enquiries Grid */}
+                <div className="grid grid-cols-1 gap-4">
+                  {filteredContacts.map((contact) => {
+                    const isSelected = selectedContactIds.includes(contact._id);
+                    return (
+                      <motion.div 
+                        key={contact._id}
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`bg-white rounded-2xl shadow-sm border transition-all overflow-hidden ${
+                          isSelected ? 'border-primary ring-2 ring-primary/20 bg-primary/[0.01]' : 'border-gray-100 hover:border-gray-200'
+                        }`}
+                      >
+                        <div className="p-6 flex flex-col md:flex-row justify-between gap-5">
+                          {/* Selection Checkbox & Main Info */}
+                          <div className="flex items-start gap-4 flex-1">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => toggleSelectContact(contact._id)}
+                              className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer mt-1 shrink-0"
+                            />
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex flex-wrap items-center gap-3 mb-2">
+                                <h3 className="font-bold text-gray-900 text-base md:text-lg break-words">
+                                  {contact.subject}
+                                </h3>
+                                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                                  contact.status === 'new' ? 'bg-teal-100 text-teal-700 border border-teal-200' : 
+                                  contact.status === 'read' ? 'bg-blue-100 text-blue-700 border border-blue-200' : 
+                                  'bg-green-100 text-green-700 border border-green-200'
+                                }`}>
+                                  {contact.status}
+                                </span>
+                              </div>
+
+                              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-gray-500 mb-4">
+                                <div className="flex items-center gap-1.5">
+                                  <Users className="w-4 h-4 text-primary" />
+                                  <span className="font-semibold text-gray-800">{contact.name}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                  <Mail className="w-4 h-4 text-primary" />
+                                  <a href={`mailto:${contact.email}`} className="hover:text-primary font-medium text-gray-700 transition-colors">
+                                    {contact.email}
+                                  </a>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-gray-400">
+                                  <CalendarDays className="w-4 h-4 text-primary" />
+                                  {new Date(contact.createdAt).toLocaleString()}
+                                </div>
+                              </div>
+
+                              <div className="bg-gray-50 rounded-xl p-4 text-gray-700 text-sm whitespace-pre-wrap border border-gray-100 leading-relaxed font-sans">
+                                {contact.message}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Action Buttons Column */}
+                          <div className="flex md:flex-col gap-2 shrink-0 md:w-36 pt-2 md:pt-0 border-t md:border-t-0 border-gray-100">
+                            <button 
+                              onClick={async () => {
+                                const res = await fetch('/api/admin/contacts', {
+                                  method: 'PATCH',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ id: contact._id, status: 'read' })
+                                });
+                                if (res.ok) {
+                                  setContacts(contacts.map(c => c._id === contact._id ? { ...c, status: 'read' } : c));
+                                }
+                              }}
+                              className="flex-1 px-3 py-2 bg-gray-50 hover:bg-blue-50 text-gray-600 hover:text-blue-700 border border-gray-200 rounded-xl text-xs font-bold transition-all text-center cursor-pointer"
+                            >
+                              Mark Read
+                            </button>
+
+                            <button 
+                              onClick={async () => {
+                                const res = await fetch('/api/admin/contacts', {
+                                  method: 'PATCH',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ id: contact._id, status: 'replied' })
+                                });
+                                if (res.ok) {
+                                  setContacts(contacts.map(c => c._id === contact._id ? { ...c, status: 'replied' } : c));
+                                }
+                              }}
+                              className="flex-1 px-3 py-2 bg-gray-50 hover:bg-green-50 text-gray-600 hover:text-green-700 border border-gray-200 rounded-xl text-xs font-bold transition-all text-center cursor-pointer"
+                            >
+                              Mark Replied
+                            </button>
+
+                            <a 
+                              href={`mailto:${contact.email}?subject=Re: ${encodeURIComponent(contact.subject)}`}
+                              className="flex-1 px-3 py-2 bg-primary text-[#061F33] rounded-xl text-xs font-black text-center shadow-sm shadow-primary/10 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                            >
+                              <Mail className="w-3.5 h-3.5" />
+                              Reply Now
+                            </a>
+
+                            <button 
+                              onClick={() => handleDeleteSingleContact(contact._id)}
+                              disabled={isDeletingContacts}
+                              className="flex-1 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition-all text-center cursor-pointer flex items-center justify-center gap-1.5"
+                              title="Delete this enquiry"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+
+                  {/* Empty States */}
+                  {filteredContacts.length === 0 && contacts.length > 0 && (
+                    <div className="bg-white rounded-3xl p-12 text-center border border-dashed border-gray-200">
+                      <Search className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                      <h3 className="text-lg font-bold text-gray-800">No matching enquiries</h3>
+                      <p className="text-gray-500 text-sm mt-1">Try clearing your search query or changing the status filter.</p>
+                      <button
+                        onClick={() => { setContactSearch(""); setContactStatusFilter("all"); }}
+                        className="mt-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-all cursor-pointer"
+                      >
+                        Reset Filters
+                      </button>
+                    </div>
+                  )}
+
                   {contacts.length === 0 && (
                     <div className="bg-white rounded-3xl p-16 text-center border border-dashed border-gray-200">
-                      <MessageSquare className="w-16 h-16 text-gray-100 mx-auto mb-4" />
-                      <h3 className="text-xl font-bold text-gray-900">No enquiries yet</h3>
-                      <p className="text-gray-500">Messages from the contact form will appear here.</p>
+                      <MessageSquare className="w-16 h-16 text-gray-200 mx-auto mb-4" />
+                      <h3 className="text-xl font-bold text-gray-900">No enquiries in your inbox</h3>
+                      <p className="text-gray-500 text-sm mt-1">Messages submitted from the website contact form will appear here.</p>
                     </div>
                   )}
                 </div>

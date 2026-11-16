@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { Resend } from 'resend';
 import connectToDatabase from "@/lib/mongodb";
 import Contact from "@/models/Contact";
+import Log from "@/models/Log";
+import { evaluateEnquirySpam } from "@/lib/spam-filter";
 
 export const dynamic = 'force-dynamic';
 
@@ -10,7 +12,7 @@ const resend = new Resend(process.env.RESEND_API_KEY || 're_build_placeholder');
 export async function POST(req: Request) {
   try {
     await connectToDatabase();
-    const { name, email, subject, message } = await req.json();
+    const { name, email, subject, message, hp_website, formTime } = await req.json();
 
     if (!name || !email || !subject || !message) {
       return NextResponse.json(
@@ -19,7 +21,33 @@ export async function POST(req: Request) {
       );
     }
 
-    // Save to Database
+    // AI & Heuristic Spam Evaluation
+    const spamCheck = evaluateEnquirySpam({
+      name,
+      email,
+      subject,
+      message,
+      honeypot: hp_website,
+      formTime
+    });
+
+    if (spamCheck.isSpam) {
+      console.warn(`[SPAM FILTER] Blocked message from "${name}" <${email}>. Reason: ${spamCheck.reason}`);
+      try {
+        await Log.create({
+          type: 'error',
+          message: `Blocked spam enquiry from ${name} (${email}): ${spamCheck.reason}`,
+          details: { name, email, subject, message: message.slice(0, 200), reason: spamCheck.reason }
+        });
+      } catch (logErr) {
+        console.error("Failed to log spam event:", logErr);
+      }
+
+      // Return standard success to the bot so it doesn't retry or adapt, without storing or sending email
+      return NextResponse.json({ message: "Message sent successfully" }, { status: 200 });
+    }
+
+    // Save Legitimate Enquiry to Database
     await Contact.create({
       name,
       email,

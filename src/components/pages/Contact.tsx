@@ -7,11 +7,13 @@ import Button from '@/components/ui/Button';
 import PageHero from '@/components/ui/PageHero';
 
 const Contact: FC = () => {
+  const [formRenderTime] = useState(() => Date.now());
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
     message: '',
+    hp_website: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -24,12 +26,15 @@ const Contact: FC = () => {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          formTime: Date.now() - formRenderTime,
+        }),
       });
 
       if (response.ok) {
         setIsSubmitted(true);
-        setFormData({ name: '', email: '', subject: '', message: '' });
+        setFormData({ name: '', email: '', subject: '', message: '', hp_website: '' });
         setTimeout(() => setIsSubmitted(false), 5000);
       } else {
         const data = await response.json();
@@ -145,6 +150,20 @@ const Contact: FC = () => {
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Anti-spam Honeypot (hidden from human visitors) */}
+                  <div className="hidden" aria-hidden="true" style={{ display: 'none', position: 'absolute', left: '-9999px' }}>
+                    <label htmlFor="hp_website">Company Website</label>
+                    <input
+                      type="text"
+                      id="hp_website"
+                      name="hp_website"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={formData.hp_website}
+                      onChange={handleChange}
+                    />
+                  </div>
+
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-secondary mb-2">
